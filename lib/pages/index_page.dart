@@ -26,7 +26,7 @@ class IndexPage extends StatelessWidget {
               },
             ),
             SizedBox(height: 25),
-            // HorizontalCardWidget(),
+            HorizontalCardWidget(),
           ],
         ),
       ),
