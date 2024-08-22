@@ -1,69 +1,88 @@
-import 'package:alquran_web/widgets/horizontal_cardview.dart';  
-import 'package:alquran_web/widgets/index_appbar.dart';  
-import 'package:alquran_web/widgets/index_floating_tabbar.dart';  
-import 'package:alquran_web/widgets/search_widget.dart';  
-import 'package:flutter/material.dart';  
+import 'package:alquran_web/pages/Tabbar pages/surah_list_page.dart';
+import 'package:alquran_web/widgets/horizontal_cardview.dart';
+import 'package:alquran_web/widgets/index_appbar.dart';
+import 'package:alquran_web/widgets/index_floating_tabbar.dart';
+import 'package:alquran_web/widgets/search_widget.dart';
+import 'package:flutter/material.dart';
 
-class IndexPage extends StatefulWidget {  
-  const IndexPage({super.key});  
+class IndexPage extends StatefulWidget {
+  const IndexPage({super.key});
 
-  @override  
-  State<IndexPage> createState() => _IndexPageState();  
-}  
+  @override
+  State<IndexPage> createState() => _IndexPageState();
+}
 
-class _IndexPageState extends State<IndexPage>  
-    with SingleTickerProviderStateMixin {  
-  late TabController _tabController;  
-  late ScrollController _scrollController;  
+class _IndexPageState extends State<IndexPage>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
 
-  @override  
-  void initState() {  
-    super.initState();  
-    _tabController = TabController(length: 3, vsync: this);  
-    _scrollController = ScrollController();  
-  }  
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
 
-  @override  
-  void dispose() {  
-    _tabController.dispose();  
-    _scrollController.dispose();  
-    super.dispose();  
-  }  
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
-  @override  
-  Widget build(BuildContext context) {  
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;  
+  @override
+  Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(  
-      appBar: const IndexAppbar(),  
-      body: SingleChildScrollView(  
-        child: Center(  
-          child: Column(  
-            children: [  
-              const SizedBox(height: 20),  
-              SearchWidget(  
-                width: MediaQuery.of(context).size.width,  
-                onChanged: (value) {  
-                  // Handle search text changes  
-                  print('Search query: $value');  
-                },  
-                onClear: () {  
-                  // Handle clear button press  
-                  print('Search cleared');  
-                },  
-              ),  
-              const SizedBox(height: 25),  
-              const HorizontalCardWidget(),  
-              const SizedBox(height: 25),  
-              IndexFloatingTabbar(  
-                controller: _tabController,  
-                isDarkMode: isDarkMode,  
-                scrollController: _scrollController,  
-              ),  
-            ],  
-          ),  
-        ),  
-      ),  
-    );  
-  }  
+    return Scaffold(
+      appBar: const IndexAppbar(),
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  SearchWidget(
+                    width: MediaQuery.of(context).size.width,
+                    onChanged: (value) {
+                      // Handle search text changes
+                      print('Search query: $value');
+                    },
+                    onClear: () {
+                      // Handle clear button press
+                      print('Search cleared');
+                    },
+                  ),
+                  const SizedBox(height: 25),
+                  const HorizontalCardWidget(),
+                  const SizedBox(height: 25),
+                  IndexFloatingTabbar(
+                    controller: _tabController,
+                    isDarkMode: isDarkMode,
+                  ),
+                ],
+              ),
+            ),
+          ];
+        },
+        body: TabBarView(
+          controller: _tabController,
+          children: [
+            SurahListPage(),
+            Container(
+              color: Colors.green,
+              child: Center(
+                child: Text('Juz Page'),
+              ),
+            ),
+            Container(
+              color: Colors.blue,
+              child: Center(
+                child: Text('Bookmarks Page'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

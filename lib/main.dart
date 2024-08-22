@@ -21,9 +21,9 @@ class MyApp extends StatelessWidget {
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      // theme: ThemeData.light().copyWith(
-      //   textTheme: GoogleFonts.notoSansMalayalamTextTheme(),
-      // ),
+      theme: ThemeData.light().copyWith(
+          textTheme: GoogleFonts.notoSansMalayalamTextTheme(),
+          scaffoldBackgroundColor: Colors.white),
       // darkTheme: ThemeData.dark().copyWith(
       //   textTheme: GoogleFonts.notoSansMalayalamTextTheme(),
       // ),

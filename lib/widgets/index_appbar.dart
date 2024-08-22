@@ -20,6 +20,7 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
     final logoSize = 64.0 * scaleFactor;
 
     return AppBar(
+      backgroundColor: Colors.white,
       toolbarHeight: 80 * scaleFactor,
       leadingWidth: 60 * scaleFactor,
       leading: Padding(
