@@ -54,6 +54,8 @@ class _SurahListPageState extends State<SurahListPage> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     int crossAxisCount = 3;
 
     if (screenWidth < 480) {
@@ -64,16 +66,30 @@ class _SurahListPageState extends State<SurahListPage> {
       crossAxisCount = 3;
     }
 
-    double childAspectRatio;
+    // double childAspectRatio;
+
+    // if (screenWidth < 480) {
+    //   childAspectRatio = 4; // Taller cards for smaller screens
+    // } else if (screenWidth < 800) {
+    //   childAspectRatio = 4.5; // Medium-sized cards for medium screens
+    // } else if (screenWidth < 1025) {
+    //   childAspectRatio = 4.3; // Shorter cards for larger screens
+    // } else {
+    //   childAspectRatio = 5;
+    // }
+    double childAspectRatio = screenWidth / screenHeight;
 
     if (screenWidth < 480) {
-      childAspectRatio = 4.5; // Taller cards for smaller screens
+      childAspectRatio =
+          childAspectRatio * 5; // Taller cards for smaller screens
     } else if (screenWidth < 800) {
-      childAspectRatio = 4.5; // Medium-sized cards for medium screens
+      childAspectRatio =
+          childAspectRatio * 3; // Medium-sized cards for medium screens
     } else if (screenWidth < 1025) {
-      childAspectRatio = 4.3; // Shorter cards for larger screens
+      childAspectRatio =
+          childAspectRatio * 2; // Shorter cards for larger screens
     } else {
-      childAspectRatio = 5;
+      childAspectRatio = childAspectRatio * 3;
     }
 
     return Scaffold(

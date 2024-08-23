@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import 'package:google_fonts/google_fonts.dart';
 
 class StarNumber extends StatelessWidget {
   final int number;
@@ -30,9 +31,9 @@ class StarNumber extends StatelessWidget {
           child: Center(
             child: Text(
               number.toString(),
-              style: TextStyle(
+              style: GoogleFonts.poppins(
                 color: textColor,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w500,
                 fontSize: 14,
               ),
             ),
