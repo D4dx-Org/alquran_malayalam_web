@@ -27,7 +27,7 @@ class _SurahListPageState extends State<SurahListPage> {
     });
 
     // Simulate network delay
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(microseconds: 500));
 
     surahs = List.generate(
       114,

@@ -1,15 +1,16 @@
-import 'package:alquran_web/routes/app_pages.dart';
+import 'package:alquran_web/widgets/detailed_surah_bottom_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// Enum to represent different pages  
-enum AppPage { detailedSurah , articles } 
-
+// Enum to represent different pages
+enum AppPage { detailedsurah, articles }
 
 class DetailedAppbar extends StatelessWidget implements PreferredSizeWidget {
-  const DetailedAppbar({super.key});
+  final AppPage currentPage;
+
+  const DetailedAppbar({super.key, required this.currentPage});
 
   @override
   Widget build(BuildContext context) {
@@ -17,104 +18,137 @@ class DetailedAppbar extends StatelessWidget implements PreferredSizeWidget {
 
     // Calculate icon sizes based on screen width
     final scaleFactor = (screenWidth / 1440).clamp(0.7, 1.0);
-    final iconScaleFactor =
-        (screenWidth / 1440).clamp(0.9, 1.2); // Larger scale factor for icons
+    final iconScaleFactor = (screenWidth / 1440).clamp(0.9, 1.2);
     final menuIconSize = 24.0 * iconScaleFactor;
     final settingsIconSize = 24.0 * iconScaleFactor;
     final logoSize = 64.0 * scaleFactor;
 
-    return Container(
-      color: const Color.fromRGBO(115, 78, 9, 1),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 32.0 * scaleFactor),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-          toolbarHeight: 80 * scaleFactor,
-          leadingWidth: 60 * scaleFactor,
-          leading: Padding(
-            padding: EdgeInsets.only(left: 8.0 * scaleFactor),
-            child: IconButton(
-              icon: Icon(
-                Icons.menu_sharp,
-                size: menuIconSize,
-                color: Colors.white,
-                weight: 100,
+    return Column(
+      children: [
+        Container(
+          color: const Color.fromRGBO(115, 78, 9, 1),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 32.0 * scaleFactor),
+            child: AppBar(
+              backgroundColor: Colors.transparent,
+              toolbarHeight: 80 * scaleFactor,
+              leadingWidth: 60 * scaleFactor,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.menu_sharp,
+                  size: menuIconSize,
+                  color: Colors.white,
+                  weight: 100,
+                ),
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
               ),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            ),
-          ),
-          actions: <Widget>[
-            IconButton(
-              icon: SvgPicture.asset(
-                "icons/Settings_Icon.svg",
-                height: settingsIconSize,
-                width: settingsIconSize,
-                colorFilter:
-                    const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-              ),
-              onPressed: () {
-                Get.toNamed(Routes.SETTINGS);
-              },
-            ),
-            SizedBox(width: 8 * scaleFactor),
-          ],
-          title: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0 * scaleFactor),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'images/AppBar_Icon.png',
-                      height: logoSize,
-                      width: logoSize,
-                      color: Colors.white,
-                      fit: BoxFit.contain,
-                    ),
-                    SizedBox(width: 8 * scaleFactor),
-                    Flexible(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              "അല്‍-ഖുര്‍ആന്‍",
-                              style: GoogleFonts.anekMalayalam(
+              actions: <Widget>[
+                IconButton(
+                  icon: SvgPicture.asset(
+                    "icons/Settings_Icon.svg",
+                    height: settingsIconSize,
+                    width: settingsIconSize,
+                    colorFilter:
+                        const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  ),
+                  onPressed: () {
+                    Get.toNamed('/settings');
+                  },
+                ),
+                SizedBox(width: 8 * scaleFactor),
+              ],
+              title: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'images/AppBar_Icon.png',
+                        height: logoSize,
+                        width: logoSize,
+                        color: Colors.white,
+                        fit: BoxFit.contain,
+                      ),
+                      SizedBox(width: 8 * scaleFactor),
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                "അല്‍-ഖുര്‍ആന്‍",
+                                style: GoogleFonts.anekMalayalam(
                                   fontSize: 35 * scaleFactor,
                                   fontWeight: FontWeight.w800,
-                                  color: Colors.white),
-                            ),
-                          ),
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              "വാക്കര്‍ത്ഥത്തോടുകൂടിയ പരിഭാഷ",
-                              style: GoogleFonts.anekMalayalam(
-                                color: Colors.white,
-                                fontSize: 18 * scaleFactor,
-                                fontWeight: FontWeight.w300,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                "വാക്കര്‍ത്ഥത്തോടുകൂടിയ പരിഭാഷ",
+                                style: GoogleFonts.anekMalayalam(
+                                  color: Colors.white,
+                                  fontSize: 18 * scaleFactor,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                );
-              },
+                    ],
+                  );
+                },
+              ),
+              centerTitle: true,
             ),
           ),
-          centerTitle: true,
+        ),
+        Container(
+          color: const Color.fromRGBO(115, 78, 9, 1),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: 32 * scaleFactor, vertical: 8 * scaleFactor),
+            child: _buildBottomRow(context, scaleFactor),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBottomRow(BuildContext context, double scaleFactor) {
+    switch (currentPage) {
+      case AppPage.detailedsurah:
+        return CustomWidget(scaleFactor);
+      case AppPage.articles:
+        return _buildarticlesBottomRow(context, scaleFactor);
+    }
+  }
+
+  Widget _buildarticlesBottomRow(BuildContext context, double scaleFactor) {
+    return Container(
+      color: Colors.brown[100],
+      height: 50 * scaleFactor,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.0 * scaleFactor),
+        child: TextField(
+          decoration: InputDecoration(
+            hintText: 'Search...',
+            border: InputBorder.none,
+            icon: Icon(Icons.search, size: 24 * scaleFactor),
+          ),
         ),
       ),
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(80);
+  Size get preferredSize =>
+      const Size.fromHeight(150); // 80 for top row + 50 for bottom row
 }
