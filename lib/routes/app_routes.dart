@@ -10,4 +10,6 @@ abstract class Routes {
   static const PRIVACY = '/privacy';
   static const SEARCH = '/search';
   static const SURAH_DETAILED = '/surah_detailed';
+  static const DRAWER = '/drawer';
+  static const NAVIGATION_BOX = '/navigation_box';
 }

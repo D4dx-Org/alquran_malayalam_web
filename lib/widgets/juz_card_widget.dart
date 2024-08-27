@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'surah_card_widget.dart';
 
 class JuzCardWidget extends StatelessWidget {
@@ -9,7 +8,6 @@ class JuzCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final listViewColor = const Color.fromARGB(255, 244, 244, 244);
 
     return Card(

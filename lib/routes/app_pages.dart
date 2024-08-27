@@ -37,11 +37,12 @@ class AppPages {
     ),
     GetPage(
       name: Routes.SEARCH,
-      page: () =>  SearchWidget(),
+      page: () =>  const SearchWidget(),
     ),
     GetPage(
       name: Routes.SURAH_DETAILED,
       page: () => const DetailedSurahPage(),
     ),
+
   ];
 }
