@@ -1,4 +1,3 @@
-import 'package:alquran_web/widgets/star_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -6,6 +5,7 @@ class BookmarksPage extends StatefulWidget {
   const BookmarksPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _BookmarksPageState createState() => _BookmarksPageState();
 }
 
@@ -92,7 +92,7 @@ class _BookmarksPageState extends State<BookmarksPage> {
               itemCount: surahs.length,
               itemBuilder: (context, index) {
                 final surah = surahs[index];
-                return _buildSurahCard(surah);
+                return _buildBookmarksCard(surah);
               },
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: crossAxisCount,
@@ -108,7 +108,7 @@ class _BookmarksPageState extends State<BookmarksPage> {
     );
   }
 
-  Widget _buildSurahCard(Map<String, dynamic> surah) {
+  Widget _buildBookmarksCard(Map<String, dynamic> surah) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
       child: Card(
@@ -121,7 +121,8 @@ class _BookmarksPageState extends State<BookmarksPage> {
             backgroundColor: const Color(0xFFF6F6F6),
             child: SvgPicture.asset(
               'assets/icons/Bookmarks_Icon.svg',
-              color: const Color.fromRGBO(115, 78, 9, 1),
+              colorFilter: const ColorFilter.mode(
+                  Color.fromRGBO(115, 78, 9, 1), BlendMode.srcIn),
             ),
           ),
           title: Text(
@@ -137,18 +138,18 @@ class _BookmarksPageState extends State<BookmarksPage> {
                 'Page ',
                 style: TextStyle(fontSize: 8),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Text(
                 'Juz no',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 8,
                 ),
               ),
             ],
           ),
-          trailing: Text(
+          trailing: const Text(
             '2 ; 17',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
             ),

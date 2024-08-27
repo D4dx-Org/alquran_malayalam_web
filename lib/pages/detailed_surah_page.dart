@@ -1,3 +1,4 @@
+import 'package:alquran_web/widgets/detailed_appbar.dart';
 import 'package:flutter/material.dart';
 
 class DetailedSurahPage extends StatelessWidget {
@@ -5,6 +6,8 @@ class DetailedSurahPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return const Scaffold(
+      appBar: DetailedAppbar(),
+    );
   }
 }
