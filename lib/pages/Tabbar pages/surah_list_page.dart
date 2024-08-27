@@ -1,6 +1,8 @@
+import 'package:alquran_web/routes/app_pages.dart';
 import 'package:alquran_web/widgets/star_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class SurahListPage extends StatefulWidget {
   const SurahListPage({super.key});
@@ -25,7 +27,7 @@ class _SurahListPageState extends State<SurahListPage> {
     });
 
     // Simulate network delay
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(microseconds: 500));
 
     surahs = List.generate(
       114,
@@ -81,13 +83,13 @@ class _SurahListPageState extends State<SurahListPage> {
 
     if (screenWidth < 480) {
       childAspectRatio =
-          childAspectRatio * 6; // Taller cards for smaller screens
+          childAspectRatio * 7; // Taller cards for smaller screens
     } else if (screenWidth < 800) {
       childAspectRatio =
-          childAspectRatio * 3; // Medium-sized cards for medium screens
+          childAspectRatio * 4; // Medium-sized cards for medium screens
     } else if (screenWidth < 1025) {
       childAspectRatio =
-          childAspectRatio * 2; // Shorter cards for larger screens
+          childAspectRatio * 3; // Shorter cards for larger screens
     } else {
       childAspectRatio = childAspectRatio * 3;
     }
@@ -163,6 +165,11 @@ class _SurahListPageState extends State<SurahListPage> {
               fontWeight: FontWeight.w700,
             ),
           ),
+          onTap: () {
+            Get.toNamed(
+              Routes.SURAH_DETAILED,
+            );
+          },
         ),
       ),
     );

@@ -271,7 +271,6 @@ class JuzListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     const gridViewColor = Color.fromARGB(255, 244, 244, 244);
     final screenWidth = MediaQuery.of(context).size.width;
 
@@ -286,101 +285,102 @@ class JuzListPage extends StatelessWidget {
     }
 
     return Scaffold(
-      body: MasonryGridView.count(
-        crossAxisCount: crossAxisCount,
-        itemCount: juzList.length,
-        shrinkWrap: true,
-        // physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          final juz = juzList[index];
-          return Card(
-            margin: const EdgeInsets.all(8),
-            elevation: 0,
-            color: gridViewColor,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Text(
-                    'Juz ${juz['juz']}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+        child: MasonryGridView.count(
+          crossAxisCount: crossAxisCount,
+          itemCount: juzList.length,
+          shrinkWrap: true,
+          // physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            final juz = juzList[index];
+            return Card(
+              margin: const EdgeInsets.all(8),
+              elevation: 0,
+              color: gridViewColor,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Text(
+                      'Juz ${juz['juz']}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: juz['surahs'].length *
-                      80.0, // Adjust the height based on the number of surahs
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: juz['surahs'].length,
-                      itemExtent: 70.0,
-                      itemBuilder: (context, surahIndex) {
-                        final surah = juz['surahs'][surahIndex];
-                        return Card(
-                          elevation: 1,
-                          color: isDarkMode
-                              ? const Color(0xFF3C3C3C)
-                              : Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: ListTile(
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 16),
-                            leading: StarNumber(number: surah['number']),
-                            title: Text(
-                              surah['name'],
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                              ),
+                  SizedBox(
+                    height: juz['surahs'].length *
+                        80.0, // Adjust the height based on the number of surahs
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: juz['surahs'].length,
+                        itemExtent: 70.0,
+                        itemBuilder: (context, surahIndex) {
+                          final surah = juz['surahs'][surahIndex];
+                          return Card(
+                            elevation: 1,
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            subtitle: Row(
-                              children: [
-                                SvgPicture.asset(
-                                  surah['type'] == 'Makkiya'
-                                      ? "icons/Makiyyah_Icon.svg"
-                                      : "icons/Madaniyya_Icon.svg",
-                                  height: 11,
-                                  width: 9,
+                            child: ListTile(
+                              contentPadding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              leading: StarNumber(number: surah['number']),
+                              title: Text(
+                                surah['name'],
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
                                 ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  '${surah['ayat']} Ayat',
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black,
+                              ),
+                              subtitle: Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    surah['type'] == 'Makkiya'
+                                        ? "icons/Makiyyah_Icon.svg"
+                                        : "icons/Madaniyya_Icon.svg",
+                                    height: 11,
+                                    width: 9,
                                   ),
-                                ),
-                              ],
-                            ),
-                            trailing: Text(
-                              surah['arabicName'],
-                              style: TextStyle(
-                                color: isDarkMode ? Colors.white : Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '${surah['ayat']} Ayat',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
                               ),
+                              trailing: Text(
+                                surah['arabicName'],
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              onTap: () {
+                                // Navigate to Surah Detailed page with the selected surah
+                              },
                             ),
-                            onTap: () {
-                              // Navigate to Surah Detailed page with the selected surah
-                            },
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          );
-        },
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
