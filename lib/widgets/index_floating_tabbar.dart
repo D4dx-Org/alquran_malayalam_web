@@ -4,11 +4,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 class IndexFloatingTabbar extends StatefulWidget {
   final TabController controller;
   final bool isDarkMode;
+  final ValueChanged<int> onTabChanged;
 
   const IndexFloatingTabbar({
     super.key,
     required this.controller,
     required this.isDarkMode,
+    required this.onTabChanged,
   });
 
   @override
@@ -36,7 +38,7 @@ class _IndexFloatingTabbarState extends State<IndexFloatingTabbar> {
     final tabs = [
       _TabData("Surat", "assets/icons/Surat_Page_Icon.svg"),
       _TabData("Juz", "assets/icons/Juz_Icon.svg"),
-      _TabData("Bookmarks", "assets/icons/Bookmarks_Icon.svg"),
+      _TabData("Bookmarks", "icons/Bookmarks_Tabbar_Icon.svg"),
     ];
 
     double tabWidth;
@@ -95,7 +97,7 @@ class _IndexFloatingTabbarState extends State<IndexFloatingTabbar> {
       padding: EdgeInsets.symmetric(horizontal: padding),
       child: GestureDetector(
         onTap: () {
-          widget.controller.animateTo(index);
+          widget.onTabChanged(index);
         },
         child: Material(
           color: Colors.transparent,
@@ -104,7 +106,7 @@ class _IndexFloatingTabbarState extends State<IndexFloatingTabbar> {
             splashColor: activeIndicatorColor.withOpacity(0.3),
             highlightColor: activeIndicatorColor.withOpacity(0.1),
             onTap: () {
-              widget.controller.animateTo(index);
+              widget.onTabChanged(index);
             },
             child: Container(
               height: 40,

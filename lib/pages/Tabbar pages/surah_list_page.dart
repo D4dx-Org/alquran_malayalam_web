@@ -81,7 +81,7 @@ class _SurahListPageState extends State<SurahListPage> {
 
     if (screenWidth < 480) {
       childAspectRatio =
-          childAspectRatio * 5; // Taller cards for smaller screens
+          childAspectRatio * 6; // Taller cards for smaller screens
     } else if (screenWidth < 800) {
       childAspectRatio =
           childAspectRatio * 3; // Medium-sized cards for medium screens
@@ -134,7 +134,7 @@ class _SurahListPageState extends State<SurahListPage> {
           title: Text(
             surah['name'],
             style: const TextStyle(
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -159,7 +159,7 @@ class _SurahListPageState extends State<SurahListPage> {
           trailing: Text(
             surah['arabicName'],
             style: const TextStyle(
-              fontSize: 18,
+              fontSize: 14,
               fontWeight: FontWeight.w700,
             ),
           ),

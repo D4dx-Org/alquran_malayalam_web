@@ -1,4 +1,5 @@
 import 'package:alquran_web/pages/Tabbar pages/surah_list_page.dart';
+import 'package:alquran_web/pages/Tabbar%20pages/bookmarks.dart';
 import 'package:alquran_web/pages/Tabbar%20pages/juz_list_page.dart';
 import 'package:alquran_web/widgets/horizontal_cardview.dart';
 import 'package:alquran_web/widgets/index_appbar.dart';
@@ -31,17 +32,14 @@ class _IndexPageState extends State<IndexPage>
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
       appBar: const IndexAppbar(),
       body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
             SliverToBoxAdapter(
               child: Column(
                 children: [
-                  const SizedBox(height: 20),
                   SearchWidget(
                     width: MediaQuery.of(context).size.width,
                     onChanged: (value) {
@@ -58,30 +56,23 @@ class _IndexPageState extends State<IndexPage>
                   const SizedBox(height: 25),
                   IndexFloatingTabbar(
                     controller: _tabController,
-                    isDarkMode: isDarkMode,
+                    isDarkMode: false,
+                    onTabChanged: (index) {
+                      _tabController.animateTo(index);
+                    },
                   ),
                 ],
               ),
-            ),
+            )
           ];
         },
         body: TabBarView(
           controller: _tabController,
+          physics: NeverScrollableScrollPhysics(),
           children: [
             SurahListPage(),
             JuzListPage(),
-            // Container(
-            //   color: Colors.blue,
-            //   child: Center(
-            //     child: Text('Bookmarks Page'),
-            //   ),
-            // ),
-            Container(
-              color: Colors.blue,
-              child: Center(
-                child: Text('Bookmarks Page'),
-              ),
-            ),
+            BookmarksPage(),
           ],
         ),
       ),
