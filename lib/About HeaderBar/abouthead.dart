@@ -1,5 +1,5 @@
-import 'package:alquran_web/tabbbar/tab1.dart';
-import 'package:alquran_web/tabbbar/tab2.dart';
+import 'package:alquran_web/About%20HeaderBar/translator.dart';
+import 'package:alquran_web/About%20HeaderBar/mugavura.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
