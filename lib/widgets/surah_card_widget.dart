@@ -1,3 +1,4 @@
+import 'package:alquran_web/services/quran_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'star_widget.dart';
@@ -5,7 +6,12 @@ import 'star_widget.dart';
 class SurahCardWidget extends StatelessWidget {
   final Map<String, dynamic> surah;
 
-  const SurahCardWidget({super.key, required this.surah});
+   SurahCardWidget({super.key, required this.surah});
+
+ List<Map<String, dynamic>> surahs = [];
+  final _quranService = QuranService();
+
+
 
   @override
   Widget build(BuildContext context) {
