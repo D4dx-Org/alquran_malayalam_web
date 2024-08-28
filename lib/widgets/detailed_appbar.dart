@@ -1,4 +1,5 @@
 import 'package:alquran_web/widgets/detailed_surah_bottom_row.dart';
+import 'package:alquran_web/widgets/navigation_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -41,7 +42,10 @@ class DetailedAppbar extends StatelessWidget implements PreferredSizeWidget {
                   weight: 100,
                 ),
                 onPressed: () {
-                  Scaffold.of(context).openDrawer();
+                  showDialog(
+                    context: context,
+                    builder: (context) => const NavigationWidget(),
+                  );
                 },
               ),
               actions: <Widget>[

@@ -1,7 +1,7 @@
-import 'package:alquran_web/routes/app_pages.dart';
+import 'package:alquran_web/widgets/navigation_widget.dart';
+import 'package:alquran_web/widgets/settings_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
@@ -37,7 +37,10 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
                 weight: 100,
               ),
               onPressed: () {
-                Scaffold.of(context).openDrawer();
+                showDialog(
+                  context: context,
+                  builder: (context) => const NavigationWidget(),
+                );
               },
             ),
           ),
@@ -49,7 +52,12 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
                 width: settingsIconSize,
               ),
               onPressed: () {
-                Get.toNamed(Routes.SETTINGS);
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return SettingsWidget();
+                  },
+                );
               },
             ),
             SizedBox(width: 8 * scaleFactor),

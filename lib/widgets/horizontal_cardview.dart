@@ -6,6 +6,7 @@ class HorizontalCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double cardHeight = 34;
+    double cardWidth = 100; // Set the desired card width
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -13,40 +14,36 @@ class HorizontalCardWidget extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: ConstrainedBox(
             constraints: BoxConstraints(minWidth: constraints.maxWidth),
-            child: IntrinsicWidth(
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  height: cardHeight + 16, // Add padding to height
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(5, (index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Container(
-                          height: cardHeight,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
-                            color: const Color.fromRGBO(226, 226, 226, 1),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            child: Center(
-                              child: Text(
-                                'Surah Name',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color.fromRGBO(130, 130, 130, 1),
-                                  fontWeight: FontWeight.normal,
-                                  height: 1.5,
-                                ),
-                              ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  5,
+                  (index) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: SizedBox(
+                      width: cardWidth,
+                      child: Container(
+                        height: cardHeight,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                          color: const Color.fromRGBO(226, 226, 226, 1),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Surah Name',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Color.fromRGBO(130, 130, 130, 1),
+                              fontWeight: FontWeight.normal,
+                              height: 1.5,
                             ),
                           ),
                         ),
-                      );
-                    }),
+                      ),
+                    ),
                   ),
                 ),
               ),

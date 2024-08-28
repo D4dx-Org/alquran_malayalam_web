@@ -29,7 +29,7 @@ class AppPages {
     ),
     GetPage(
       name: Routes.CONTACT_US,
-      page: () => const ContactusPage(),
+      page: () =>  ContactusPage(),
     ),
     GetPage(
       name: Routes.PRIVACY,

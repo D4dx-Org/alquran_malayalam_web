@@ -1,4 +1,5 @@
 import 'package:alquran_web/routes/app_pages.dart';
+import 'package:alquran_web/services/quran_services.dart';
 import 'package:alquran_web/widgets/star_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -14,6 +15,7 @@ class SurahListPage extends StatefulWidget {
 class _SurahListPageState extends State<SurahListPage> {
   int _currentIndex = 0; // To manage the IndexedStack
   List<Map<String, dynamic>> surahs = [];
+  final _quranService = QuranService();
 
   @override
   void initState() {
@@ -26,31 +28,20 @@ class _SurahListPageState extends State<SurahListPage> {
       _currentIndex = 0; // Show loading spinner
     });
 
-    // Simulate network delay
-    await Future.delayed(const Duration(microseconds: 500));
-
-    surahs = List.generate(
-      114,
-      (index) {
-        // Generate dummy data for Surah
-        final surahNumber = index + 1;
-        final isMakkiya = (surahNumber % 2 ==
-            0); // Example logic: Even numbers are Makkiya, odd are Madani
-        return {
-          'number': surahNumber,
-          'name':
-              'Surah $surahNumber', // Replace with actual names if available
-          'arabicName': 'سورة',
-          'verses':
-              '${surahNumber * 2} Ayat', // Example: Number of Ayat is twice the Surah number
-          'type': isMakkiya ? 'Makkiya' : 'Madani',
-        };
-      },
-    );
-
-    setState(() {
-      _currentIndex = 1; // Show the list view
-    });
+    try {
+      final fetchedSurahs = await _quranService.fetchSurahs();
+      setState(() {
+        surahs = fetchedSurahs;
+        _currentIndex = 1; // Show the list view
+      });
+    } catch (e) {
+      // Handle error
+      setState(() {
+        _currentIndex = 2; // Show error view
+      });
+      // Add your error handling logic here
+      print('Error fetching Surahs: $e');
+    }
   }
 
   @override
@@ -68,17 +59,6 @@ class _SurahListPageState extends State<SurahListPage> {
       crossAxisCount = 3;
     }
 
-    // double childAspectRatio;
-
-    // if (screenWidth < 480) {
-    //   childAspectRatio = 4; // Taller cards for smaller screens
-    // } else if (screenWidth < 800) {
-    //   childAspectRatio = 4.5; // Medium-sized cards for medium screens
-    // } else if (screenWidth < 1025) {
-    //   childAspectRatio = 4.3; // Shorter cards for larger screens
-    // } else {
-    //   childAspectRatio = 5;
-    // }
     double childAspectRatio = screenWidth / screenHeight;
 
     if (screenWidth < 480) {
@@ -116,6 +96,9 @@ class _SurahListPageState extends State<SurahListPage> {
               ),
             ),
           ),
+          const Center(
+            child: Text('Error fetching Surahs'),
+          ),
         ],
       ),
     );
@@ -131,10 +114,10 @@ class _SurahListPageState extends State<SurahListPage> {
         ),
         child: ListTile(
           leading: StarNumber(
-            number: surah['number'],
+            number: int.parse(surah['SuraId'].toString()),
           ),
           title: Text(
-            surah['name'],
+            surah['MSuraName'],
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
@@ -143,7 +126,7 @@ class _SurahListPageState extends State<SurahListPage> {
           subtitle: Row(
             children: [
               SvgPicture.asset(
-                surah['type'] == 'Makkiya'
+                surah['SuraType'] == 'مَكِّيَة'
                     ? "icons/Makiyyah_Icon.svg"
                     : "icons/Madaniyya_Icon.svg",
                 height: 11, // Adjust size as needed
@@ -151,7 +134,7 @@ class _SurahListPageState extends State<SurahListPage> {
               ),
               const SizedBox(width: 8),
               Text(
-                surah['verses'],
+                '${surah['TotalAyas']} Ayat',
                 style: const TextStyle(
                   fontSize: 8,
                 ),
@@ -159,7 +142,7 @@ class _SurahListPageState extends State<SurahListPage> {
             ],
           ),
           trailing: Text(
-            surah['arabicName'],
+            surah['ASuraName'],
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
@@ -168,6 +151,7 @@ class _SurahListPageState extends State<SurahListPage> {
           onTap: () {
             Get.toNamed(
               Routes.SURAH_DETAILED,
+              arguments: {'surahId': surah['SuraId']},
             );
           },
         ),
