@@ -71,6 +71,7 @@ class _JuzListPageState extends State<JuzListPage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32.0),
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         child: MasonryGridView.count(
           crossAxisCount: crossAxisCount,
           itemCount: juzList.length,
@@ -89,14 +90,45 @@ class _JuzListPageState extends State<JuzListPage> {
                     padding: const EdgeInsets.all(8),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+=======
+        child: FutureBuilder<List<Map<String, dynamic>>>(
+          future: _juzList,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final juzList = snapshot.data!;
+              return MasonryGridView.count(
+                crossAxisCount: crossAxisCount,
+                itemCount: juzList.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  final juz = juzList[index];
+                  return Card(
+                    margin: const EdgeInsets.all(8),
+                    elevation: 0,
+                    color: gridViewColor,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+>>>>>>> Stashed changes
                       children: [
-                        Text(
-                          'Juz ${juz['juz']}',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Juz ${juz['juz']}',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextButton(
+                                  onPressed: () {},
+                                  child: const Text('Read Juz'))
+                            ],
                           ),
                         ),
+<<<<<<< Updated upstream
                         TextButton(
                             onPressed: () {}, child: const Text('Read Juz'))
                       ],
@@ -176,6 +208,8 @@ class _JuzListPageState extends State<JuzListPage> {
                             ],
                           ),
                         ),
+=======
+>>>>>>> Stashed changes
                         SizedBox(
                           height: juz['surahs'].length *
                               80.0, // Adjust the height based on the number of surahs
@@ -192,15 +226,23 @@ class _JuzListPageState extends State<JuzListPage> {
                                   color: Colors.white,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                                   ),
                                   child: ListTile(
                                     contentPadding: const EdgeInsets.symmetric(
                                         horizontal: 16),
+<<<<<<< Updated upstream
                                     leading: StarNumber(
                                       number:
                                           int.parse(surah['SuraId'].toString()),
                                     ),
+=======
+                                    leading:
+                                        StarNumber(number: surah['SuraId']),
+>>>>>>> Stashed changes
                                     title: Text(
                                       surah['MSuraName'],
                                       style: const TextStyle(
