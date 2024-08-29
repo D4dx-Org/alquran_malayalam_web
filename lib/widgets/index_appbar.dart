@@ -1,4 +1,3 @@
-import 'package:alquran_web/widgets/navigation_widget.dart';
 import 'package:alquran_web/widgets/settings_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -37,10 +36,8 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
                 weight: 100,
               ),
               onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => const NavigationWidget(),
-                );
+                             Scaffold.of(context).openDrawer();
+
               },
             ),
           ),

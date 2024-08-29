@@ -1,10 +1,10 @@
 import 'package:alquran_web/pages/Tabbar pages/surah_list_page.dart';
 import 'package:alquran_web/pages/Tabbar%20pages/bookmarks.dart';
 import 'package:alquran_web/pages/Tabbar%20pages/juz_list_page.dart';
-import 'package:alquran_web/widgets/navigation_widget.dart';
 import 'package:alquran_web/widgets/horizontal_cardview.dart';
 import 'package:alquran_web/widgets/index_appbar.dart';
 import 'package:alquran_web/widgets/index_floating_tabbar.dart';
+import 'package:alquran_web/widgets/navigation_drawer_widget.dart';
 import 'package:alquran_web/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -75,7 +75,7 @@ class _IndexPageState extends State<IndexPage>
           ],
         ),
       ),
-      // drawer: const DrawerWidget(),
+      drawer: const NavigationDrawerWidget(),
     );
   }
 }
