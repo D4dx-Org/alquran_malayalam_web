@@ -1,3 +1,4 @@
+import 'package:alquran_web/About%20HeaderBar/publishernote.dart';
 import 'package:alquran_web/About%20HeaderBar/translator.dart';
 import 'package:alquran_web/About%20HeaderBar/mugavura.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,7 @@ class BottomTab extends StatelessWidget {
           children: [
             Tab1(),
             Tab2(),
-            Center(child: Text('പ്രസാധകകുറിപ്പ് Content')),
+            Tab3(),
           ],
         ),
       ),

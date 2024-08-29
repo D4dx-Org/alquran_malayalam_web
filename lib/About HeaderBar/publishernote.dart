@@ -1,28 +1,26 @@
-
-
 import 'package:alquran_web/services/quranservices.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 
-class Tab2 extends StatefulWidget {
-  const Tab2({Key? key}) : super(key: key);
+class Tab3 extends StatefulWidget {
+  const Tab3({Key? key}) : super(key: key);
 
   @override
   _Tab2State createState() => _Tab2State();
 }
 
-class _Tab2State extends State<Tab2> {
-  late Future<List<String>> mugavuraData;
+class _Tab2State extends State<Tab3> {
+  late Future<List<String>> publishernoteData;
 
   @override
   void initState() {
     super.initState();
-    mugavuraData = _fetchMugavuraData();
+    publishernoteData = _fetchMugavuraData();
   }
 
   Future<List<String>> _fetchMugavuraData() async {
     final quranServices = QuranServices();
-    quranServices.ArticleId = 7; // Set the article ID to 7
+    quranServices.ArticleId = 8;
     return await quranServices.fetchAbout();
   }
 
@@ -30,7 +28,7 @@ class _Tab2State extends State<Tab2> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder<List<String>>(
-        future: mugavuraData,
+        future: publishernoteData,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
