@@ -1,5 +1,6 @@
 
 import 'package:alquran_web/services/quran_services.dart';
+import 'package:alquran_web/widgets/star_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
