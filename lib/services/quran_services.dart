@@ -34,7 +34,7 @@ class QuranService {
       final data = jsonDecode(response.body) as List<dynamic>;
       return data.map((item) => item['matter'] as String).toList();
     } else {
-      throw Exception('Failed to load Publishersbio');
+      throw Exception('Failed to load Articles');
     }
   }
 }
