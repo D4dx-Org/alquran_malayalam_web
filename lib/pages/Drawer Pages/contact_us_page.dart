@@ -1,4 +1,5 @@
 import 'package:alquran_web/widgets/index_appbar.dart';
+import 'package:alquran_web/widgets/navigation_drawer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -109,6 +110,7 @@ class ContactusPage extends StatelessWidget {
           ),
         ),
       ),
+      drawer: const NavigationDrawerWidget(),
     );
   }
 

@@ -1,6 +1,6 @@
-import 'package:alquran_web/pages/Tabbar pages/surah_list_page.dart';
-import 'package:alquran_web/pages/Tabbar%20pages/bookmarks.dart';
-import 'package:alquran_web/pages/Tabbar%20pages/juz_list_page.dart';
+import 'package:alquran_web/pages/Tabbar%20pages/Index%20Tabbar%20Pages/surah_list_page.dart';
+import 'package:alquran_web/pages/Tabbar%20pages/Index%20Tabbar%20Pages/bookmarks.dart';
+import 'package:alquran_web/pages/Tabbar%20pages/Index%20Tabbar%20Pages/juz_list_page.dart';
 import 'package:alquran_web/widgets/horizontal_cardview.dart';
 import 'package:alquran_web/widgets/index_appbar.dart';
 import 'package:alquran_web/widgets/index_floating_tabbar.dart';

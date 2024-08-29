@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 
 class QuranService {
   final String baseUrl = "http://alquranmalayalam.net/alquran-api";
+  // ignore: non_constant_identifier_names
+  var ArticleId = 1;
 
   Future<List<Map<String, dynamic>>> fetchSurahs() async {
     final response = await http.get(Uri.parse("$baseUrl/suranames"));
@@ -22,6 +24,17 @@ class QuranService {
           .toList();
     } else {
       throw Exception('Failed to load Surahs');
+    }
+  }
+
+  Future<List<String>> fetchAbout() async {
+    final response = await http.get(Uri.parse("$baseUrl/articles/$ArticleId"));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as List<dynamic>;
+      return data.map((item) => item['matter'] as String).toList();
+    } else {
+      throw Exception('Failed to load Publishersbio');
     }
   }
 }

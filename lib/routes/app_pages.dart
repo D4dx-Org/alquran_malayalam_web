@@ -25,11 +25,11 @@ class AppPages {
     ),
     GetPage(
       name: Routes.ABOUT_US,
-      page: () => const AboutUsPage(),
+      page: () => AboutUsPage(),
     ),
     GetPage(
       name: Routes.CONTACT_US,
-      page: () =>  ContactusPage(),
+      page: () => ContactusPage(),
     ),
     GetPage(
       name: Routes.PRIVACY,
@@ -37,12 +37,11 @@ class AppPages {
     ),
     GetPage(
       name: Routes.SEARCH,
-      page: () =>  const SearchWidget(),
+      page: () => const SearchWidget(),
     ),
     GetPage(
       name: Routes.SURAH_DETAILED,
       page: () => const DetailedSurahPage(),
     ),
-
   ];
 }
