@@ -1,15 +1,16 @@
-import 'package:alquran_web/widgets/articles_bottom_row.dart';
-import 'package:alquran_web/widgets/surah_bottom_row.dart';
 import 'package:alquran_web/widgets/settings_widget.dart';
+import 'package:alquran_web/widgets/surah_bottom_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // Enum to represent different pages
+enum AppPage { detailedsurah, articles }
 
 class DetailedAppbar extends StatelessWidget implements PreferredSizeWidget {
+  final AppPage currentPage;
 
-  const DetailedAppbar({super.key});
+  const DetailedAppbar({super.key, required this.currentPage});
 
   @override
   Widget build(BuildContext context) {
@@ -119,23 +120,38 @@ class DetailedAppbar extends StatelessWidget implements PreferredSizeWidget {
           child: Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: 32 * scaleFactor, vertical: 8 * scaleFactor),
-            child: SurahBottomRow(scaleFactor),
+            child: _buildBottomRow(context, scaleFactor),
           ),
         ),
       ],
     );
   }
 
-  // Widget _buildBottomRow(BuildContext context, double scaleFactor) {
-  //   switch (currentPage) {
-  //     case AppPage.detailedsurah:
-  //       return SurahBottomRow(scaleFactor);
-  //     case AppPage.articles:
-  //       return ArticlesBottomRow(
-  //         scaleFactor: 1,
-  //       );
-  //   }
-  // }
+  Widget _buildBottomRow(BuildContext context, double scaleFactor) {
+    switch (currentPage) {
+      case AppPage.detailedsurah:
+        return SurahBottomRow(scaleFactor);
+      case AppPage.articles:
+        return _buildarticlesBottomRow(context, scaleFactor);
+    }
+  }
+
+  Widget _buildarticlesBottomRow(BuildContext context, double scaleFactor) {
+    return Container(
+      color: Colors.brown[100],
+      height: 50 * scaleFactor,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.0 * scaleFactor),
+        child: TextField(
+          decoration: InputDecoration(
+            hintText: 'Search...',
+            border: InputBorder.none,
+            icon: Icon(Icons.search, size: 24 * scaleFactor),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Size get preferredSize =>
