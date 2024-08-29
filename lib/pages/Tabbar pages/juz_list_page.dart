@@ -1,273 +1,56 @@
+import 'package:alquran_web/services/quran_services.dart';
 import 'package:alquran_web/widgets/star_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 
-class JuzListPage extends StatelessWidget {
-  final List<Map<String, dynamic>> juzList = [
-    {
-      'juz': 1,
-      'surahs': [
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        {
-          'number': 2,
-          'name': 'Al-Baqarah',
-          'arabicName': 'البقرة',
-          'ayat': 286,
-          'type': 'Madinah',
-        },
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        // Add more surah data here
-      ],
-    },
-    {
-      'juz': 2,
-      'surahs': [
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        {
-          'number': 2,
-          'name': 'Al-Baqarah',
-          'arabicName': 'البقرة',
-          'ayat': 286,
-          'type': 'Madinah',
-        },
-        // Add more surah data here
-      ],
-    },
-    {
-      'juz': 2,
-      'surahs': [
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        {
-          'number': 2,
-          'name': 'Al-Baqarah',
-          'arabicName': 'البقرة',
-          'ayat': 286,
-          'type': 'Madinah',
-        },
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-
-        // Add more surah data here
-      ],
-    },
-    {
-      'juz': 2,
-      'surahs': [
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        {
-          'number': 2,
-          'name': 'Al-Baqarah',
-          'arabicName': 'البقرة',
-          'ayat': 286,
-          'type': 'Madinah',
-        },
-        // Add more surah data here
-      ],
-    },
-    {
-      'juz': 2,
-      'surahs': [
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        {
-          'number': 2,
-          'name': 'Al-Baqarah',
-          'arabicName': 'البقرة',
-          'ayat': 286,
-          'type': 'Madinah',
-        },
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        // Add more surah data here
-      ],
-    },
-    {
-      'juz': 2,
-      'surahs': [
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        {
-          'number': 2,
-          'name': 'Al-Baqarah',
-          'arabicName': 'البقرة',
-          'ayat': 286,
-          'type': 'Madinah',
-        },
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        // Add more surah data here
-      ],
-    },
-    {
-      'juz': 2,
-      'surahs': [
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        {
-          'number': 2,
-          'name': 'Al-Baqarah',
-          'arabicName': 'البقرة',
-          'ayat': 286,
-          'type': 'Madinah',
-        },
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        // Add more surah data here
-      ],
-    },
-    {
-      'juz': 2,
-      'surahs': [
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        {
-          'number': 2,
-          'name': 'Al-Baqarah',
-          'arabicName': 'البقرة',
-          'ayat': 286,
-          'type': 'Madinah',
-        },
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        {
-          'number': 1,
-          'name': 'Al-Fatihah',
-          'arabicName': 'الفاتحة',
-          'ayat': 7,
-          'type': 'Makkah',
-        },
-        // Add more surah data here
-      ],
-    },
-    // Add more juz data here
-  ];
-
+class JuzListPage extends StatefulWidget {
   JuzListPage({super.key});
+
+  @override
+  _JuzListPageState createState() => _JuzListPageState();
+}
+
+class _JuzListPageState extends State<JuzListPage> {
+  late Future<List<Map<String, dynamic>>> _juzList;
+  final QuranService _quranService = QuranService();
+
+  @override
+  void initState() {
+    super.initState();
+    _juzList = _fetchJuzList();
+  }
+
+  Future<List<Map<String, dynamic>>> _fetchJuzList() async {
+    final surahs = await _quranService.fetchSurahs();
+    final juzList = <Map<String, dynamic>>[];
+
+    int currentJuz = 1;
+    List<Map<String, dynamic>> currentJuzSurahs = [];
+
+    for (final surah in surahs) {
+      if (currentJuzSurahs.length == 0 || currentJuzSurahs.length >= 20) {
+        if (currentJuzSurahs.isNotEmpty) {
+          juzList.add({
+            'juz': currentJuz,
+            'surahs': currentJuzSurahs,
+          });
+        }
+        currentJuz++;
+        currentJuzSurahs = [];
+      }
+      currentJuzSurahs.add(surah);
+    }
+
+    if (currentJuzSurahs.isNotEmpty) {
+      juzList.add({
+        'juz': currentJuz,
+        'surahs': currentJuzSurahs,
+      });
+    }
+
+    return juzList;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -356,6 +139,7 @@ class JuzListPage extends StatelessWidget {
                                         : "icons/Madaniyya_Icon.svg",
                                     height: 11,
                                     width: 9,
+<<<<<<< HEAD
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
@@ -369,6 +153,8 @@ class JuzListPage extends StatelessWidget {
                               ),
                               trailing: Text(
                                 surah['arabicName'],
+=======
+>>>>>>> fad2abc80adc68a1adf38a75da40db78d2d4f8bd
 =======
         child: FutureBuilder<List<Map<String, dynamic>>>(
           future: _juzList,
@@ -395,17 +181,22 @@ class JuzListPage extends StatelessWidget {
                             children: [
                               Text(
                                 'Juz ${juz['juz']}',
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> fad2abc80adc68a1adf38a75da40db78d2d4f8bd
                                 style: const TextStyle(
-                                  color: Colors.black,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 14,
                                 ),
                               ),
+<<<<<<< HEAD
 <<<<<<< Updated upstream
                               onTap: () {
                                 // Navigate to Surah Detailed page with the selected surah
 =======
+=======
+>>>>>>> fad2abc80adc68a1adf38a75da40db78d2d4f8bd
                               TextButton(
                                   onPressed: () {},
                                   child: const Text('Read Juz'))
@@ -428,6 +219,10 @@ class JuzListPage extends StatelessWidget {
                                   color: Colors.white,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> fad2abc80adc68a1adf38a75da40db78d2d4f8bd
                                   ),
                                   child: ListTile(
                                     contentPadding: const EdgeInsets.symmetric(
@@ -447,7 +242,11 @@ class JuzListPage extends StatelessWidget {
                                     subtitle: Row(
                                       children: [
                                         SvgPicture.asset(
+<<<<<<< HEAD
                                           surah['SuraType'] == 'مَكِّيَة'
+=======
+                                          surah['SuraType'] == 'Makkiya'
+>>>>>>> fad2abc80adc68a1adf38a75da40db78d2d4f8bd
                                               ? "icons/Makiyyah_Icon.svg"
                                               : "icons/Madaniyya_Icon.svg",
                                           height: 11,
@@ -476,17 +275,28 @@ class JuzListPage extends StatelessWidget {
                                     },
                                   ),
                                 );
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> fad2abc80adc68a1adf38a75da40db78d2d4f8bd
                               },
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            );
+                  );
+                },
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
           },
         ),
       ),
