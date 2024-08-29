@@ -1,4 +1,4 @@
-import 'package:alquran_web/widgets/navigation_widget.dart';
+import 'package:alquran_web/widgets/navigation_drawer_widget.dart';
 import 'package:alquran_web/widgets/settings_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -37,10 +37,8 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
                 weight: 100,
               ),
               onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => const NavigationWidget(),
-                );
+                              Scaffold.of(context).openDrawer();
+
               },
             ),
           ),
@@ -55,7 +53,7 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return const SettingsWidget();
+                    return SettingsWidget();
                   },
                 );
               },
@@ -86,7 +84,7 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
                             style: GoogleFonts.anekMalayalam(
                                 fontSize: 35 * scaleFactor,
                                 fontWeight: FontWeight.w900,
-                                color: const Color.fromRGBO(115, 78, 9, 1)),
+                                color: Color.fromRGBO(115, 78, 9, 1)),
                           ),
                         ),
                         FittedBox(
@@ -94,7 +92,7 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
                           child: Text(
                             "വാക്കര്‍ത്ഥത്തോടുകൂടിയ പരിഭാഷ",
                             style: GoogleFonts.anekMalayalam(
-                              color: const Color.fromRGBO(74, 74, 74, 1),
+                              color: Color.fromRGBO(74, 74, 74, 1),
                               fontSize: 18 * scaleFactor,
                               fontWeight: FontWeight.normal,
                             ),
@@ -114,5 +112,5 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(80);
+  Size get preferredSize => Size.fromHeight(80);
 }
