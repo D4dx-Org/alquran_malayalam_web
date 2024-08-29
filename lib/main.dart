@@ -1,4 +1,3 @@
-import 'package:alquran_web/controllers/theme_controller.dart';
 import 'package:alquran_web/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,7 +16,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final ThemeController themeController = Get.put(ThemeController());
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,

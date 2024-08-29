@@ -1,15 +1,14 @@
-import 'package:alquran_web/services/quran_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'star_widget.dart';
 
+// ignore: must_be_immutable
 class SurahCardWidget extends StatelessWidget {
   final Map<String, dynamic> surah;
 
    SurahCardWidget({super.key, required this.surah});
 
  List<Map<String, dynamic>> surahs = [];
-  final _quranService = QuranService();
 
 
 

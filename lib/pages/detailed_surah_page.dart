@@ -1,5 +1,5 @@
 import 'package:alquran_web/widgets/detailed_appbar.dart';
-import 'package:alquran_web/widgets/navigation_widget.dart';
+import 'package:alquran_web/widgets/navigation_drawer.dart';
 import 'package:flutter/material.dart';
 
 class DetailedSurahPage extends StatelessWidget {
@@ -11,7 +11,7 @@ class DetailedSurahPage extends StatelessWidget {
       appBar: DetailedAppbar(
         currentPage: AppPage.detailedsurah,
       ),
-      // drawer: DrawerWidget(),
+      drawer: NavigationDrawerWidget(),
     );
   }
 }

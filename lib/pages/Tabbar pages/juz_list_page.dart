@@ -287,6 +287,7 @@ class JuzListPage extends StatelessWidget {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32.0),
+<<<<<<< Updated upstream
         child: MasonryGridView.count(
           crossAxisCount: crossAxisCount,
           itemCount: juzList.length,
@@ -368,14 +369,114 @@ class JuzListPage extends StatelessWidget {
                               ),
                               trailing: Text(
                                 surah['arabicName'],
+=======
+        child: FutureBuilder<List<Map<String, dynamic>>>(
+          future: _juzList,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final juzList = snapshot.data!;
+              return MasonryGridView.count(
+                crossAxisCount: crossAxisCount,
+                itemCount: juzList.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  final juz = juzList[index];
+                  return Card(
+                    margin: const EdgeInsets.all(8),
+                    elevation: 0,
+                    color: gridViewColor,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Juz ${juz['juz']}',
+>>>>>>> Stashed changes
                                 style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
                                 ),
                               ),
+<<<<<<< Updated upstream
                               onTap: () {
                                 // Navigate to Surah Detailed page with the selected surah
+=======
+                              TextButton(
+                                  onPressed: () {},
+                                  child: const Text('Read Juz'))
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: juz['surahs'].length *
+                              80.0, // Adjust the height based on the number of surahs
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: juz['surahs'].length,
+                              itemExtent: 70.0,
+                              itemBuilder: (context, surahIndex) {
+                                final surah = juz['surahs'][surahIndex];
+                                return Card(
+                                  elevation: 1,
+                                  color: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: ListTile(
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    leading: StarNumber(
+                                      number:
+                                          int.parse(surah['SuraId'].toString()),
+                                    ),
+                                    title: Text(
+                                      surah['MSuraName'],
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    subtitle: Row(
+                                      children: [
+                                        SvgPicture.asset(
+                                          surah['SuraType'] == 'مَكِّيَة'
+                                              ? "icons/Makiyyah_Icon.svg"
+                                              : "icons/Madaniyya_Icon.svg",
+                                          height: 11,
+                                          width: 9,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          '${surah['TotalAyas']} Ayat',
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    trailing: Text(
+                                      surah['ASuraName'],
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      // Navigate to Surah Detailed page with the selected surah
+                                    },
+                                  ),
+                                );
+>>>>>>> Stashed changes
                               },
                             ),
                           );

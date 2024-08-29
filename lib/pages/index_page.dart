@@ -1,7 +1,7 @@
 import 'package:alquran_web/pages/Tabbar pages/surah_list_page.dart';
 import 'package:alquran_web/pages/Tabbar%20pages/bookmarks.dart';
 import 'package:alquran_web/pages/Tabbar%20pages/juz_list_page.dart';
-import 'package:alquran_web/widgets/navigation_widget.dart';
+import 'package:alquran_web/widgets/navigation_drawer.dart';
 import 'package:alquran_web/widgets/horizontal_cardview.dart';
 import 'package:alquran_web/widgets/index_appbar.dart';
 import 'package:alquran_web/widgets/index_floating_tabbar.dart';
@@ -45,11 +45,9 @@ class _IndexPageState extends State<IndexPage>
                     width: MediaQuery.of(context).size.width,
                     onChanged: (value) {
                       // Handle search text changes
-                      print('Search query: $value');
                     },
                     onClear: () {
                       // Handle clear button press
-                      print('Search cleared');
                     },
                   ),
                   const SizedBox(height: 25),
@@ -69,15 +67,15 @@ class _IndexPageState extends State<IndexPage>
         },
         body: TabBarView(
           controller: _tabController,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           children: [
-            SurahListPage(),
+            const SurahListPage(),
             JuzListPage(),
-            BookmarksPage(),
+            const BookmarksPage(),
           ],
         ),
       ),
-      // drawer: const DrawerWidget(),
+      drawer:  const NavigationDrawerWidget(),
     );
   }
 }
