@@ -5,9 +5,10 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 
 class JuzListPage extends StatefulWidget {
-  JuzListPage({super.key});
+  const JuzListPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _JuzListPageState createState() => _JuzListPageState();
 }
 
@@ -29,7 +30,7 @@ class _JuzListPageState extends State<JuzListPage> {
     List<Map<String, dynamic>> currentJuzSurahs = [];
 
     for (final surah in surahs) {
-      if (currentJuzSurahs.length == 0 || currentJuzSurahs.length >= 20) {
+      if (currentJuzSurahs.isEmpty || currentJuzSurahs.length >= 20) {
         if (currentJuzSurahs.isNotEmpty) {
           juzList.add({
             'juz': currentJuz,
@@ -70,108 +71,6 @@ class _JuzListPageState extends State<JuzListPage> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32.0),
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        child: MasonryGridView.count(
-          crossAxisCount: crossAxisCount,
-          itemCount: juzList.length,
-          shrinkWrap: true,
-          // physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            final juz = juzList[index];
-            return Card(
-              margin: const EdgeInsets.all(8),
-              elevation: 0,
-              color: gridViewColor,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-=======
-        child: FutureBuilder<List<Map<String, dynamic>>>(
-          future: _juzList,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final juzList = snapshot.data!;
-              return MasonryGridView.count(
-                crossAxisCount: crossAxisCount,
-                itemCount: juzList.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  final juz = juzList[index];
-                  return Card(
-                    margin: const EdgeInsets.all(8),
-                    elevation: 0,
-                    color: gridViewColor,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
->>>>>>> Stashed changes
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Juz ${juz['juz']}',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              TextButton(
-                                  onPressed: () {},
-                                  child: const Text('Read Juz'))
-                            ],
-                          ),
-                        ),
-<<<<<<< Updated upstream
-                        TextButton(
-                            onPressed: () {}, child: const Text('Read Juz'))
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: juz['surahs'].length *
-                        80.0, // Adjust the height based on the number of surahs
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: juz['surahs'].length,
-                        itemExtent: 70.0,
-                        itemBuilder: (context, surahIndex) {
-                          final surah = juz['surahs'][surahIndex];
-                          return Card(
-                            elevation: 1,
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: ListTile(
-                              contentPadding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              leading: StarNumber(number: surah['number']),
-                              title: Text(
-                                surah['name'],
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              subtitle: Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    surah['type'] == 'Makkiya'
-                                        ? "icons/Makiyyah_Icon.svg"
-                                        : "icons/Madaniyya_Icon.svg",
-                                    height: 11,
-                                    width: 9,
-=======
         child: FutureBuilder<List<Map<String, dynamic>>>(
           future: _juzList,
           builder: (context, snapshot) {
@@ -208,8 +107,6 @@ class _JuzListPageState extends State<JuzListPage> {
                             ],
                           ),
                         ),
-=======
->>>>>>> Stashed changes
                         SizedBox(
                           height: juz['surahs'].length *
                               80.0, // Adjust the height based on the number of surahs
@@ -226,23 +123,13 @@ class _JuzListPageState extends State<JuzListPage> {
                                   color: Colors.white,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
                                   ),
                                   child: ListTile(
                                     contentPadding: const EdgeInsets.symmetric(
                                         horizontal: 16),
-<<<<<<< Updated upstream
                                     leading: StarNumber(
-                                      number:
-                                          int.parse(surah['SuraId'].toString()),
+                                      number: int.parse(surah['SuraId']),
                                     ),
-=======
-                                    leading:
-                                        StarNumber(number: surah['SuraId']),
->>>>>>> Stashed changes
                                     title: Text(
                                       surah['MSuraName'],
                                       style: const TextStyle(
@@ -254,7 +141,7 @@ class _JuzListPageState extends State<JuzListPage> {
                                     subtitle: Row(
                                       children: [
                                         SvgPicture.asset(
-                                          surah['SuraType'] == 'Makkiya'
+                                          surah['SuraType'] == 'مَكِّيَة'
                                               ? "icons/Makiyyah_Icon.svg"
                                               : "icons/Madaniyya_Icon.svg",
                                           height: 11,
