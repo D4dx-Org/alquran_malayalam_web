@@ -6,12 +6,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // Enum to represent different pages
-enum AppPage { detailedsurah, articles }
 
 class DetailedAppbar extends StatelessWidget implements PreferredSizeWidget {
-  final AppPage currentPage;
 
-  const DetailedAppbar({super.key, required this.currentPage});
+  const DetailedAppbar({super.key});
 
   @override
   Widget build(BuildContext context) {

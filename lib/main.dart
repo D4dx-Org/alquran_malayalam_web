@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   await GetStorage.init();
+
   runApp(const MyApp());
 }
 
@@ -16,7 +17,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(

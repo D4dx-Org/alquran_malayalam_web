@@ -8,9 +8,7 @@ class DetailedSurahPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      appBar: DetailedAppbar(
-        currentPage: AppPage.detailedsurah,
-      ),
+      appBar: DetailedAppbar(),
       drawer: NavigationDrawerWidget(),
     );
   }
