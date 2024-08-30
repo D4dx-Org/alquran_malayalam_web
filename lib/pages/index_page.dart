@@ -68,10 +68,10 @@ class _IndexPageState extends State<IndexPage>
         body: TabBarView(
           controller: _tabController,
           physics: const NeverScrollableScrollPhysics(),
-          children: [
-            const SurahListPage(),
+          children: const [
+            SurahListPage(),
             JuzListPage(),
-            const BookmarksPage(),
+            BookmarksPage(),
           ],
         ),
       ),

@@ -10,6 +10,7 @@ class SurahListPage extends StatefulWidget {
   const SurahListPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SurahListPageState createState() => _SurahListPageState();
 }
 
@@ -41,14 +42,13 @@ class _SurahListPageState extends State<SurahListPage> {
         _currentIndex = 2; // Show error view
       });
       // Add your error handling logic here
-      print('Error fetching Surahs: $e');
+      debugPrint('Error fetching Surahs: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
 
     int crossAxisCount = 3;
 

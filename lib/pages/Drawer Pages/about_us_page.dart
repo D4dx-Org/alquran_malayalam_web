@@ -56,11 +56,11 @@ class AboutUsPage extends StatelessWidget {
             ),
           ),
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [
             Tab1(),
-            const Tab2(),
-            const Tab3(),
+            Tab2(),
+            Tab3(),
           ],
         ),
       ),

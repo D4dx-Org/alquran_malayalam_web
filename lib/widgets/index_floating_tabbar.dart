@@ -14,6 +14,7 @@ class IndexFloatingTabbar extends StatefulWidget {
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _IndexFloatingTabbarState createState() => _IndexFloatingTabbarState();
 }
 
@@ -75,12 +76,12 @@ class _IndexFloatingTabbarState extends State<IndexFloatingTabbar> {
       width:
           screenWidth, // Adjust the width to be smaller than the screen width
       height: 40,
-      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           for (int i = 0; i < tabs.length; i++) ...[
-            if (i > 0) SizedBox(width: 4),
+            if (i > 0) const SizedBox(width: 4),
             _buildTab(
                 tabs[i], i, screenWidth, tabWidth, fontSize, iconSize, padding),
           ],
@@ -133,7 +134,7 @@ class _IndexFloatingTabbarState extends State<IndexFloatingTabbar> {
                     ),
                     height: iconSize,
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Text(
                     tabData.text,
                     style: TextStyle(

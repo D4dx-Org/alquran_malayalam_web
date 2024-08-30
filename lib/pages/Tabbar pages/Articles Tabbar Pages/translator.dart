@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 
 class Tab1 extends StatefulWidget {
+  const Tab1({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _Tab1State createState() => _Tab1State();
 }
 
@@ -25,7 +28,7 @@ class _Tab1State extends State<Tab1> {
         _translatorsnote = translatorsnote;
       });
     } catch (e) {
-      print('Error fetching data: $e');
+      debugPrint('Error fetching data: $e');
     }
   }
 
@@ -77,7 +80,7 @@ class _Tab1State extends State<Tab1> {
                         children: [
                           const Padding(
                             padding: EdgeInsets.only(left: 20, top: 60),
-                            child: const Column(
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CircleAvatar(

@@ -1,0 +1,64 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+class AyahActionBar extends StatelessWidget {
+  final VoidCallback onPlayPressed;
+  final VoidCallback onBookmarkPressed;
+  final VoidCallback onSharePressed;
+
+  const AyahActionBar({
+    super.key,
+    required this.onPlayPressed,
+    required this.onBookmarkPressed,
+    required this.onSharePressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            '1:1',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black54,
+            ),
+          ),
+          const SizedBox(width: 12),
+          _buildIconButton('assets/icons/play_icon.svg', onPlayPressed),
+          const SizedBox(width: 12),
+          _buildIconButton('assets/icons/bookmark_icon.svg', onBookmarkPressed),
+          const SizedBox(width: 12),
+          _buildIconButton('assets/icons/share_icon.svg', onSharePressed),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIconButton(String assetName, VoidCallback onPressed) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: SvgPicture.asset(
+        assetName,
+        height: 24,
+        width: 24,
+        // ignore: deprecated_member_use
+        color: Colors.brown,
+      ),
+    );
+  }
+}

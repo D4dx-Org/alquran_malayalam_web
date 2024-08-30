@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class JuzListPage extends StatefulWidget {
-  JuzListPage({super.key});
+  const JuzListPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _JuzListPageState createState() => _JuzListPageState();
 }
 
@@ -27,7 +28,7 @@ class _JuzListPageState extends State<JuzListPage> {
     final juzData = await _juzJsonParser.loadJsonData();
     final Map<int, List<Map<String, dynamic>>> juzMappedData = {};
 
-    surahs.forEach((surah) {
+    for (var surah in surahs) {
       final surahIndex = surah['SuraId'];
       for (final juzIndexString in juzData.keys) {
         final juzIndex = int.parse(juzIndexString);
@@ -39,14 +40,13 @@ class _JuzListPageState extends State<JuzListPage> {
           juzMappedData[juzIndex]!.add(surah);
         }
       }
-    });
+    }
 
     return juzMappedData;
   }
 
   @override
   Widget build(BuildContext context) {
-    const gridViewColor = Color.fromARGB(255, 244, 244, 244);
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(

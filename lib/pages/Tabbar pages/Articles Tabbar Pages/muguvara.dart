@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 
 class Tab2 extends StatefulWidget {
-  const Tab2({Key? key}) : super(key: key);
+  const Tab2({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _Tab2State createState() => _Tab2State();
 }
 

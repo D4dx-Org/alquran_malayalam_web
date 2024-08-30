@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 
 class Tab3 extends StatefulWidget {
-  const Tab3({Key? key}) : super(key: key);
+  const Tab3({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _Tab2State createState() => _Tab2State();
 }
 
