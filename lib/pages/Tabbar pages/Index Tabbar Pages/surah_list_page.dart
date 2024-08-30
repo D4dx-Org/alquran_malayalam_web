@@ -4,6 +4,7 @@ import 'package:alquran_web/widgets/star_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 
 class SurahListPage extends StatefulWidget {
   const SurahListPage({super.key});
@@ -51,27 +52,12 @@ class _SurahListPageState extends State<SurahListPage> {
 
     int crossAxisCount = 3;
 
-    if (screenWidth < 480) {
+    if (screenWidth < 650) {
       crossAxisCount = 1;
-    } else if (screenWidth < 800) {
+    } else if (screenWidth < 950) {
       crossAxisCount = 2;
     } else {
       crossAxisCount = 3;
-    }
-
-    double childAspectRatio = screenWidth / screenHeight;
-
-    if (screenWidth < 480) {
-      childAspectRatio =
-          childAspectRatio * 7; // Taller cards for smaller screens
-    } else if (screenWidth < 800) {
-      childAspectRatio =
-          childAspectRatio * 4; // Medium-sized cards for medium screens
-    } else if (screenWidth < 1025) {
-      childAspectRatio =
-          childAspectRatio * 3; // Shorter cards for larger screens
-    } else {
-      childAspectRatio = childAspectRatio * 3;
     }
 
     return Scaffold(
@@ -81,19 +67,15 @@ class _SurahListPageState extends State<SurahListPage> {
           const Center(child: CircularProgressIndicator()),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: GridView.builder(
+            child: DynamicHeightGridView(
               itemCount: surahs.length,
-              itemBuilder: (context, index) {
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: 10.0,
+              mainAxisSpacing: 5.0,
+              builder: (context, index) {
                 final surah = surahs[index];
                 return _buildSurahCard(surah);
               },
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisCount,
-                childAspectRatio:
-                    childAspectRatio, // Maintain the original aspect ratio
-                crossAxisSpacing: 10.0,
-                mainAxisSpacing: 5.0,
-              ),
             ),
           ),
           const Center(
@@ -126,7 +108,7 @@ class _SurahListPageState extends State<SurahListPage> {
           subtitle: Row(
             children: [
               SvgPicture.asset(
-                surah['SuraType'] == 'مَكِّيَة'
+                surah['SuraType'] == 'مَكِّيَة'
                     ? "icons/Makiyyah_Icon.svg"
                     : "icons/Madaniyya_Icon.svg",
                 height: 11, // Adjust size as needed

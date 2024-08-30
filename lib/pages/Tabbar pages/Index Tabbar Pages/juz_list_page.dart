@@ -1,4 +1,3 @@
-
 import 'package:alquran_web/services/quran_services.dart';
 import 'package:alquran_web/services/utils.dart';
 import 'package:alquran_web/widgets/star_widget.dart';
@@ -59,7 +58,7 @@ class _JuzListPageState extends State<JuzListPage> {
             if (snapshot.hasData) {
               final juzMappedData = snapshot.data!;
               return SingleChildScrollView(
-                child: screenWidth < 500
+                child: screenWidth < 650
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: List.generate(30, (index) {
@@ -68,7 +67,7 @@ class _JuzListPageState extends State<JuzListPage> {
                           return _buildJuzCard(juzIndex, surahs);
                         }),
                       )
-                    : screenWidth < 850
+                    : screenWidth < 950
                         ? Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
