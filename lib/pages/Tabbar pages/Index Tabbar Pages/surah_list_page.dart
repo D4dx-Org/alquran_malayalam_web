@@ -1,6 +1,8 @@
+// SurahListPage.dart
 import 'package:alquran_web/routes/app_pages.dart';
 import 'package:alquran_web/services/quran_services.dart';
 import 'package:alquran_web/widgets/star_widget.dart';
+import 'package:alquran_web/controllers/quran_controller.dart'; // Import the QuranController
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -18,6 +20,8 @@ class _SurahListPageState extends State<SurahListPage> {
   int _currentIndex = 0; // To manage the IndexedStack
   List<Map<String, dynamic>> surahs = [];
   final _quranService = QuranService();
+  final _quranController =
+      Get.find<QuranController>(); // Get the QuranController instance
 
   @override
   void initState() {
@@ -131,9 +135,16 @@ class _SurahListPageState extends State<SurahListPage> {
             ),
           ),
           onTap: () {
+            _quranController.updateSelectedSurah(
+              surah['MSuraName'],
+              int.parse(surah['SuraId'].toString()),
+            );
             Get.toNamed(
               Routes.SURAH_DETAILED,
-              arguments: {'surahId': surah['SuraId']},
+              arguments: {
+                'surahId': surah['SuraId'],
+                'surahName': surah['MSuraName'],
+              },
             );
           },
         ),

@@ -1,10 +1,14 @@
+// SurahBottomRow.dart
+import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SurahBottomRow extends StatelessWidget {
   final double scaleFactor;
+  final _quranController =
+      Get.find<QuranController>(); // Get the QuranController instance
 
-  // ignore: prefer_const_constructors_in_immutables
   SurahBottomRow(this.scaleFactor, {super.key});
 
   @override
@@ -17,11 +21,18 @@ class SurahBottomRow extends StatelessWidget {
         children: [
           Row(
             children: [
-              CustomDropdown(
-                options: const ['Option 1', 'Option 2', 'Option 3'],
-                selectedValue: 'Option 1',
-                onChanged: (_) {},
-                scaleFactor: scaleFactor,
+              Obx(
+                () => CustomDropdown(
+                  options: _quranController.surahNames,
+                  selectedValue: _quranController.selectedSurah,
+                  onChanged: (value) {
+                    if (value != null) {
+                      _quranController.updateSelectedSurah(
+                          value, _quranController.selectedSurahId);
+                    }
+                  },
+                  scaleFactor: scaleFactor,
+                ),
               ),
               const SizedBox(width: 16),
               CustomDropdown(

@@ -19,7 +19,6 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
     final logoSize = 64.0 * scaleFactor;
 
     return Container(
-      color: Colors.white,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32.0),
         child: AppBar(
@@ -36,8 +35,7 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
                 weight: 100,
               ),
               onPressed: () {
-                             Scaffold.of(context).openDrawer();
-
+                Scaffold.of(context).openDrawer();
               },
             ),
           ),

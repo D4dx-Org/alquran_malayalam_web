@@ -1,33 +1,32 @@
-import 'package:alquran_web/routes/app_pages.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/route_manager.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-void main() async {
-  await GetStorage.init();
+import 'package:alquran_web/controllers/quran_controller.dart';  
+import 'package:alquran_web/routes/app_pages.dart';  
+import 'package:flutter/material.dart';  
+import 'package:get/get.dart';  
+import 'package:google_fonts/google_fonts.dart';  
+import 'package:shared_preferences/shared_preferences.dart';  
 
-  runApp(const MyApp());
-}
+void main() async {  
+  WidgetsFlutterBinding.ensureInitialized();  
+  final sharedPreferences = await SharedPreferences.getInstance();  
+  Get.put(QuranController(sharedPreferences: sharedPreferences), permanent: true);  
+  runApp(const MyApp());  
+}  
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatelessWidget {  
+  const MyApp({super.key});  
 
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.light().copyWith(
-          textTheme: GoogleFonts.notoSansMalayalamTextTheme(),
-          scaffoldBackgroundColor: Colors.white),
-      // darkTheme: ThemeData.dark().copyWith(
-      //   textTheme: GoogleFonts.notoSansMalayalamTextTheme(),
-      // ),
-      // themeMode: themeController.theme,
-      initialRoute: AppPages.INITIAL,
-      getPages: AppPages.routes,
-    );
-  }
-}
+  @override  
+  Widget build(BuildContext context) {  
+    return GetMaterialApp(  
+      debugShowCheckedModeBanner: false,  
+      theme: ThemeData.light().copyWith(  
+        appBarTheme: const AppBarTheme(backgroundColor: Colors.white),  
+        textTheme: GoogleFonts.notoSansMalayalamTextTheme(),  
+        scaffoldBackgroundColor: Colors.white,  
+      ),  
+      initialRoute: AppPages.INITIAL,  
+      getPages: AppPages.routes,  
+    );  
+  }  
+}  

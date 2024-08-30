@@ -93,10 +93,28 @@ class SettingsWidget extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 20),
-                const Text('Font Size', style: TextStyle(fontSize: 18)),
+                const Text('Quran Font Size :', style: TextStyle(fontSize: 18)),
                 const SizedBox(height: 10),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.remove),
+                      onPressed: () {},
+                    ),
+                    const Text('15', style: TextStyle(fontSize: 18)),
+                    IconButton(
+                      icon: const Icon(Icons.add),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                const Text('Translation Font Size :',
+                    style: TextStyle(fontSize: 18)),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     IconButton(
                       icon: const Icon(Icons.remove),
@@ -145,7 +163,29 @@ class SettingsWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Font Size', style: TextStyle(fontSize: 18)),
+                    const Text('Quran Font Size :',
+                        style: TextStyle(fontSize: 18)),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.remove),
+                          onPressed: () {},
+                        ),
+                        const Text('15', style: TextStyle(fontSize: 18)),
+                        IconButton(
+                          icon: const Icon(Icons.add),
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Translation Font Size :',
+                        style: TextStyle(fontSize: 18)),
                     Row(
                       children: [
                         IconButton(
