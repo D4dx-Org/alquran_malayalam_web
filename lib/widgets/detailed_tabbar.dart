@@ -1,27 +1,21 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class DetailedTabbar extends StatefulWidget {
   final TabController controller;
-  final ScrollController scrollController;
 
   const DetailedTabbar({
     super.key,
     required this.controller,
-    required this.scrollController,
   });
 
   @override
-  // ignore: library_private_types_in_public_api
   _FloatingTabBarState createState() => _FloatingTabBarState();
 }
 
-class _FloatingTabBarState extends State<DetailedTabbar> with SingleTickerProviderStateMixin {
-  static const selectedColor = Color.fromARGB(255, 27, 147, 176);
-  late AnimationController _animationController;
-  late Animation<double> _animation;
-  bool _isMinimized = false;
+class _FloatingTabBarState extends State<DetailedTabbar>
+    with SingleTickerProviderStateMixin {
+  static const selectedColor = Color.fromRGBO(115, 78, 9, 1);
 
   @override
   void initState() {
@@ -29,32 +23,6 @@ class _FloatingTabBarState extends State<DetailedTabbar> with SingleTickerProvid
     widget.controller.addListener(() {
       if (mounted) setState(() {});
     });
-
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-    );
-
-    _animation = Tween<double>(begin: 1, end: 0).animate(_animationController);
-
-    widget.scrollController.addListener(_scrollListener);
-  }
-
-  void _scrollListener() {
-    if (widget.scrollController.offset > 20 && !_isMinimized) {
-      _animationController.forward();
-      setState(() => _isMinimized = true);
-    } else if (widget.scrollController.offset <= 20 && _isMinimized) {
-      _animationController.reverse();
-      setState(() => _isMinimized = false);
-    }
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    widget.scrollController.removeListener(_scrollListener);
-    super.dispose();
   }
 
   @override
@@ -64,45 +32,42 @@ class _FloatingTabBarState extends State<DetailedTabbar> with SingleTickerProvid
     const activeIndicatorColor = Colors.white;
 
     final tabs = [
-      _TabData("Translation", "assets/icons/Translation_Tabbar_Icon.svg"),
-      _TabData("Reading", "assets/icons/Reading_Tabbar_Icon.svg"),
+      _TabData("Translation", "icons/Translation_Tabbar_Icon.svg"),
+      _TabData("Reading", "icons/Reading_Tabbar_Icon.svg"),
     ];
 
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
-        return Container(
-          height: 40 + (10 * _animation.value),
-          margin: EdgeInsets.symmetric(
-            horizontal: 30 + (20 * (1 - _animation.value)),
-            vertical: 8 * _animation.value,
-          ),
-          decoration: BoxDecoration(
-            color: tabBarColor,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: TabBar(
-            controller: widget.controller,
-            indicator: BoxDecoration(
-              color: activeIndicatorColor,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            indicatorSize: TabBarIndicatorSize.tab,
-            indicatorPadding: EdgeInsets.all(6 * _animation.value),
-            indicatorColor: Colors.transparent,
-            dividerColor: Colors.transparent,
-            tabs: tabs
-                .asMap()
-                .entries
-                .map((entry) => _buildTab(entry.value, entry.key))
-                .toList(),
-            labelColor: selectedColor,
-            unselectedLabelColor: unselectedTextColor,
-            labelStyle: TextStyle(fontWeight: FontWeight.normal, fontSize: 16 * _animation.value),
-            unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal, fontSize: 16 * _animation.value),
-          ),
-        );
-      },
+    return Container(
+      height: 50,
+      margin: const EdgeInsets.symmetric(
+        horizontal: 30,
+        vertical: 8,
+      ),
+      decoration: BoxDecoration(
+        color: tabBarColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: TabBar(
+        controller: widget.controller,
+        indicator: BoxDecoration(
+          color: activeIndicatorColor,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        indicatorSize: TabBarIndicatorSize.tab,
+        indicatorPadding: const EdgeInsets.all(6),
+        indicatorColor: Colors.transparent,
+        dividerColor: Colors.transparent,
+        tabs: tabs
+            .asMap()
+            .entries
+            .map((entry) => _buildTab(entry.value, entry.key))
+            .toList(),
+        labelColor: selectedColor,
+        unselectedLabelColor: unselectedTextColor,
+        labelStyle:
+            const TextStyle(fontWeight: FontWeight.normal, fontSize: 16),
+        unselectedLabelStyle:
+            const TextStyle(fontWeight: FontWeight.normal, fontSize: 16),
+      ),
     );
   }
 
@@ -122,18 +87,12 @@ class _FloatingTabBarState extends State<DetailedTabbar> with SingleTickerProvid
             ),
             height: 20,
           ),
-          SizedBox(width: 8 * _animation.value),
-          ClipRect(
-            child: Align(
-              alignment: Alignment.centerLeft,
-              widthFactor: _animation.value,
-              child: Text(
-                tabData.text,
-                style: TextStyle(
-                  color: isSelected ? selectedColor : unselectedTextColor,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                ),
-              ),
+          const SizedBox(width: 8),
+          Text(
+            tabData.text,
+            style: TextStyle(
+              color: isSelected ? selectedColor : unselectedTextColor,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),
         ],
