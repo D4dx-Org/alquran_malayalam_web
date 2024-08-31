@@ -39,11 +39,11 @@ class AyahActionBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          _buildIconButton('assets/icons/play_icon.svg', onPlayPressed),
+          _buildIconButton('icons/PlayAyah_Icon.svg', onPlayPressed),
           const SizedBox(width: 12),
-          _buildIconButton('assets/icons/bookmark_icon.svg', onBookmarkPressed),
+          _buildIconButton('icons/SaveAsBookmark_Icon.svg', onBookmarkPressed),
           const SizedBox(width: 12),
-          _buildIconButton('assets/icons/share_icon.svg', onSharePressed),
+          _buildIconButton('icons/ShareAyah_Icon.svg', onSharePressed),
         ],
       ),
     );
@@ -54,10 +54,10 @@ class AyahActionBar extends StatelessWidget {
       onTap: onPressed,
       child: SvgPicture.asset(
         assetName,
-        height: 24,
-        width: 24,
+        height: 14,
+        width: 14,
         // ignore: deprecated_member_use
-        color: Colors.brown,
+        color: const Color.fromRGBO(115, 78, 9, 1),
       ),
     );
   }
