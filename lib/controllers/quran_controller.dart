@@ -62,6 +62,7 @@ class QuranController extends GetxController {
     _selectedAyahRange.value = ayahRange;
     final parts = ayahRange.split(' : ');
     _selectedAyahNumber.value = int.parse(parts[1]);
+    _sharedPreferences.setString('selectedAyahRange', ayahRange);
   }
 
   @override
@@ -102,9 +103,11 @@ class QuranController extends GetxController {
     final storedSurah = _sharedPreferences.getString('selectedSurah');
     final storedSurahId = _sharedPreferences.getInt('selectedSurahId');
     final storedAyahNumber = _sharedPreferences.getInt('selectedAyahNumber');
+    final storedAyahRange = _sharedPreferences.getString('selectedAyahRange');
     if (storedSurah != null &&
         storedSurahId != null &&
         storedAyahNumber != null &&
+        storedAyahRange != null &&
         _surahNames.isNotEmpty) {
       final index = _surahNames.indexOf(storedSurah);
       if (index != -1) {
@@ -112,7 +115,7 @@ class QuranController extends GetxController {
         _selectedSurahId.value = _surahIds[index];
         _selectedSurahAyahCount.value = _surahAyahCounts[index];
         _selectedAyahNumber.value = storedAyahNumber;
-        _selectedAyahRange.value = '$storedSurahId : $storedAyahNumber';
+        _selectedAyahRange.value = storedAyahRange;
       } else {
         _selectedSurah.value = _surahNames.first;
         _selectedSurahId.value = _surahIds.first;

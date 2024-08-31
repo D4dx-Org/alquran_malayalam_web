@@ -47,24 +47,26 @@ class SurahBottomRow extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              Obx(  
-  () => CustomDropdown(  
-    options: List.generate(  
-      _quranController.selectedSurahAyahCount,  
-      (index) => '${_quranController.selectedSurahId} : ${index + 1}',  
-    ),  
-    selectedValue: _quranController.selectedAyahRange,  
-    onChanged: (value) {  
-      if (value != null) {  
-        final parts = value.split(' : ');  
-        final surahNumber = int.parse(parts[0]);  
-        final ayahNumber = int.parse(parts[1]);  
-        _quranController.updateSelectedAyahRange('$surahNumber : $ayahNumber');  
-      }  
-    },  
-    scaleFactor: scaleFactor,  
-  ),  
-),
+              Obx(
+                () => CustomDropdown(
+                  options: List.generate(
+                    _quranController.selectedSurahAyahCount,
+                    (index) =>
+                        '${_quranController.selectedSurahId} : ${index + 1}',
+                  ),
+                  selectedValue: _quranController.selectedAyahRange,
+                  onChanged: (value) {
+                    if (value != null) {
+                      final parts = value.split(' : ');
+                      final surahNumber = int.parse(parts[0]);
+                      final ayahNumber = int.parse(parts[1]);
+                      _quranController.updateSelectedAyahRange(
+                          '$surahNumber : $ayahNumber');
+                    }
+                  },
+                  scaleFactor: scaleFactor,
+                ),
+              ),
             ],
           ),
           Row(
