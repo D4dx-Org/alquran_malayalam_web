@@ -145,6 +145,7 @@ class _SurahListPageState extends State<SurahListPage> {
               arguments: {
                 'surahId': surahId,
                 'surahName': surahName,
+                'ayahNumber': 1, // Include the initial ayah number
               },
             );
           },
