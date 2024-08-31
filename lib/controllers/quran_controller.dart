@@ -55,6 +55,8 @@ class QuranController extends GetxController {
       _sharedPreferences.setString('selectedSurah', surahName);
       _sharedPreferences.setInt('selectedSurahId', _surahIds[index]);
       _sharedPreferences.setInt('selectedAyahNumber', 1);
+      _sharedPreferences.setString(
+          'selectedAyahRange', '${_surahIds[index]} : 1');
     }
   }
 
@@ -69,6 +71,7 @@ class QuranController extends GetxController {
       _sharedPreferences.setString('selectedSurah', _surahNames[index]);
       _sharedPreferences.setInt('selectedSurahId', surahId);
       _sharedPreferences.setInt('selectedAyahNumber', 1);
+      _sharedPreferences.setString('selectedAyahRange', '$surahId : 1');
     }
   }
 
@@ -130,12 +133,10 @@ class QuranController extends GetxController {
   void _loadSelectedSurah() {
     final storedSurah = _sharedPreferences.getString('selectedSurah');
     final storedSurahId = _sharedPreferences.getInt('selectedSurahId');
-    final storedAyahNumber = _sharedPreferences.getInt('selectedAyahNumber');
     final storedAyahRange = _sharedPreferences.getString('selectedAyahRange');
 
     if (storedSurah != null &&
         storedSurahId != null &&
-        storedAyahNumber != null &&
         storedAyahRange != null &&
         _surahNames.isNotEmpty) {
       final index = _surahNames.indexOf(storedSurah);
@@ -143,7 +144,7 @@ class QuranController extends GetxController {
         _selectedSurah.value = _surahNames[index];
         _selectedSurahId.value = _surahIds[index];
         _selectedSurahAyahCount.value = _surahAyahCounts[index];
-        _selectedAyahNumber.value = storedAyahNumber;
+        _selectedAyahNumber.value = 1;
         _selectedAyahRange.value = storedAyahRange;
       } else {
         // If the stored surah is not found in the list, use the first surah
