@@ -1,4 +1,3 @@
-// QuranService.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -8,21 +7,24 @@ class QuranService {
   var ArticleId = 1;
   var surahNumber = 1;
   var ayahNumber = 1;
+  var pageNumber = 1;
 
   Future<List<Map<String, dynamic>>> fetchSurahs() async {
     final response = await http.get(Uri.parse("$baseUrl/suranames"));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as List;
       return data
-          .map((item) => {
-                "SuraId": item["SuraId"],
-                "ASuraName": item["ASuraName"],
-                "MSuraName": item["MSuraName"],
-                "SuraType": item["SuraType"],
-                "MalMean": item["MalMean"],
-                "TotalAyas": item["TotalAyas"],
-                "TotalLines": item["TotalLines"],
-              })
+          .map(
+            (item) => {
+              "SuraId": item["SuraId"],
+              "ASuraName": item["ASuraName"],
+              "MSuraName": item["MSuraName"],
+              "SuraType": item["SuraType"],
+              "MalMean": item["MalMean"],
+              "TotalAyas": item["TotalAyas"],
+              "TotalLines": item["TotalLines"],
+            },
+          )
           .toList();
     } else {
       throw Exception('Failed to load Surahs');
@@ -52,15 +54,35 @@ class QuranService {
           "AyaNo": item["AyaNo"],
           "MalTran": item["MalTran"],
           "LineWords": (item["LineWords"] as List<dynamic>)
-              .map((wordItem) => {
-                    "MalWord": wordItem["MalWord"],
-                    "ArabWord": wordItem["ArabWord"],
-                  })
+              .map(
+                (wordItem) => {
+                  "MalWord": wordItem["MalWord"],
+                  "ArabWord": wordItem["ArabWord"],
+                },
+              )
               .toList(),
         };
       }).toList();
     } else {
       throw Exception('Failed to load Ayah');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchPage() async {
+    final response =
+        await http.get(Uri.parse("$baseUrl/pagesuraaya/$pageNumber"));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as List<dynamic>;
+      return data
+          .map(
+            (item) => {
+              "SuraId": item["SuraId"],
+              "ayafrom": item["ayafrom"],
+            },
+          )
+          .toList();
+    } else {
+      throw Exception('Failed to load Page');
     }
   }
 }
