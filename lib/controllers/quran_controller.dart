@@ -1,5 +1,6 @@
-// QuranController.dart
+
 import 'package:alquran_web/services/quran_services.dart';
+import 'package:floating_tabbar/Widgets/airoll.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,6 +12,8 @@ class QuranController extends GetxController {
   final _selectedSurah = ''.obs;
   final _selectedSurahId = 0.obs;
   late final SharedPreferences _sharedPreferences;
+  final _selectedAyahRange = ''.obs;
+  String get selectedAyahRange => _selectedAyahRange.value;
 
   static QuranController get instance => Get.find<QuranController>();
 
@@ -45,6 +48,10 @@ class QuranController extends GetxController {
     }
   }
 
+  void updateSelectedAyahRange(String ayahRange) {
+    _selectedAyahRange.value = ayahRange;
+  }
+
   @override
   void onInit() async {
     super.onInit();
@@ -61,6 +68,18 @@ class QuranController extends GetxController {
           surahs.map((surah) => int.parse(surah['SuraId'].toString())).toList();
     } catch (e) {
       // Handle error
+    }
+  }
+
+  Future<void> fetchAyahLines(int surahNumber) async {
+    try {
+      final ayahLines = await _quranService.fetchAyahLines(surahNumber);
+      for (var ayahLine in ayahLines) {
+        print('Surah Number: ${ayahLine['SuraNo']}');
+        print('Ayah Number: ${ayahLine['AyaNo']}');
+      }
+    } catch (e) {
+      debugPrint('Error fetching ayah lines: $e');
     }
   }
 
