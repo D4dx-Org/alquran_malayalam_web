@@ -30,6 +30,20 @@ class QuranController extends GetxController {
   int get selectedAyahNumber => _selectedAyahNumber.value;
   String get selectedAyahRange => _selectedAyahRange.value;
 
+  void navigateToPreviousSurah() {
+    final currentIndex = _surahIds.indexOf(_selectedSurahId.value);
+    if (currentIndex > 0) {
+      updateSelectedSurahId(_surahIds[currentIndex - 1]);
+    }
+  }
+
+  void navigateToNextSurah() {
+    final currentIndex = _surahIds.indexOf(_selectedSurahId.value);
+    if (currentIndex < _surahIds.length - 1) {
+      updateSelectedSurahId(_surahIds[currentIndex + 1]);
+    }
+  }
+
   void updateSelectedSurah(String surahName) {
     final index = _surahNames.indexOf(surahName);
     if (index != -1) {
@@ -59,10 +73,24 @@ class QuranController extends GetxController {
   }
 
   void updateSelectedAyahRange(String ayahRange) {
-    _selectedAyahRange.value = ayahRange;
     final parts = ayahRange.split(' : ');
-    _selectedAyahNumber.value = int.parse(parts[1]);
-    _sharedPreferences.setString('selectedAyahRange', ayahRange);
+    final surahNumber = int.parse(parts[0]);
+    final ayahNumber = int.parse(parts[1]);
+
+    // Check if the selected ayah range is within the bounds of the current surah
+    if (surahNumber == _selectedSurahId.value &&
+        ayahNumber <= _selectedSurahAyahCount.value) {
+      _selectedAyahRange.value = ayahRange;
+      _selectedAyahNumber.value = ayahNumber;
+      _sharedPreferences.setString('selectedAyahRange', ayahRange);
+    } else {
+      // If the selected ayah range is out of bounds, reset it to the last ayah of the current surah
+      final lastAyahNumber = _selectedSurahAyahCount.value;
+      _selectedAyahRange.value = '${_selectedSurahId.value} : $lastAyahNumber';
+      _selectedAyahNumber.value = lastAyahNumber;
+      _sharedPreferences.setString(
+          'selectedAyahRange', '${_selectedSurahId.value} : $lastAyahNumber');
+    }
   }
 
   @override
@@ -104,6 +132,7 @@ class QuranController extends GetxController {
     final storedSurahId = _sharedPreferences.getInt('selectedSurahId');
     final storedAyahNumber = _sharedPreferences.getInt('selectedAyahNumber');
     final storedAyahRange = _sharedPreferences.getString('selectedAyahRange');
+
     if (storedSurah != null &&
         storedSurahId != null &&
         storedAyahNumber != null &&
@@ -117,6 +146,7 @@ class QuranController extends GetxController {
         _selectedAyahNumber.value = storedAyahNumber;
         _selectedAyahRange.value = storedAyahRange;
       } else {
+        // If the stored surah is not found in the list, use the first surah
         _selectedSurah.value = _surahNames.first;
         _selectedSurahId.value = _surahIds.first;
         _selectedSurahAyahCount.value = _surahAyahCounts.first;
@@ -124,6 +154,7 @@ class QuranController extends GetxController {
         _selectedAyahRange.value = '${_surahIds.first} : 1';
       }
     } else if (_surahNames.isNotEmpty) {
+      // If the stored surah information is not available, use the first surah
       _selectedSurah.value = _surahNames.first;
       _selectedSurahId.value = _surahIds.first;
       _selectedSurahAyahCount.value = _surahAyahCounts.first;

@@ -72,7 +72,9 @@ class SurahBottomRow extends StatelessWidget {
           Row(
             children: [
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  _quranController.navigateToPreviousSurah();
+                },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -89,7 +91,9 @@ class SurahBottomRow extends StatelessWidget {
               ),
               const SizedBox(width: 16),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  _quranController.navigateToNextSurah();
+                },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
