@@ -7,7 +7,7 @@ class QuranService {
   var ArticleId = 1;
   var surahNumber = 1;
   var ayahNumber = 1;
-  var pageNumber = 1;
+  var pageNumber = 0;
 
   Future<List<Map<String, dynamic>>> fetchSurahs() async {
     final response = await http.get(Uri.parse("$baseUrl/suranames"));
@@ -42,9 +42,11 @@ class QuranService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> fetchAyahLines(int surahNumber) async {
-    final response =
-        await http.get(Uri.parse("$baseUrl/ayalines/$surahNumber"));
+  Future<List<Map<String, dynamic>>> fetchAyahLines(
+      int surahNumber, int currentPage) async {
+    pageNumber = currentPage;
+    final response = await http
+        .get(Uri.parse("$baseUrl/linetrans/$surahNumber/$pageNumber"));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as List<dynamic>;
       return data.map((item) {
@@ -53,36 +55,16 @@ class QuranService {
           "SuraNo": item["SuraNo"],
           "AyaNo": item["AyaNo"],
           "MalTran": item["MalTran"],
-          "LineWords": (item["LineWords"] as List<dynamic>)
-              .map(
-                (wordItem) => {
-                  "MalWord": wordItem["MalWord"],
-                  "ArabWord": wordItem["ArabWord"],
-                },
-              )
-              .toList(),
+          "LineWords": (item["LineWords"] as List<dynamic>).map((wordItem) {
+            return {
+              "MalWord": wordItem["MalWord"],
+              "ArabWord": wordItem["ArabWord"],
+            };
+          }).toList(),
         };
-      }).toList();
+      }).toList(); // Call toList() here
     } else {
       throw Exception('Failed to load Ayah');
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> fetchPage() async {
-    final response =
-        await http.get(Uri.parse("$baseUrl/pagesuraaya/$pageNumber"));
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body) as List<dynamic>;
-      return data
-          .map(
-            (item) => {
-              "SuraId": item["SuraId"],
-              "ayafrom": item["ayafrom"],
-            },
-          )
-          .toList();
-    } else {
-      throw Exception('Failed to load Page');
     }
   }
 }

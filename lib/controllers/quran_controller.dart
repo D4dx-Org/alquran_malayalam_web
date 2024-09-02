@@ -15,6 +15,8 @@ class QuranController extends GetxController {
   final _ayahLines = <Map<String, dynamic>>[].obs;
   late final SharedPreferences _sharedPreferences;
 
+  int currentPage = 0;
+
   static QuranController get instance => Get.find<QuranController>();
 
   QuranController({
@@ -126,9 +128,22 @@ class QuranController extends GetxController {
 
   Future<void> _fetchAyahLines(int surahNumber) async {
     try {
-      _ayahLines.value = await _quranService.fetchAyahLines(surahNumber);
+      currentPage = 0;
+      _ayahLines.value =
+          await _quranService.fetchAyahLines(surahNumber, currentPage);
     } catch (e) {
       debugPrint('Error fetching ayah lines: $e');
+    }
+  }
+
+  Future<void> fetchMoreAyahLines() async {
+    try {
+      currentPage++;
+      final moreAyahLines = await _quranService.fetchAyahLines(
+          _selectedSurahId.value, currentPage);
+      _ayahLines.addAll(moreAyahLines);
+    } catch (e) {
+      debugPrint('Error fetching more ayah lines: $e');
     }
   }
 
