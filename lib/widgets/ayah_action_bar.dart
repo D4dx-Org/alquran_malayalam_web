@@ -1,5 +1,7 @@
+import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class AyahActionBar extends StatelessWidget {
   final VoidCallback onPlayPressed;
@@ -15,6 +17,8 @@ class AyahActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _quranController = Get.find<QuranController>();
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
@@ -31,9 +35,9 @@ class AyahActionBar extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
-            '1:1',
-            style: TextStyle(
+          Text(
+            '${_quranController.selectedSurahId} : ${_quranController.selectedAyahNumber}',
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.black54,
             ),

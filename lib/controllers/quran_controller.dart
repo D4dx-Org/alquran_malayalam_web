@@ -12,6 +12,7 @@ class QuranController extends GetxController {
   final _selectedSurahAyahCount = 0.obs;
   final _selectedAyahNumber = 1.obs;
   final _selectedAyahRange = ''.obs;
+  final _ayahLines = <Map<String, dynamic>>[].obs;
   late final SharedPreferences _sharedPreferences;
 
   static QuranController get instance => Get.find<QuranController>();
@@ -29,11 +30,13 @@ class QuranController extends GetxController {
   int get selectedSurahAyahCount => _selectedSurahAyahCount.value;
   int get selectedAyahNumber => _selectedAyahNumber.value;
   String get selectedAyahRange => _selectedAyahRange.value;
+  List<Map<String, dynamic>> get ayahLines => _ayahLines;
 
   void navigateToPreviousSurah() {
     final currentIndex = _surahIds.indexOf(_selectedSurahId.value);
     if (currentIndex > 0) {
       updateSelectedSurahId(_surahIds[currentIndex - 1]);
+      _fetchAyahLines(_surahIds[currentIndex - 1]);
     }
   }
 
@@ -41,6 +44,7 @@ class QuranController extends GetxController {
     final currentIndex = _surahIds.indexOf(_selectedSurahId.value);
     if (currentIndex < _surahIds.length - 1) {
       updateSelectedSurahId(_surahIds[currentIndex + 1]);
+      _fetchAyahLines(_surahIds[currentIndex + 1]);
     }
   }
 
@@ -57,6 +61,7 @@ class QuranController extends GetxController {
       _sharedPreferences.setInt('selectedAyahNumber', 1);
       _sharedPreferences.setString(
           'selectedAyahRange', '${_surahIds[index]} : 1');
+      _fetchAyahLines(_surahIds[index]);
     }
   }
 
@@ -72,6 +77,7 @@ class QuranController extends GetxController {
       _sharedPreferences.setInt('selectedSurahId', surahId);
       _sharedPreferences.setInt('selectedAyahNumber', 1);
       _sharedPreferences.setString('selectedAyahRange', '$surahId : 1');
+      _fetchAyahLines(surahId);
     }
   }
 
@@ -118,13 +124,9 @@ class QuranController extends GetxController {
     }
   }
 
-  Future<void> fetchAyahLines(int surahNumber) async {
+  Future<void> _fetchAyahLines(int surahNumber) async {
     try {
-      final ayahLines = await _quranService.fetchAyahLines(surahNumber);
-      for (var ayahLine in ayahLines) {
-        print('Surah Number: ${ayahLine['SuraNo']}');
-        print('Ayah Number: ${ayahLine['AyaNo']}');
-      }
+      _ayahLines.value = await _quranService.fetchAyahLines(surahNumber);
     } catch (e) {
       debugPrint('Error fetching ayah lines: $e');
     }
@@ -146,6 +148,7 @@ class QuranController extends GetxController {
         _selectedSurahAyahCount.value = _surahAyahCounts[index];
         _selectedAyahNumber.value = 1;
         _selectedAyahRange.value = storedAyahRange;
+        _fetchAyahLines(_surahIds[index]);
       } else {
         // If the stored surah is not found in the list, use the first surah
         _selectedSurah.value = _surahNames.first;
@@ -153,6 +156,7 @@ class QuranController extends GetxController {
         _selectedSurahAyahCount.value = _surahAyahCounts.first;
         _selectedAyahNumber.value = 1;
         _selectedAyahRange.value = '${_surahIds.first} : 1';
+        _fetchAyahLines(_surahIds.first);
       }
     } else if (_surahNames.isNotEmpty) {
       // If the stored surah information is not available, use the first surah
@@ -161,6 +165,7 @@ class QuranController extends GetxController {
       _selectedSurahAyahCount.value = _surahAyahCounts.first;
       _selectedAyahNumber.value = 1;
       _selectedAyahRange.value = '${_surahIds.first} : 1';
+      _fetchAyahLines(_surahIds.first);
     }
   }
 
