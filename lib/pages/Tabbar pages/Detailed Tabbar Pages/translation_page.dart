@@ -45,34 +45,37 @@ class _TranslationPageState extends State<TranslationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(
-        () => SingleChildScrollView(
-          controller: _scrollController,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Center(
-                  child: Text(
-                    _quranController.selectedSurah,
-                    style: const TextStyle(
-                        fontSize: 24, fontWeight: FontWeight.bold),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+        child: Obx(
+          () => SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                    child: Text(
+                      _quranController.selectedSurah,
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Center(
-                  child: Text(
-                    _quranController.selectedSurah,
-                    style: const TextStyle(fontSize: 18),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Center(
+                    child: Text(
+                      _quranController.selectedSurah,
+                      style: const TextStyle(fontSize: 18),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              ..._quranController.ayahLines.map((ayah) => _buildAyah(ayah)),
-            ],
+                const SizedBox(height: 20),
+                ..._quranController.ayahLines.map((ayah) => _buildAyah(ayah)),
+              ],
+            ),
           ),
         ),
       ),
@@ -117,18 +120,20 @@ class _TranslationPageState extends State<TranslationPage> {
                           children: [
                             ...(ayah['LineWords'] as List<Map<String, dynamic>>)
                                 .reversed
-                                .map((word) => Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          _buildArabicWord(word['ArabWord']),
-                                          _buildTranslation(word['MalWord']),
-                                        ],
-                                      ),
-                                    )),
+                                .map(
+                                  (word) => Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        _buildArabicWord(word['ArabWord']),
+                                        _buildTranslation(word['MalWord']),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                           ],
                         ),
                       ),

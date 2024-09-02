@@ -17,7 +17,7 @@ class AyahActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _quranController = Get.find<QuranController>();
+    final quranController = Get.find<QuranController>();
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -36,7 +36,7 @@ class AyahActionBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            '${_quranController.selectedSurahId} : ${_quranController.selectedAyahNumber}',
+            '${quranController.selectedSurahId} : ${quranController.selectedAyahNumber}',
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.black54,

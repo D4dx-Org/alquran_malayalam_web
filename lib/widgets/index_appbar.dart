@@ -18,92 +18,90 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
     final settingsIconSize = 24.0 * iconScaleFactor;
     final logoSize = 64.0 * scaleFactor;
 
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32.0),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-          toolbarHeight: 80 * scaleFactor,
-          leadingWidth: 60 * scaleFactor,
-          leading: Padding(
-            padding: EdgeInsets.only(left: 8.0 * scaleFactor),
-            child: IconButton(
-              icon: Icon(
-                Icons.menu_sharp,
-                size: menuIconSize,
-                color: const Color.fromRGBO(130, 130, 130, 1),
-                weight: 100,
-              ),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+      child: AppBar(
+        backgroundColor: Colors.transparent,
+        toolbarHeight: 80 * scaleFactor,
+        leadingWidth: 60 * scaleFactor,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 8.0 * scaleFactor),
+          child: IconButton(
+            icon: Icon(
+              Icons.menu_sharp,
+              size: menuIconSize,
+              color: const Color.fromRGBO(130, 130, 130, 1),
+              weight: 100,
             ),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
           ),
-          actions: <Widget>[
-            IconButton(
-              icon: SvgPicture.asset(
-                "icons/Settings_Icon.svg",
-                height: settingsIconSize,
-                width: settingsIconSize,
-              ),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return const SettingsWidget();
-                  },
-                );
-              },
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: SvgPicture.asset(
+              "icons/Settings_Icon.svg",
+              height: settingsIconSize,
+              width: settingsIconSize,
             ),
-            SizedBox(width: 8 * scaleFactor),
-          ],
-          title: LayoutBuilder(
-            builder: (context, constraints) {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'images/AppBar_Icon.png',
-                    height: logoSize,
-                    width: logoSize,
-                    fit: BoxFit.contain,
-                  ),
-                  SizedBox(width: 8 * scaleFactor),
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            "അല്‍-ഖുര്‍ആന്‍",
-                            style: GoogleFonts.anekMalayalam(
-                                fontSize: 35 * scaleFactor,
-                                fontWeight: FontWeight.w900,
-                                color: const Color.fromRGBO(115, 78, 9, 1)),
-                          ),
-                        ),
-                        FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            "വാക്കര്‍ത്ഥത്തോടുകൂടിയ പരിഭാഷ",
-                            style: GoogleFonts.anekMalayalam(
-                              color: const Color.fromRGBO(74, 74, 74, 1),
-                              fontSize: 18 * scaleFactor,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return const SettingsWidget();
+                },
               );
             },
           ),
-          centerTitle: true,
+          SizedBox(width: 8 * scaleFactor),
+        ],
+        title: LayoutBuilder(
+          builder: (context, constraints) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'images/AppBar_Icon.png',
+                  height: logoSize,
+                  width: logoSize,
+                  fit: BoxFit.contain,
+                ),
+                SizedBox(width: 8 * scaleFactor),
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          "അല്‍-ഖുര്‍ആന്‍",
+                          style: GoogleFonts.anekMalayalam(
+                              fontSize: 35 * scaleFactor,
+                              fontWeight: FontWeight.w900,
+                              color: const Color.fromRGBO(115, 78, 9, 1)),
+                        ),
+                      ),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          "വാക്കര്‍ത്ഥത്തോടുകൂടിയ പരിഭാഷ",
+                          style: GoogleFonts.anekMalayalam(
+                            color: const Color.fromRGBO(74, 74, 74, 1),
+                            fontSize: 18 * scaleFactor,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
         ),
+        centerTitle: true,
       ),
     );
   }
