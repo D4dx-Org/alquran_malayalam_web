@@ -1,21 +1,26 @@
+// SurahListPage.dart
 import 'package:alquran_web/routes/app_pages.dart';
 import 'package:alquran_web/services/quran_services.dart';
 import 'package:alquran_web/widgets/star_widget.dart';
+import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 
 class SurahListPage extends StatefulWidget {
   const SurahListPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SurahListPageState createState() => _SurahListPageState();
 }
 
 class _SurahListPageState extends State<SurahListPage> {
-  int _currentIndex = 0; // To manage the IndexedStack
+  int _currentIndex = 0;
   List<Map<String, dynamic>> surahs = [];
   final _quranService = QuranService();
+  final _quranController = Get.find<QuranController>();
 
   @override
   void initState() {
@@ -25,53 +30,35 @@ class _SurahListPageState extends State<SurahListPage> {
 
   Future<void> fetchSurahs() async {
     setState(() {
-      _currentIndex = 0; // Show loading spinner
+      _currentIndex = 0;
     });
 
     try {
       final fetchedSurahs = await _quranService.fetchSurahs();
       setState(() {
         surahs = fetchedSurahs;
-        _currentIndex = 1; // Show the list view
+        _currentIndex = 1;
       });
     } catch (e) {
-      // Handle error
       setState(() {
-        _currentIndex = 2; // Show error view
+        _currentIndex = 2;
       });
-      // Add your error handling logic here
-      print('Error fetching Surahs: $e');
+      debugPrint('Error fetching Surahs: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
 
     int crossAxisCount = 3;
 
-    if (screenWidth < 480) {
+    if (screenWidth < 650) {
       crossAxisCount = 1;
-    } else if (screenWidth < 800) {
+    } else if (screenWidth < 950) {
       crossAxisCount = 2;
     } else {
       crossAxisCount = 3;
-    }
-
-    double childAspectRatio = screenWidth / screenHeight;
-
-    if (screenWidth < 480) {
-      childAspectRatio =
-          childAspectRatio * 7; // Taller cards for smaller screens
-    } else if (screenWidth < 800) {
-      childAspectRatio =
-          childAspectRatio * 4; // Medium-sized cards for medium screens
-    } else if (screenWidth < 1025) {
-      childAspectRatio =
-          childAspectRatio * 3; // Shorter cards for larger screens
-    } else {
-      childAspectRatio = childAspectRatio * 3;
     }
 
     return Scaffold(
@@ -81,19 +68,15 @@ class _SurahListPageState extends State<SurahListPage> {
           const Center(child: CircularProgressIndicator()),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: GridView.builder(
+            child: DynamicHeightGridView(
               itemCount: surahs.length,
-              itemBuilder: (context, index) {
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: 10.0,
+              mainAxisSpacing: 5.0,
+              builder: (context, index) {
                 final surah = surahs[index];
                 return _buildSurahCard(surah);
               },
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisCount,
-                childAspectRatio:
-                    childAspectRatio, // Maintain the original aspect ratio
-                crossAxisSpacing: 10.0,
-                mainAxisSpacing: 5.0,
-              ),
             ),
           ),
           const Center(
@@ -126,10 +109,10 @@ class _SurahListPageState extends State<SurahListPage> {
           subtitle: Row(
             children: [
               SvgPicture.asset(
-                surah['SuraType'] == 'مَكِّيَة'
+                surah['SuraType'] == 'مَكِّيَة'
                     ? "icons/Makiyyah_Icon.svg"
                     : "icons/Madaniyya_Icon.svg",
-                height: 11, // Adjust size as needed
+                height: 11,
                 width: 9,
               ),
               const SizedBox(width: 8),
@@ -149,9 +132,21 @@ class _SurahListPageState extends State<SurahListPage> {
             ),
           ),
           onTap: () {
+            _quranController.updateSelectedSurah(surah['MSuraName']);
+            _quranController
+                .updateSelectedSurahId(int.parse(surah['SuraId'].toString()));
+            final surahId = int.parse(surah['SuraId'].toString());
+            final surahName = surah['MSuraName'];
+            debugPrint('Navigating to SURAH_DETAILED with arguments:');
+            debugPrint('surahId: $surahId');
+            debugPrint('surahName: $surahName');
             Get.toNamed(
               Routes.SURAH_DETAILED,
-              arguments: {'surahId': surah['SuraId']},
+              arguments: {
+                'surahId': surahId,
+                'surahName': surahName,
+                'ayahNumber': 1, // Include the initial ayah number
+              },
             );
           },
         ),

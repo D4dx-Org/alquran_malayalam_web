@@ -1,3 +1,5 @@
+
+import 'package:alquran_web/widgets/articles_bottom_row.dart';
 import 'package:alquran_web/widgets/settings_widget.dart';
 import 'package:alquran_web/widgets/surah_bottom_row.dart';
 import 'package:flutter/material.dart';
@@ -7,11 +9,25 @@ import 'package:google_fonts/google_fonts.dart';
 // Enum to represent different pages
 enum AppPage { detailedsurah, articles }
 
-class DetailedAppbar extends StatelessWidget implements PreferredSizeWidget {
+class DetailedAppbar extends StatefulWidget implements PreferredSizeWidget {
   final AppPage currentPage;
+  final TabController tabController;
 
-  const DetailedAppbar({super.key, required this.currentPage});
+  const DetailedAppbar({
+    super.key,
+    required this.currentPage,
+    required this.tabController,
+  });
 
+  @override
+  State<DetailedAppbar> createState() => _DetailedAppbarState();
+
+  @override
+  Size get preferredSize =>
+      const Size.fromHeight(150); // 80 for top row + 50 for bottom row
+}
+
+class _DetailedAppbarState extends State<DetailedAppbar> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -120,40 +136,21 @@ class DetailedAppbar extends StatelessWidget implements PreferredSizeWidget {
           child: Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: 32 * scaleFactor, vertical: 8 * scaleFactor),
-            child: _buildBottomRow(context, scaleFactor),
+            child: _buildBottomRow(context, scaleFactor, widget.tabController),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildBottomRow(BuildContext context, double scaleFactor) {
-    switch (currentPage) {
+  Widget _buildBottomRow(BuildContext context, double scaleFactor, TabController tabController) {
+    switch (widget.currentPage) {
       case AppPage.detailedsurah:
-        return SurahBottomRow(scaleFactor);
+        return SurahBottomRow(scaleFactor, tabController: tabController);
       case AppPage.articles:
-        return _buildarticlesBottomRow(context, scaleFactor);
+        return ArticlesBottomRow(context, scaleFactor, tabController: tabController);
+      default:
+        return SizedBox.shrink();
     }
   }
-
-  Widget _buildarticlesBottomRow(BuildContext context, double scaleFactor) {
-    return Container(
-      color: Colors.brown[100],
-      height: 50 * scaleFactor,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.0 * scaleFactor),
-        child: TextField(
-          decoration: InputDecoration(
-            hintText: 'Search...',
-            border: InputBorder.none,
-            icon: Icon(Icons.search, size: 24 * scaleFactor),
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  Size get preferredSize =>
-      const Size.fromHeight(150); // 80 for top row + 50 for bottom row
 }

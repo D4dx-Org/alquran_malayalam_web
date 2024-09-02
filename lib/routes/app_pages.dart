@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 part 'app_routes.dart';
 
 class AppPages {
+  // ignore: constant_identifier_names
   static const INITIAL = Routes.HOME;
 
   static final routes = [
@@ -25,11 +26,11 @@ class AppPages {
     ),
     GetPage(
       name: Routes.ABOUT_US,
-      page: () => AboutUsPage(),
+      page: () => const AboutUsPage(),
     ),
     GetPage(
       name: Routes.CONTACT_US,
-      page: () => ContactusPage(),
+      page: () => const ContactusPage(),
     ),
     GetPage(
       name: Routes.PRIVACY,

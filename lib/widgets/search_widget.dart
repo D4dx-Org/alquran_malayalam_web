@@ -6,11 +6,11 @@ class SearchWidget extends StatelessWidget {
   final VoidCallback? onClear;
 
   const SearchWidget({
-    Key? key,
+    super.key,
     this.width,
     this.onChanged,
     this.onClear,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class SearchWidget extends StatelessWidget {
               hintText: 'Search...',
               suffixIcon: IconButton(
                 icon: const Icon(Icons.search),
-                color: Color.fromRGBO(115, 78, 9, 1),
+                color: const Color.fromRGBO(115, 78, 9, 1),
                 onPressed: () {
                   onClear?.call();
                 },

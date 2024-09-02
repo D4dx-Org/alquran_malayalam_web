@@ -7,7 +7,7 @@ class PrivacyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDarkMode ? Colors.white : Color.fromRGBO(67, 67, 67, 1);
+    final textColor = isDarkMode ? Colors.white : const Color.fromRGBO(67, 67, 67, 1);
 
     return Scaffold(
       appBar: AppBar(

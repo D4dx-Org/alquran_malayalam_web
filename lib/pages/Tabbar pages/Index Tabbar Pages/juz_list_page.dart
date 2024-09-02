@@ -1,4 +1,3 @@
-
 import 'package:alquran_web/services/quran_services.dart';
 import 'package:alquran_web/services/utils.dart';
 import 'package:alquran_web/widgets/star_widget.dart';
@@ -6,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class JuzListPage extends StatefulWidget {
-  JuzListPage({super.key});
+  const JuzListPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _JuzListPageState createState() => _JuzListPageState();
 }
 
@@ -28,7 +28,7 @@ class _JuzListPageState extends State<JuzListPage> {
     final juzData = await _juzJsonParser.loadJsonData();
     final Map<int, List<Map<String, dynamic>>> juzMappedData = {};
 
-    surahs.forEach((surah) {
+    for (var surah in surahs) {
       final surahIndex = surah['SuraId'];
       for (final juzIndexString in juzData.keys) {
         final juzIndex = int.parse(juzIndexString);
@@ -40,14 +40,13 @@ class _JuzListPageState extends State<JuzListPage> {
           juzMappedData[juzIndex]!.add(surah);
         }
       }
-    });
+    }
 
     return juzMappedData;
   }
 
   @override
   Widget build(BuildContext context) {
-    const gridViewColor = Color.fromARGB(255, 244, 244, 244);
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -59,7 +58,7 @@ class _JuzListPageState extends State<JuzListPage> {
             if (snapshot.hasData) {
               final juzMappedData = snapshot.data!;
               return SingleChildScrollView(
-                child: screenWidth < 500
+                child: screenWidth < 650
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: List.generate(30, (index) {
@@ -68,7 +67,7 @@ class _JuzListPageState extends State<JuzListPage> {
                           return _buildJuzCard(juzIndex, surahs);
                         }),
                       )
-                    : screenWidth < 850
+                    : screenWidth < 950
                         ? Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
