@@ -81,11 +81,6 @@ class _SurahBottomRowState extends State<SurahBottomRow>
               ],
             ),
           ),
-          // Expanded(
-          //   child: DetailedTabbar(
-          //     controller: widget.tabController,
-          //   ),
-          // ),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,

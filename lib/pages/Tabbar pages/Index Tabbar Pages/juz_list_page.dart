@@ -207,7 +207,7 @@ class _JuzListPageState extends State<JuzListPage> {
         subtitle: Row(
           children: [
             SvgPicture.asset(
-              surah['SuraType'] == 'مَكِّيَة'
+              surah['SuraType'] == 'مَكِّيَة'
                   ? "icons/Makiyyah_Icon.svg"
                   : "icons/Madaniyya_Icon.svg",
               height: 11,

@@ -1,5 +1,5 @@
-
 import 'package:alquran_web/widgets/detailed_appbar.dart';
+import 'package:alquran_web/widgets/navigation_drawer_widget.dart';
 import 'package:flutter/material.dart';
 import '../Tabbar pages/Articles Tabbar Pages/muguvara.dart';
 import '../Tabbar pages/Articles Tabbar Pages/publishersdata.dart';
@@ -12,7 +12,8 @@ class AboutUsPage extends StatefulWidget {
   State<AboutUsPage> createState() => _AboutUsPageState();
 }
 
-class _AboutUsPageState extends State<AboutUsPage> with SingleTickerProviderStateMixin {
+class _AboutUsPageState extends State<AboutUsPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -42,6 +43,7 @@ class _AboutUsPageState extends State<AboutUsPage> with SingleTickerProviderStat
           Tab3(),
         ],
       ),
+      drawer: const NavigationDrawerWidget(),
     );
   }
 }
