@@ -23,13 +23,13 @@ class _SurahBottomRowState extends State<SurahBottomRow>
   Widget build(BuildContext context) {
     return Container(
       color: const Color.fromRGBO(115, 78, 9, 1),
-      height: 50 * widget.scaleFactor,
+      height: 50,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
             child: Wrap(
-              spacing: 16.0,
+              spacing: 5.0,
               children: [
                 Obx(
                   () => CustomDropdown(
@@ -90,69 +90,69 @@ class _SurahBottomRowState extends State<SurahBottomRow>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const Text(
-                  "Page",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Obx(
-                  () => CustomDropdown(
-                    options: List.generate(
-                      _quranController.selectedSurahAyahCount,
-                      (index) =>
-                          '${_quranController.selectedSurahId} : ${index + 1}',
-                    ),
-                    selectedValue: _quranController.selectedAyahRange,
-                    onChanged: (value) {
-                      if (value != null) {
-                        final parts = value.split(' : ');
-                        final surahNumber = int.parse(parts[0]);
-                        final ayahNumber = int.parse(parts[1]);
-                        _quranController.updateSelectedAyahRange(
-                            '$surahNumber : $ayahNumber');
-                      }
-                    },
-                    scaleFactor: widget.scaleFactor,
-                  ),
-                ),
+                // const Text(
+                //   "Page",
+                //   style: TextStyle(
+                //     color: Colors.white,
+                //   ),
+                // ),
+                // const SizedBox(width: 4),
+                // Obx(
+                //   () => CustomDropdown(
+                //     options: List.generate(
+                //       _quranController.selectedSurahAyahCount,
+                //       (index) =>
+                //           '${_quranController.selectedSurahId} : ${index + 1}',
+                //     ),
+                //     selectedValue: _quranController.selectedAyahRange,
+                //     onChanged: (value) {
+                //       if (value != null) {
+                //         final parts = value.split(' : ');
+                //         final surahNumber = int.parse(parts[0]);
+                //         final ayahNumber = int.parse(parts[1]);
+                //         _quranController.updateSelectedAyahRange(
+                //             '$surahNumber : $ayahNumber');
+                //       }
+                //     },
+                //     scaleFactor: widget.scaleFactor,
+                //   ),
+                // ),
                 const SizedBox(width: 16),
                 ElevatedButton(
                   onPressed: () {
                     _quranController.navigateToPreviousSurah();
                   },
                   style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.all(8),
-                    backgroundColor: const Color.fromRGBO(115, 78, 9, 1),
-                    foregroundColor: const Color.fromRGBO(162, 132, 94, 1),
-                    side: const BorderSide(
-                      color: Color.fromRGBO(162, 132, 94, 1),
-                      width: 2,
-                    ),
-                  ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.all(8),
+                      backgroundColor: const Color.fromRGBO(115, 78, 9, 1),
+                      foregroundColor: const Color.fromRGBO(162, 132, 94, 1),
+                      side: const BorderSide(
+                        color: Color.fromRGBO(162, 132, 94, 1),
+                        width: 2,
+                      ),
+                      minimumSize: const Size(50, 40)),
                   child: const Icon(Icons.arrow_back_ios_new_rounded, size: 16),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () {
                     _quranController.navigateToNextSurah();
                   },
                   style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.all(8),
-                    backgroundColor: const Color.fromRGBO(115, 78, 9, 1),
-                    foregroundColor: const Color.fromRGBO(162, 132, 94, 1),
-                    side: const BorderSide(
-                      color: Color.fromRGBO(162, 132, 94, 1),
-                      width: 2,
-                    ),
-                  ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.all(8),
+                      backgroundColor: const Color.fromRGBO(115, 78, 9, 1),
+                      foregroundColor: const Color.fromRGBO(162, 132, 94, 1),
+                      side: const BorderSide(
+                        color: Color.fromRGBO(162, 132, 94, 1),
+                        width: 2,
+                      ),
+                      minimumSize: const Size(50, 40)),
                   child: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
                 ),
               ],
