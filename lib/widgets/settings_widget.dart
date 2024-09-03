@@ -1,10 +1,14 @@
+import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SettingsWidget extends StatelessWidget {
   const SettingsWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    Get.find<SettingsController>();
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return Stack(
@@ -34,6 +38,8 @@ class SettingsWidget extends StatelessWidget {
   }
 
   Widget contentBox(BuildContext context, bool isSmallScreen) {
+    final controller = Get.find<SettingsController>();
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -74,22 +80,32 @@ class SettingsWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.black,
-                        backgroundColor: Colors.grey[200],
-                      ),
-                      child: const Text('Utmani'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.black,
-                        backgroundColor: Colors.grey[200],
-                      ),
-                      child: const Text('Amiri'),
-                    ),
+                    Obx(() => ElevatedButton(
+                          onPressed: () {
+                            controller.setQuranFontFamily('Utmani');
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.black,
+                            backgroundColor:
+                                controller.quranFontFamily.value == 'Utmani'
+                                    ? Colors.grey[400]
+                                    : Colors.grey[200],
+                          ),
+                          child: const Text('Utmani'),
+                        )),
+                    Obx(() => ElevatedButton(
+                          onPressed: () {
+                            controller.setQuranFontFamily('Amiri');
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.black,
+                            backgroundColor:
+                                controller.quranFontFamily.value == 'Amiri'
+                                    ? Colors.grey[400]
+                                    : Colors.grey[200],
+                          ),
+                          child: const Text('Amiri'),
+                        )),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -100,12 +116,17 @@ class SettingsWidget extends StatelessWidget {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.remove),
-                      onPressed: () {},
+                      onPressed: () {
+                        controller.decreaseQuranFontSize();
+                      },
                     ),
-                    const Text('15', style: TextStyle(fontSize: 18)),
+                    Obx(() => Text('${controller.quranFontSize.value.toInt()}',
+                        style: const TextStyle(fontSize: 18))),
                     IconButton(
                       icon: const Icon(Icons.add),
-                      onPressed: () {},
+                      onPressed: () {
+                        controller.increaseQuranFontSize();
+                      },
                     ),
                   ],
                 ),
@@ -118,12 +139,18 @@ class SettingsWidget extends StatelessWidget {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.remove),
-                      onPressed: () {},
+                      onPressed: () {
+                        controller.decreaseTranslationFontSize();
+                      },
                     ),
-                    const Text('15', style: TextStyle(fontSize: 18)),
+                    Obx(() => Text(
+                        '${controller.translationFontSize.value.toInt()}',
+                        style: const TextStyle(fontSize: 18))),
                     IconButton(
                       icon: const Icon(Icons.add),
-                      onPressed: () {},
+                      onPressed: () {
+                        controller.increaseTranslationFontSize();
+                      },
                     ),
                   ],
                 ),
@@ -138,23 +165,33 @@ class SettingsWidget extends StatelessWidget {
                     const Text('Arabic Font', style: TextStyle(fontSize: 18)),
                     Row(
                       children: [
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.black,
-                            backgroundColor: Colors.grey[200],
-                          ),
-                          child: const Text('Utmani'),
-                        ),
+                        Obx(() => ElevatedButton(
+                              onPressed: () {
+                                controller.setQuranFontFamily('Utmani');
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.black,
+                                backgroundColor:
+                                    controller.quranFontFamily.value == 'Utmani'
+                                        ? Colors.grey[400]
+                                        : Colors.grey[200],
+                              ),
+                              child: const Text('Utmani'),
+                            )),
                         const SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.black,
-                            backgroundColor: Colors.grey[200],
-                          ),
-                          child: const Text('Amiri'),
-                        ),
+                        Obx(() => ElevatedButton(
+                              onPressed: () {
+                                controller.setQuranFontFamily('Amiri');
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.black,
+                                backgroundColor:
+                                    controller.quranFontFamily.value == 'Amiri'
+                                        ? Colors.grey[400]
+                                        : Colors.grey[200],
+                              ),
+                              child: const Text('Amiri'),
+                            )),
                       ],
                     ),
                   ],
@@ -169,12 +206,18 @@ class SettingsWidget extends StatelessWidget {
                       children: [
                         IconButton(
                           icon: const Icon(Icons.remove),
-                          onPressed: () {},
+                          onPressed: () {
+                            controller.decreaseQuranFontSize();
+                          },
                         ),
-                        const Text('15', style: TextStyle(fontSize: 18)),
+                        Obx(() => Text(
+                            '${controller.quranFontSize.value.toInt()}',
+                            style: const TextStyle(fontSize: 18))),
                         IconButton(
                           icon: const Icon(Icons.add),
-                          onPressed: () {},
+                          onPressed: () {
+                            controller.increaseQuranFontSize();
+                          },
                         ),
                       ],
                     ),
@@ -190,12 +233,18 @@ class SettingsWidget extends StatelessWidget {
                       children: [
                         IconButton(
                           icon: const Icon(Icons.remove),
-                          onPressed: () {},
+                          onPressed: () {
+                            controller.decreaseTranslationFontSize();
+                          },
                         ),
-                        const Text('15', style: TextStyle(fontSize: 18)),
+                        Obx(() => Text(
+                            '${controller.translationFontSize.value.toInt()}',
+                            style: const TextStyle(fontSize: 18))),
                         IconButton(
                           icon: const Icon(Icons.add),
-                          onPressed: () {},
+                          onPressed: () {
+                            controller.increaseTranslationFontSize();
+                          },
                         ),
                       ],
                     ),

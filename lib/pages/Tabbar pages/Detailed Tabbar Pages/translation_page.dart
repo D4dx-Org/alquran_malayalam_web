@@ -1,5 +1,7 @@
 import 'package:alquran_web/controllers/quran_controller.dart';
+import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:alquran_web/widgets/ayah_action_bar.dart';
+import 'package:alquran_web/widgets/settings_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,6 +14,7 @@ class TranslationPage extends StatefulWidget {
 
 class _TranslationPageState extends State<TranslationPage> {
   final _quranController = Get.find<QuranController>();
+  final _settingsController = Get.find<SettingsController>();
   final _scrollController = ScrollController();
   bool _isLoading = false;
 
@@ -141,9 +144,14 @@ class _TranslationPageState extends State<TranslationPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      ayah['MalTran'],
-                      style: const TextStyle(fontSize: 16),
+                    child: Obx(
+                      () => Text(
+                        ayah['MalTran'],
+                        style: TextStyle(
+                          fontSize:
+                              _settingsController.translationFontSize.value,
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -170,9 +178,14 @@ class _TranslationPageState extends State<TranslationPage> {
         color: const Color.fromRGBO(249, 249, 249, 1),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Text(
-        word,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      child: Obx(
+        () => Text(
+          word,
+          style: TextStyle(
+            fontSize: _settingsController.quranFontSize.value,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }
@@ -180,9 +193,13 @@ class _TranslationPageState extends State<TranslationPage> {
   Widget _buildTranslation(String translation) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Text(
-        translation,
-        style: const TextStyle(fontSize: 14),
+      child: Obx(
+        () => Text(
+          translation,
+          style: TextStyle(
+            fontSize: _settingsController.translationFontSize.value,
+          ),
+        ),
       ),
     );
   }
