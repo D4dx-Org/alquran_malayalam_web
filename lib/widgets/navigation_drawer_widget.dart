@@ -52,7 +52,12 @@ class NavigationDrawerWidget extends StatelessWidget {
                   ),
                   title: const Text('Home'),
                   onTap: () {
-                    Get.toNamed(Routes.HOME);
+                    if (Get.currentRoute == Routes.HOME) {
+                      // Close the drawer if the user is already on the home page
+                      Navigator.of(context).pop();
+                    } else {
+                      Get.toNamed(Routes.HOME);
+                    }
                   },
                 ),
                 const Divider(
@@ -67,7 +72,12 @@ class NavigationDrawerWidget extends StatelessWidget {
                   ),
                   title: const Text('About'),
                   onTap: () {
-                    Get.toNamed(Routes.ABOUT_US);
+                    if (Get.currentRoute == Routes.ABOUT_US) {
+                      // Close the drawer if the user is already on the home page
+                      Navigator.of(context).pop();
+                    } else {
+                      Get.toNamed(Routes.ABOUT_US);
+                    }
                   },
                 ),
                 const Divider(
@@ -82,7 +92,12 @@ class NavigationDrawerWidget extends StatelessWidget {
                   ),
                   title: const Text('Contact'),
                   onTap: () {
-                    Get.toNamed(Routes.CONTACT_US);
+                    if (Get.currentRoute == Routes.CONTACT_US) {
+                      // Close the drawer if the user is already on the home page
+                      Navigator.of(context).pop();
+                    } else {
+                      Get.toNamed(Routes.CONTACT_US);
+                    }
                   },
                 ),
                 const Divider(
@@ -97,7 +112,12 @@ class NavigationDrawerWidget extends StatelessWidget {
                   ),
                   title: const Text('Privacy Policy'),
                   onTap: () {
-                    Get.toNamed(Routes.PRIVACY);
+                    if (Get.currentRoute == Routes.PRIVACY) {
+                      // Close the drawer if the user is already on the home page
+                      Navigator.of(context).pop();
+                    } else {
+                      Get.toNamed(Routes.PRIVACY);
+                    }
                   },
                 ),
                 const Divider(
