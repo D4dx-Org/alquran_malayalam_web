@@ -18,14 +18,16 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
     final settingsIconSize = 24.0 * iconScaleFactor;
     final logoSize = 64.0 * scaleFactor;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32.0),
-      child: AppBar(
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
         backgroundColor: Colors.transparent,
         toolbarHeight: 80 * scaleFactor,
         leadingWidth: 60 * scaleFactor,
         leading: Padding(
-          padding: EdgeInsets.only(left: 8.0 * scaleFactor),
+          padding: EdgeInsets.only(
+            left: screenWidth > 800 ? 50 * scaleFactor : 0.0,
+          ),
           child: IconButton(
             icon: Icon(
               Icons.menu_sharp,
@@ -39,22 +41,26 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
         actions: <Widget>[
-          IconButton(
-            icon: SvgPicture.asset(
-              "icons/Settings_Icon.svg",
-              height: settingsIconSize,
-              width: settingsIconSize,
+          Padding(
+            padding: EdgeInsets.only(
+              right: screenWidth > 800 ? 50 * scaleFactor : 0.0,
             ),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return const SettingsWidget();
-                },
-              );
-            },
+            child: IconButton(
+              icon: SvgPicture.asset(
+                "icons/Settings_Icon.svg",
+                height: settingsIconSize,
+                width: settingsIconSize,
+              ),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const SettingsWidget();
+                  },
+                );
+              },
+            ),
           ),
-          SizedBox(width: 8 * scaleFactor),
         ],
         title: LayoutBuilder(
           builder: (context, constraints) {
@@ -102,6 +108,7 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
           },
         ),
         centerTitle: true,
+        scrolledUnderElevation: 0.0,
       ),
     );
   }
