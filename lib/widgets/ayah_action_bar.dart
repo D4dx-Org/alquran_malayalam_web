@@ -4,12 +4,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class AyahActionBar extends StatelessWidget {
+  final int ayahNumber;
   final VoidCallback onPlayPressed;
   final VoidCallback onBookmarkPressed;
   final VoidCallback onSharePressed;
 
   const AyahActionBar({
     super.key,
+    required this.ayahNumber,
     required this.onPlayPressed,
     required this.onBookmarkPressed,
     required this.onSharePressed,
@@ -36,7 +38,7 @@ class AyahActionBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            '${quranController.selectedSurahId} : ${quranController.selectedAyahNumber}',
+            '${quranController.selectedSurahId} : $ayahNumber',
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.black54,

@@ -86,6 +86,9 @@ class _TranslationPageState extends State<TranslationPage> {
   }
 
   Widget _buildAyah(Map<String, dynamic> ayah) {
+    int ayahNumber = int.tryParse(ayah['AyaNo']) ??
+        0; // Assuming 'AyaNo' is the key for ayah number
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -110,6 +113,7 @@ class _TranslationPageState extends State<TranslationPage> {
                           onSharePressed: () {
                             debugPrint("Share button Pressed");
                           },
+                          ayahNumber: ayahNumber,
                         ),
                       ],
                     ),
