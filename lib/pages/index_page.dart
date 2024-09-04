@@ -35,44 +35,46 @@ class _IndexPageState extends State<IndexPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const IndexAppbar(),
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  SearchWidget(
-                    width: MediaQuery.of(context).size.width,
-                    onChanged: (value) {
-                      // Handle search text changes
-                    },
-                    onClear: () {
-                      // Handle clear button press
-                    },
-                  ),
-                  const SizedBox(height: 25),
-                  const HorizontalCardWidget(),
-                  const SizedBox(height: 25),
-                  IndexFloatingTabbar(
-                    controller: _tabController,
-                    isDarkMode: false,
-                    onTabChanged: (index) {
-                      _tabController.animateTo(index);
-                    },
-                  ),
-                ],
-              ),
-            )
-          ];
-        },
-        body: TabBarView(
-          controller: _tabController,
-          physics: const NeverScrollableScrollPhysics(),
-          children: const [
-            SurahListPage(),
-            JuzListPage(),
-            BookmarksPage(),
-          ],
+      body: SelectionArea(
+        child: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    SearchWidget(
+                      width: MediaQuery.of(context).size.width,
+                      onChanged: (value) {
+                        // Handle search text changes
+                      },
+                      onClear: () {
+                        // Handle clear button press
+                      },
+                    ),
+                    const SizedBox(height: 25),
+                    const HorizontalCardWidget(),
+                    const SizedBox(height: 25),
+                    IndexFloatingTabbar(
+                      controller: _tabController,
+                      isDarkMode: false,
+                      onTabChanged: (index) {
+                        _tabController.animateTo(index);
+                      },
+                    ),
+                  ],
+                ),
+              )
+            ];
+          },
+          body: TabBarView(
+            controller: _tabController,
+            physics: const NeverScrollableScrollPhysics(),
+            children: const [
+              SurahListPage(),
+              JuzListPage(),
+              BookmarksPage(),
+            ],
+          ),
         ),
       ),
       drawer: const NavigationDrawerWidget(),

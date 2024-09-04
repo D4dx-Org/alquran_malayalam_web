@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class QuranService {
-  final String baseUrl = "http://alquranmalayalam.net/alquran-api";
+  final String baseUrl = "https://alquranmalayalam.net/alquran-api";
   // ignore: non_constant_identifier_names
   var ArticleId = 1;
   var surahNumber = 1;
