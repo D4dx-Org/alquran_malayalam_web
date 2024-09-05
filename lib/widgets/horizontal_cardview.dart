@@ -1,12 +1,29 @@
+import 'package:alquran_web/controllers/quran_controller.dart';
+import 'package:alquran_web/routes/app_pages.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HorizontalCardWidget extends StatelessWidget {
-  const HorizontalCardWidget({super.key});
+  final QuranController quranController;
+
+  const HorizontalCardWidget({
+    Key? key,
+    required this.quranController,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     double cardHeight = 34;
-    double cardWidth = 100; // Set the desired card width
+    double cardWidth = 150;
+
+    final List<Map<String, dynamic>> surahs = [
+      {'id': 1, 'name': 'തൗൽ കുർസി'},
+      {'id': 2, 'name': 'സൂറ: യാസീൻ'},
+      {'id': 3, 'name': 'സൂറ: അൽമുൽക്ക്'},
+      {'id': 4, 'name': 'സൂറ: അർറഹ്മാൻ'},
+      {'id': 5, 'name': 'സൂറ: അൽവാഖിഅ'},
+      {'id': 6, 'name': 'സൂറ: അൽകഹ്ഫ്'},
+    ];
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -18,34 +35,56 @@ class HorizontalCardWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  5,
-                  (index) => Padding(
+                children: surahs.map((surah) {
+                  return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: SizedBox(
                       width: cardWidth,
-                      child: Container(
-                        height: cardHeight,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          color: const Color.fromRGBO(226, 226, 226, 1),
-                        ),
-                        child: const Center(
-                          child: Text(
-                            'Surah Name',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Color.fromRGBO(130, 130, 130, 1),
-                              fontWeight: FontWeight.normal,
-                              height: 1.5,
+                      child: GestureDetector(
+                        onTap: () {
+                          if (surah['name'] != null && surah['id'] != null) {
+                            quranController
+                                .updateSelectedSurah(surah['name'].toString());
+                            quranController.updateSelectedSurahId(surah['id']);
+                            debugPrint(
+                                'Navigating to SURAH_DETAILED with arguments:');
+                            debugPrint('surahId: ${surah['id']}');
+                            debugPrint('surahName: ${surah['name']}');
+                            Get.toNamed(
+                              Routes.SURAH_DETAILED,
+                              arguments: {
+                                'surahId': surah['id'],
+                                'surahName': surah['name'],
+                                'ayahNumber': 1,
+                              },
+                            );
+                          } else {
+                            debugPrint('Invalid surah data');
+                          }
+                        },
+                        child: Container(
+                          height: cardHeight,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            color: const Color.fromRGBO(226, 226, 226, 1),
+                          ),
+                          child: Center(
+                            child: Text(
+                              surah['name']?.toString() ?? '',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Color.fromRGBO(130, 130, 130, 1),
+                                fontWeight: FontWeight.normal,
+                                height: 1.5,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                }).toList(),
               ),
             ),
           ),
