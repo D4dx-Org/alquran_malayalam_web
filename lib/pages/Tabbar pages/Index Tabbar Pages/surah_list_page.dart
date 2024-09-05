@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SurahListPage extends StatefulWidget {
   const SurahListPage({super.key});
@@ -47,10 +48,19 @@ class _SurahListPageState extends State<SurahListPage> {
     }
   }
 
+  double getScaleFactor(double screenWidth) {
+    if (screenWidth < 600) return 0.05;
+    if (screenWidth < 800) return 0.08;
+    return 0.1;
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final scaleFactor = getScaleFactor(screenWidth);
 
+    final horizontalPadding =
+        screenWidth > 800 ? 50.0 : screenWidth * scaleFactor;
     int crossAxisCount = 3;
 
     if (screenWidth < 650) {
@@ -67,7 +77,7 @@ class _SurahListPageState extends State<SurahListPage> {
         children: [
           const Center(child: CircularProgressIndicator()),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: DynamicHeightGridView(
               itemCount: surahs.length,
               crossAxisCount: crossAxisCount,
@@ -101,7 +111,7 @@ class _SurahListPageState extends State<SurahListPage> {
           ),
           title: Text(
             surah['MSuraName'],
-            style: const TextStyle(
+            style: GoogleFonts.notoSansMalayalam(
               fontSize: 12,
               fontWeight: FontWeight.w600,
             ),
@@ -126,8 +136,8 @@ class _SurahListPageState extends State<SurahListPage> {
           ),
           trailing: Text(
             surah['ASuraName'],
-            style: const TextStyle(
-              fontSize: 14,
+            style: GoogleFonts.amiri(
+              fontSize: 18,
               fontWeight: FontWeight.w700,
             ),
           ),

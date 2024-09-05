@@ -1,3 +1,4 @@
+import 'package:alquran_web/controllers/bookmarks_controller.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:alquran_web/routes/app_pages.dart';
@@ -13,6 +14,7 @@ void main() async {
       permanent: true);
   Get.put(SettingsController(sharedPreferences: sharedPreferences),
       permanent: true);
+  Get.put(BookmarkController(sharedPreferences: sharedPreferences));
 
   runApp(const MyApp());
 }

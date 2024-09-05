@@ -1,7 +1,6 @@
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:alquran_web/widgets/ayah_action_bar.dart';
-import 'package:alquran_web/widgets/settings_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

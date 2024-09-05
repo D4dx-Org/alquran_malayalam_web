@@ -17,6 +17,12 @@ class _JuzListPageState extends State<JuzListPage> {
   final QuranService _quranService = QuranService();
   final JuzJsonParser _juzJsonParser = JuzJsonParser();
 
+  double getScaleFactor(double screenWidth) {
+    if (screenWidth < 600) return 0.05;
+    if (screenWidth < 800) return 0.08;
+    return 0.1;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -48,10 +54,14 @@ class _JuzListPageState extends State<JuzListPage> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final scaleFactor = getScaleFactor(screenWidth);
+
+    final horizontalPadding =
+        screenWidth > 800 ? 50.0 : screenWidth * scaleFactor;
 
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
         child: FutureBuilder<Map<int, List<Map<String, dynamic>>>>(
           future: _juzMappedData,
           builder: (context, snapshot) {
