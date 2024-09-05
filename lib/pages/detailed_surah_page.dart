@@ -50,8 +50,8 @@ class _DetailedSurahPageState extends State<DetailedSurahPage>
             Expanded(
               child: TabBarView(
                 controller: tabController,
-                children: const [
-                  TranslationPage(),
+                children: [
+                  const TranslationPage(),
                   ReadingPage(),
                 ],
               ),

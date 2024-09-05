@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:alquran_web/widgets/ayah_action_bar.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TranslationPage extends StatefulWidget {
   const TranslationPage({super.key});
@@ -91,8 +92,10 @@ class _TranslationPageState extends State<TranslationPage> {
           padding: const EdgeInsets.all(16.0),
           child: Center(
             child: Text(
-              _quranController.selectedSurah,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              _quranController
+                  .getArabicSurahName(_quranController.selectedSurahId),
+              style:
+                  GoogleFonts.amiri(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -216,7 +219,7 @@ class _TranslationPageState extends State<TranslationPage> {
       child: Obx(
         () => Text(
           word,
-          style: TextStyle(
+          style: GoogleFonts.amiri(
             fontSize: _settingsController.quranFontSize.value,
             fontWeight: FontWeight.bold,
           ),

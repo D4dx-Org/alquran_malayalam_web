@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class QuranController extends GetxController {
   final QuranService _quranService = QuranService();
   final _surahNames = <String>[].obs;
+  final _arabicSurahNames = <String>[].obs;
   final _surahIds = <int>[].obs;
   final _selectedSurah = ''.obs;
   final _selectedSurahId = 0.obs;
@@ -26,6 +27,7 @@ class QuranController extends GetxController {
   }
 
   List<String> get surahNames => _surahNames;
+  List<String> get arabicSurahNames => _arabicSurahNames;
   List<int> get surahIds => _surahIds;
   String get selectedSurah => _selectedSurah.value;
   int get selectedSurahId => _selectedSurahId.value;
@@ -50,39 +52,40 @@ class QuranController extends GetxController {
     }
   }
 
-  void updateSelectedSurah(String surahName) {
-    final index = _surahNames.indexOf(surahName);
-    if (index != -1) {
-      _selectedSurah.value = surahName;
-      _selectedSurahId.value = _surahIds[index];
-      _selectedSurahAyahCount.value = _surahAyahCounts[index];
-      _selectedAyahNumber.value = 1;
-      _selectedAyahRange.value = '${_surahIds[index]} : 1';
-      _sharedPreferences.setString('selectedSurah', surahName);
-      _sharedPreferences.setInt('selectedSurahId', _surahIds[index]);
-      _sharedPreferences.setInt('selectedAyahNumber', 1);
-      _sharedPreferences.setString(
-          'selectedAyahRange', '${_surahIds[index]} : 1');
-      _fetchAyahLines(_surahIds[index]);
-    }
-  }
+void updateSelectedSurah(String surahName) {  
+  final index = _surahNames.indexOf(surahName);  
+  if (index != -1) {  
+    _selectedSurah.value = surahName;  
+    _selectedSurahId.value = _surahIds[index];  
+    _selectedSurahAyahCount.value = _surahAyahCounts[index];  
+    _selectedAyahNumber.value = 1;  
+    _selectedAyahRange.value = '${_surahIds[index]} : 1';  
+    _sharedPreferences.setString('selectedSurah', surahName);  
+    _sharedPreferences.setString('selectedArabicSurah', _arabicSurahNames[index]);  
+    _sharedPreferences.setInt('selectedSurahId', _surahIds[index]);  
+    _sharedPreferences.setInt('selectedAyahNumber', 1);  
+    _sharedPreferences.setString(  
+        'selectedAyahRange', '${_surahIds[index]} : 1');  
+    _fetchAyahLines(_surahIds[index]);  
+  }  
+}
 
-  void updateSelectedSurahId(int surahId) {
-    final index = _surahIds.indexOf(surahId);
-    if (index != -1) {
-      _selectedSurah.value = _surahNames[index];
-      _selectedSurahId.value = surahId;
-      _selectedSurahAyahCount.value = _surahAyahCounts[index];
-      _selectedAyahNumber.value = 1;
-      _selectedAyahRange.value = '$surahId : 1';
-      _sharedPreferences.setString('selectedSurah', _surahNames[index]);
-      _sharedPreferences.setInt('selectedSurahId', surahId);
-      _sharedPreferences.setInt('selectedAyahNumber', 1);
-      _sharedPreferences.setString('selectedAyahRange', '$surahId : 1');
-      _fetchAyahLines(surahId);
-    }
-  }
-
+void updateSelectedSurahId(int surahId) {  
+  final index = _surahIds.indexOf(surahId);  
+  if (index != -1) {  
+    _selectedSurah.value = _surahNames[index];  
+    _selectedSurahId.value = surahId;  
+    _selectedSurahAyahCount.value = _surahAyahCounts[index];  
+    _selectedAyahNumber.value = 1;  
+    _selectedAyahRange.value = '$surahId : 1';  
+    _sharedPreferences.setString('selectedSurah', _surahNames[index]);  
+    _sharedPreferences.setString('selectedArabicSurah', _arabicSurahNames[index]);  
+    _sharedPreferences.setInt('selectedSurahId', surahId);  
+    _sharedPreferences.setInt('selectedAyahNumber', 1);  
+    _sharedPreferences.setString('selectedAyahRange', '$surahId : 1');  
+    _fetchAyahLines(surahId);  
+  }  
+}
   void updateSelectedAyahRange(String ayahRange) {
     final parts = ayahRange.split(' : ');
     final surahNumber = int.parse(parts[0]);
@@ -112,6 +115,14 @@ class QuranController extends GetxController {
     return 'Unknown Surah';
   }
 
+String getArabicSurahName(int surahId) {  
+  final index = _surahIds.indexOf(surahId);  
+  if (index != -1) {  
+    return _arabicSurahNames[index];  
+  }  
+  return 'Unknown Surah';  
+}  
+
   @override
   void onInit() async {
     super.onInit();
@@ -124,6 +135,8 @@ class QuranController extends GetxController {
       final surahs = await _quranService.fetchSurahs();
       _surahNames.value =
           surahs.map((surah) => surah['MSuraName'] as String).toList();
+          _arabicSurahNames.value =
+          surahs.map((surah) => surah['ASuraName'] as String).toList();
       _surahIds.value =
           surahs.map((surah) => int.parse(surah['SuraId'].toString())).toList();
       _surahAyahCounts.value = surahs
