@@ -41,9 +41,17 @@ class _TranslationPageState extends State<TranslationPage> {
   }
 
   Future<void> _loadMoreAyahLines() async {
+    if (_isEndOfSurah()) return;
+
     setState(() => _isLoading = true);
     await _quranController.fetchMoreAyahLines();
     setState(() => _isLoading = false);
+  }
+
+  bool _isEndOfSurah() {
+    return _quranController.ayahLines.isNotEmpty &&
+        _quranController.ayahLines.last['AyaNo'] ==
+            _quranController.selectedSurahAyahCount.toString();
   }
 
   @override
@@ -52,39 +60,53 @@ class _TranslationPageState extends State<TranslationPage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32.0),
         child: Obx(
-          () => SingleChildScrollView(
+          () => ListView.builder(
             controller: _scrollController,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Center(
-                    child: Text(
-                      _quranController.selectedSurah,
-                      style: const TextStyle(
-                          fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Center(
-                    child: Text(
-                      _quranController.selectedSurah,
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                ..._quranController.ayahLines.map((ayah) => _buildAyah(ayah)),
-                if (_isLoading)
-                  const Center(child: CircularProgressIndicator()),
-              ],
-            ),
+            itemCount: _quranController.ayahLines.length + 3,
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return _buildHeader();
+              } else if (index == _quranController.ayahLines.length + 1) {
+                return _isEndOfSurah()
+                    ? _buildEndOfSurahMessage()
+                    : const SizedBox.shrink();
+              } else if (index == _quranController.ayahLines.length + 2) {
+                return _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : const SizedBox.shrink();
+              } else {
+                return _buildAyah(_quranController.ayahLines[index - 1]);
+              }
+            },
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+            child: Text(
+              _quranController.selectedSurah,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Center(
+            child: Text(
+              _quranController.selectedSurah,
+              style: const TextStyle(fontSize: 18),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+      ],
     );
   }
 
@@ -104,28 +126,28 @@ class _TranslationPageState extends State<TranslationPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: AyahActionBar(
-                      ayahNumber: ayahNumber,
-                      lineId: lineId,
-                      onPlayPressed: () {
-                        debugPrint("Play button Pressed");
-                      },
-                      onBookmarkPressed: () {
-                        _bookmarkController.toggleBookmark(
-                          _quranController.selectedSurahId,
-                          ayahNumber,
-                          lineId,
-                        );
-                      },
-                      onSharePressed: () {
-                        debugPrint("Share button Pressed");
-                      },
-                      isBookmarked: _bookmarkController.isAyahBookmarked(
-                        _quranController.selectedSurahId,
-                        ayahNumber,
-                        lineId,
-                      ),
-                    ),
+                    child: Obx(() => AyahActionBar(
+                          ayahNumber: ayahNumber,
+                          lineId: lineId,
+                          onPlayPressed: () {
+                            debugPrint("Play button Pressed");
+                          },
+                          onBookmarkPressed: () {
+                            _bookmarkController.toggleBookmark(
+                              _quranController.selectedSurahId,
+                              ayahNumber,
+                              lineId,
+                            );
+                          },
+                          onSharePressed: () {
+                            debugPrint("Share button Pressed");
+                          },
+                          isBookmarked: _bookmarkController.isAyahBookmarked(
+                            _quranController.selectedSurahId,
+                            ayahNumber,
+                            lineId,
+                          ),
+                        )),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -211,6 +233,22 @@ class _TranslationPageState extends State<TranslationPage> {
           translation,
           style: TextStyle(
             fontSize: _settingsController.translationFontSize.value,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEndOfSurahMessage() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: Center(
+        child: Text(
+          "End of Surah",
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.normal,
+            color: Colors.black,
           ),
         ),
       ),

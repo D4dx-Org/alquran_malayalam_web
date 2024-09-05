@@ -23,9 +23,10 @@ class BookmarksPage extends StatelessWidget {
             final bookmark = bookmarkedAyahs[index];
             final surahId = bookmark['surahId']!;
             final ayahNumber = bookmark['ayahNumber']!;
+            final lineId = bookmark['lineId']!;
             final surahName = quranController.getSurahName(surahId);
 
-            return _buildBookmarksCard(surahName, surahId, ayahNumber);
+            return _buildBookmarksCard(surahName, surahId, ayahNumber, lineId);
           },
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: _getCrossAxisCount(context),
@@ -38,7 +39,8 @@ class BookmarksPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBookmarksCard(String surahName, int surahId, int ayahNumber) {
+  Widget _buildBookmarksCard(
+      String surahName, int surahId, int ayahNumber, String lineId) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
       child: Card(
@@ -94,8 +96,10 @@ class BookmarksPage extends StatelessWidget {
                 'surahId': surahId,
                 'surahName': surahName,
                 'ayahNumber': ayahNumber,
+                'lineId': lineId,
               },
             );
+            print('Line ID is $lineId');
           },
         ),
       ),

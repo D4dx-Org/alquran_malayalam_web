@@ -3,7 +3,7 @@ import 'package:alquran_web/widgets/articles_bottom_row.dart';
 import 'package:alquran_web/widgets/settings_widget.dart';
 import 'package:alquran_web/widgets/surah_bottom_row.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // Enum to represent different pages

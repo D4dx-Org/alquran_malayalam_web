@@ -2,7 +2,7 @@ import 'package:alquran_web/services/quran_services.dart';
 import 'package:alquran_web/services/utils.dart';
 import 'package:alquran_web/widgets/star_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class JuzListPage extends StatefulWidget {
