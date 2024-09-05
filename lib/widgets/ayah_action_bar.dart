@@ -5,19 +5,22 @@ import 'package:alquran_web/controllers/quran_controller.dart';
 
 class AyahActionBar extends StatelessWidget {
   final int ayahNumber;
+  final String lineId;
+
   final VoidCallback onPlayPressed;
   final VoidCallback onBookmarkPressed;
   final VoidCallback onSharePressed;
   final bool isBookmarked;
 
   const AyahActionBar({
-    Key? key,
+    super.key,
     required this.ayahNumber,
+    required this.lineId,
     required this.onPlayPressed,
     required this.onBookmarkPressed,
     required this.onSharePressed,
     required this.isBookmarked,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

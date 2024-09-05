@@ -1,4 +1,3 @@
-
 import 'package:alquran_web/controllers/bookmarks_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -91,6 +90,7 @@ class _TranslationPageState extends State<TranslationPage> {
 
   Widget _buildAyah(Map<String, dynamic> ayah) {
     int ayahNumber = int.tryParse(ayah['AyaNo']) ?? 0;
+    String lineId = ayah['LineId'] ?? '';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -106,18 +106,25 @@ class _TranslationPageState extends State<TranslationPage> {
                     padding: const EdgeInsets.all(16.0),
                     child: AyahActionBar(
                       ayahNumber: ayahNumber,
+                      lineId: lineId,
                       onPlayPressed: () {
                         debugPrint("Play button Pressed");
                       },
                       onBookmarkPressed: () {
                         _bookmarkController.toggleBookmark(
-                            _quranController.selectedSurahId, ayahNumber);
+                          _quranController.selectedSurahId,
+                          ayahNumber,
+                          lineId,
+                        );
                       },
                       onSharePressed: () {
                         debugPrint("Share button Pressed");
                       },
                       isBookmarked: _bookmarkController.isAyahBookmarked(
-                          _quranController.selectedSurahId, ayahNumber),
+                        _quranController.selectedSurahId,
+                        ayahNumber,
+                        lineId,
+                      ),
                     ),
                   ),
                   Row(
