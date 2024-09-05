@@ -1,21 +1,23 @@
-import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:alquran_web/controllers/quran_controller.dart';
 
 class AyahActionBar extends StatelessWidget {
   final int ayahNumber;
   final VoidCallback onPlayPressed;
   final VoidCallback onBookmarkPressed;
   final VoidCallback onSharePressed;
+  final bool isBookmarked;
 
   const AyahActionBar({
-    super.key,
+    Key? key,
     required this.ayahNumber,
     required this.onPlayPressed,
     required this.onBookmarkPressed,
     required this.onSharePressed,
-  });
+    required this.isBookmarked,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,46 +26,58 @@ class AyahActionBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(30),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: const Color(0xFFF6F6F6),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            '${quranController.selectedSurahId} : $ayahNumber',
+            '${quranController.selectedSurahId}:$ayahNumber',
             style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.black54,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF734E09),
             ),
           ),
-          const SizedBox(width: 12),
-          _buildIconButton('icons/PlayAyah_Icon.svg', onPlayPressed),
-          const SizedBox(width: 12),
-          _buildIconButton('icons/SaveAsBookmark_Icon.svg', onBookmarkPressed),
-          const SizedBox(width: 12),
-          _buildIconButton('icons/ShareAyah_Icon.svg', onSharePressed),
+          const SizedBox(width: 16),
+          _buildSvgIconButton('icons/PlayAyah_Icon.svg', onPlayPressed),
+          const SizedBox(width: 16),
+          _buildIconButton(
+            isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+            onBookmarkPressed,
+            isBookmarked,
+          ),
+          const SizedBox(width: 16),
+          _buildSvgIconButton('icons/ShareAyah_Icon.svg', onSharePressed),
         ],
       ),
     );
   }
 
-  Widget _buildIconButton(String assetName, VoidCallback onPressed) {
+  Widget _buildSvgIconButton(String assetName, VoidCallback onPressed) {
     return GestureDetector(
       onTap: onPressed,
       child: SvgPicture.asset(
         assetName,
         height: 14,
         width: 14,
-        // ignore: deprecated_member_use
-        color: const Color.fromRGBO(115, 78, 9, 1),
+        colorFilter: const ColorFilter.mode(
+          Color(0xFF734E09),
+          BlendMode.srcIn,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIconButton(
+      IconData icon, VoidCallback onPressed, bool isActive) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Icon(
+        icon,
+        size: 18,
+        color: const Color(0xFF734E09),
       ),
     );
   }

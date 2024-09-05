@@ -3,6 +3,7 @@ import 'package:alquran_web/services/utils.dart';
 import 'package:alquran_web/widgets/star_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class JuzListPage extends StatefulWidget {
   const JuzListPage({super.key});
@@ -208,7 +209,7 @@ class _JuzListPageState extends State<JuzListPage> {
         ),
         title: Text(
           surah['MSuraName'],
-          style: const TextStyle(
+          style: GoogleFonts.notoSansMalayalam(
             color: Colors.black,
             fontWeight: FontWeight.w600,
             fontSize: 14,
@@ -235,10 +236,10 @@ class _JuzListPageState extends State<JuzListPage> {
         ),
         trailing: Text(
           surah['ASuraName'],
-          style: const TextStyle(
+          style: GoogleFonts.amiri(
             color: Colors.black,
             fontWeight: FontWeight.bold,
-            fontSize: 14,
+            fontSize: 18,
           ),
         ),
         onTap: () {

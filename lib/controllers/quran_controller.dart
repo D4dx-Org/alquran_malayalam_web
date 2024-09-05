@@ -104,6 +104,14 @@ class QuranController extends GetxController {
     }
   }
 
+  String getSurahName(int surahId) {
+    final index = _surahIds.indexOf(surahId);
+    if (index != -1) {
+      return _surahNames[index];
+    }
+    return 'Unknown Surah';
+  }
+
   @override
   void onInit() async {
     super.onInit();

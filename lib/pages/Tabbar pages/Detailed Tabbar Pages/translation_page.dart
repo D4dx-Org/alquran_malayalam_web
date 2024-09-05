@@ -1,8 +1,10 @@
+
+import 'package:alquran_web/controllers/bookmarks_controller.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:alquran_web/widgets/ayah_action_bar.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class TranslationPage extends StatefulWidget {
   const TranslationPage({super.key});
@@ -14,6 +16,7 @@ class TranslationPage extends StatefulWidget {
 class _TranslationPageState extends State<TranslationPage> {
   final _quranController = Get.find<QuranController>();
   final _settingsController = Get.find<SettingsController>();
+  final _bookmarkController = Get.find<BookmarkController>();
   final _scrollController = ScrollController();
   bool _isLoading = false;
 
@@ -39,9 +42,9 @@ class _TranslationPageState extends State<TranslationPage> {
   }
 
   Future<void> _loadMoreAyahLines() async {
-    _isLoading = true;
+    setState(() => _isLoading = true);
     await _quranController.fetchMoreAyahLines();
-    _isLoading = false;
+    setState(() => _isLoading = false);
   }
 
   @override
@@ -76,6 +79,8 @@ class _TranslationPageState extends State<TranslationPage> {
                 ),
                 const SizedBox(height: 20),
                 ..._quranController.ayahLines.map((ayah) => _buildAyah(ayah)),
+                if (_isLoading)
+                  const Center(child: CircularProgressIndicator()),
               ],
             ),
           ),
@@ -85,8 +90,7 @@ class _TranslationPageState extends State<TranslationPage> {
   }
 
   Widget _buildAyah(Map<String, dynamic> ayah) {
-    int ayahNumber = int.tryParse(ayah['AyaNo']) ??
-        0; // Assuming 'AyaNo' is the key for ayah number
+    int ayahNumber = int.tryParse(ayah['AyaNo']) ?? 0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -100,21 +104,20 @@ class _TranslationPageState extends State<TranslationPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        AyahActionBar(
-                          onPlayPressed: () {
-                            debugPrint("Play button Pressed");
-                          },
-                          onBookmarkPressed: () {
-                            debugPrint("Bookmark button Pressed");
-                          },
-                          onSharePressed: () {
-                            debugPrint("Share button Pressed");
-                          },
-                          ayahNumber: ayahNumber,
-                        ),
-                      ],
+                    child: AyahActionBar(
+                      ayahNumber: ayahNumber,
+                      onPlayPressed: () {
+                        debugPrint("Play button Pressed");
+                      },
+                      onBookmarkPressed: () {
+                        _bookmarkController.toggleBookmark(
+                            _quranController.selectedSurahId, ayahNumber);
+                      },
+                      onSharePressed: () {
+                        debugPrint("Share button Pressed");
+                      },
+                      isBookmarked: _bookmarkController.isAyahBookmarked(
+                          _quranController.selectedSurahId, ayahNumber),
                     ),
                   ),
                   Row(
