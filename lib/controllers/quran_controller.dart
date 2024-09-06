@@ -21,6 +21,8 @@ class QuranController extends GetxController {
   final _selectedAyahNumber = 1.obs;
   final _selectedAyahRange = ''.obs;
   final _ayahLines = <Map<String, dynamic>>[].obs;
+  final _surahAyahCounts = <int>[].obs;
+  final _surahMalMeans = <String>[].obs;
 
   int currentPage = 0;
   static QuranController get instance => Get.find<QuranController>();
@@ -34,6 +36,7 @@ class QuranController extends GetxController {
   int get selectedAyahNumber => _selectedAyahNumber.value;
   String get selectedAyahRange => _selectedAyahRange.value;
   List<Map<String, dynamic>> get ayahLines => _ayahLines;
+  List<String> get surahMalMeans => _surahMalMeans;
 
   void navigateToPreviousSurah() {
     final currentIndex = _surahIds.indexOf(_selectedSurahId.value);
@@ -68,6 +71,7 @@ class QuranController extends GetxController {
       _prefsController.setInt('selectedAyahNumber', 1);
       _prefsController.setString(
           'selectedAyahRange', '${_surahIds[index]} : 1');
+      _prefsController.setString('selectedSurahMalMean', _surahMalMeans[index]);
       _fetchAyahLines(_surahIds[index]);
       Get.find<ReadingController>().fetchSurah(_surahIds[index]);
     }
@@ -87,6 +91,7 @@ class QuranController extends GetxController {
       _prefsController.setInt('selectedSurahId', surahId);
       _prefsController.setInt('selectedAyahNumber', 1);
       _prefsController.setString('selectedAyahRange', '$surahId : 1');
+      _prefsController.setString('selectedSurahMalMean', _surahMalMeans[index]);
       _fetchAyahLines(surahId);
     }
   }
@@ -126,6 +131,30 @@ class QuranController extends GetxController {
     return 'Unknown Surah';
   }
 
+  String getSurahMalMean(int surahId) {
+    final index = _surahIds.indexOf(surahId);
+    if (index != -1) {
+      return _surahMalMeans[index];
+    }
+    return 'Unknown Meaning';
+  }
+
+  void printSelectedSurahMalMean() {
+    final index = _surahIds.indexOf(_selectedSurahId.value);
+    if (index != -1) {
+      print(
+          'Malayalam Meaning of ${_surahNames[index]}: ${_surahMalMeans[index]}');
+    } else {
+      print('No Surah selected or MalMean not available.');
+    }
+  }
+
+  void printAllSurahMalMeans() {
+    for (int i = 0; i < _surahNames.length; i++) {
+      print('${_surahNames[i]} - Malayalam Meaning: ${_surahMalMeans[i]}');
+    }
+  }
+
   @override
   void onInit() async {
     super.onInit();
@@ -147,6 +176,8 @@ class QuranController extends GetxController {
       _surahAyahCounts.value = surahs
           .map((surah) => int.parse(surah['TotalAyas'].toString()))
           .toList();
+      _surahMalMeans.value =
+          surahs.map((surah) => surah['MalMean'] as String).toList();
     } catch (e) {
       // Handle error
     }
@@ -206,6 +237,4 @@ class QuranController extends GetxController {
     _selectedAyahRange.value = '${_surahIds.first} : 1';
     _fetchAyahLines(_surahIds.first);
   }
-
-  final _surahAyahCounts = <int>[].obs;
 }

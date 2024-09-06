@@ -112,11 +112,20 @@ class _TranslationPageState extends State<TranslationPage> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Center(
-            child: Text(
-              _quranController.selectedSurah,
-              style: const TextStyle(fontSize: 18),
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                _quranController.selectedSurah,
+                style: const TextStyle(fontSize: 18),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                '(${_quranController.getSurahMalMean(_quranController.selectedSurahId)})',
+                style:
+                    const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 20),
