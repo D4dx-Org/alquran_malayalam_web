@@ -3,6 +3,7 @@ import 'package:alquran_web/controllers/bookmarks_controller.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
+import 'package:alquran_web/controllers/shared_preference_controller.dart';
 import 'package:alquran_web/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,8 +13,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final sharedPreferences = await SharedPreferences.getInstance();
+  Get.put(SharedPreferencesController(sharedPreferences: sharedPreferences));
   Get.put(QuranController(sharedPreferences: sharedPreferences),
       permanent: true);
+
   Get.put(SettingsController(sharedPreferences: sharedPreferences),
       permanent: true);
   Get.put(BookmarkController(sharedPreferences: sharedPreferences));

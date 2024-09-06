@@ -1,4 +1,5 @@
 import 'package:alquran_web/controllers/reading_controller.dart';
+import 'package:alquran_web/controllers/shared_preference_controller.dart';
 import 'package:alquran_web/services/quran_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class QuranController extends GetxController {
   final QuranService _quranService = QuranService();
+  final SharedPreferences sharedPreferences;
+
+  QuranController({required this.sharedPreferences});
+
+  late final SharedPreferencesController _prefsController;
   final _surahNames = <String>[].obs;
   final _arabicSurahNames = <String>[].obs;
   final _surahIds = <int>[].obs;
@@ -15,17 +21,9 @@ class QuranController extends GetxController {
   final _selectedAyahNumber = 1.obs;
   final _selectedAyahRange = ''.obs;
   final _ayahLines = <Map<String, dynamic>>[].obs;
-  late final SharedPreferences _sharedPreferences;
 
   int currentPage = 0;
-
   static QuranController get instance => Get.find<QuranController>();
-
-  QuranController({
-    required SharedPreferences sharedPreferences,
-  }) {
-    _sharedPreferences = sharedPreferences;
-  }
 
   List<String> get surahNames => _surahNames;
   List<String> get arabicSurahNames => _arabicSurahNames;
@@ -42,8 +40,7 @@ class QuranController extends GetxController {
     if (currentIndex > 0) {
       updateSelectedSurahId(_surahIds[currentIndex - 1]);
       _fetchAyahLines(_surahIds[currentIndex - 1]);
-          Get.find<ReadingController>().fetchSurah(_surahIds[currentIndex - 1]);  
-
+      Get.find<ReadingController>().fetchSurah(_surahIds[currentIndex - 1]);
     }
   }
 
@@ -52,64 +49,63 @@ class QuranController extends GetxController {
     if (currentIndex < _surahIds.length - 1) {
       updateSelectedSurahId(_surahIds[currentIndex + 1]);
       _fetchAyahLines(_surahIds[currentIndex + 1]);
-          Get.find<ReadingController>().fetchSurah(_surahIds[currentIndex + 1]);  
-
+      Get.find<ReadingController>().fetchSurah(_surahIds[currentIndex + 1]);
     }
   }
 
-void updateSelectedSurah(String surahName) {  
-  final index = _surahNames.indexOf(surahName);  
-  if (index != -1) {  
-    _selectedSurah.value = surahName;  
-    _selectedSurahId.value = _surahIds[index];  
-    _selectedSurahAyahCount.value = _surahAyahCounts[index];  
-    _selectedAyahNumber.value = 1;  
-    _selectedAyahRange.value = '${_surahIds[index]} : 1';  
-    _sharedPreferences.setString('selectedSurah', surahName);  
-    _sharedPreferences.setString('selectedArabicSurah', _arabicSurahNames[index]);  
-    _sharedPreferences.setInt('selectedSurahId', _surahIds[index]);  
-    _sharedPreferences.setInt('selectedAyahNumber', 1);  
-    _sharedPreferences.setString(  
-        'selectedAyahRange', '${_surahIds[index]} : 1');  
-    _fetchAyahLines(_surahIds[index]);  
-        Get.find<ReadingController>().fetchSurah(_surahIds[index]);  
+  void updateSelectedSurah(String surahName) {
+    final index = _surahNames.indexOf(surahName);
+    if (index != -1) {
+      _selectedSurah.value = surahName;
+      _selectedSurahId.value = _surahIds[index];
+      _selectedSurahAyahCount.value = _surahAyahCounts[index];
+      _selectedAyahNumber.value = 1;
+      _selectedAyahRange.value = '${_surahIds[index]} : 1';
+      _prefsController.setString('selectedSurah', surahName);
+      _prefsController.setString(
+          'selectedArabicSurah', _arabicSurahNames[index]);
+      _prefsController.setInt('selectedSurahId', _surahIds[index]);
+      _prefsController.setInt('selectedAyahNumber', 1);
+      _prefsController.setString(
+          'selectedAyahRange', '${_surahIds[index]} : 1');
+      _fetchAyahLines(_surahIds[index]);
+      Get.find<ReadingController>().fetchSurah(_surahIds[index]);
+    }
+  }
 
-  }  
-}
+  void updateSelectedSurahId(int surahId) {
+    final index = _surahIds.indexOf(surahId);
+    if (index != -1) {
+      _selectedSurah.value = _surahNames[index];
+      _selectedSurahId.value = surahId;
+      _selectedSurahAyahCount.value = _surahAyahCounts[index];
+      _selectedAyahNumber.value = 1;
+      _selectedAyahRange.value = '$surahId : 1';
+      _prefsController.setString('selectedSurah', _surahNames[index]);
+      _prefsController.setString(
+          'selectedArabicSurah', _arabicSurahNames[index]);
+      _prefsController.setInt('selectedSurahId', surahId);
+      _prefsController.setInt('selectedAyahNumber', 1);
+      _prefsController.setString('selectedAyahRange', '$surahId : 1');
+      _fetchAyahLines(surahId);
+    }
+  }
 
-void updateSelectedSurahId(int surahId) {  
-  final index = _surahIds.indexOf(surahId);  
-  if (index != -1) {  
-    _selectedSurah.value = _surahNames[index];  
-    _selectedSurahId.value = surahId;  
-    _selectedSurahAyahCount.value = _surahAyahCounts[index];  
-    _selectedAyahNumber.value = 1;  
-    _selectedAyahRange.value = '$surahId : 1';  
-    _sharedPreferences.setString('selectedSurah', _surahNames[index]);  
-    _sharedPreferences.setString('selectedArabicSurah', _arabicSurahNames[index]);  
-    _sharedPreferences.setInt('selectedSurahId', surahId);  
-    _sharedPreferences.setInt('selectedAyahNumber', 1);  
-    _sharedPreferences.setString('selectedAyahRange', '$surahId : 1');  
-    _fetchAyahLines(surahId);  
-  }  
-}
   void updateSelectedAyahRange(String ayahRange) {
     final parts = ayahRange.split(' : ');
     final surahNumber = int.parse(parts[0]);
     final ayahNumber = int.parse(parts[1]);
 
-    // Check if the selected ayah range is within the bounds of the current surah
     if (surahNumber == _selectedSurahId.value &&
         ayahNumber <= _selectedSurahAyahCount.value) {
       _selectedAyahRange.value = ayahRange;
       _selectedAyahNumber.value = ayahNumber;
-      _sharedPreferences.setString('selectedAyahRange', ayahRange);
+      _prefsController.setString('selectedAyahRange', ayahRange);
     } else {
-      // If the selected ayah range is out of bounds, reset it to the last ayah of the current surah
       final lastAyahNumber = _selectedSurahAyahCount.value;
       _selectedAyahRange.value = '${_selectedSurahId.value} : $lastAyahNumber';
       _selectedAyahNumber.value = lastAyahNumber;
-      _sharedPreferences.setString(
+      _prefsController.setString(
           'selectedAyahRange', '${_selectedSurahId.value} : $lastAyahNumber');
     }
   }
@@ -122,17 +118,19 @@ void updateSelectedSurahId(int surahId) {
     return 'Unknown Surah';
   }
 
-String getArabicSurahName(int surahId) {  
-  final index = _surahIds.indexOf(surahId);  
-  if (index != -1) {  
-    return _arabicSurahNames[index];  
-  }  
-  return 'Unknown Surah';  
-}  
+  String getArabicSurahName(int surahId) {
+    final index = _surahIds.indexOf(surahId);
+    if (index != -1) {
+      return _arabicSurahNames[index];
+    }
+    return 'Unknown Surah';
+  }
 
   @override
   void onInit() async {
     super.onInit();
+    _prefsController = Get.find<SharedPreferencesController>();
+
     await fetchSurahs();
     _loadSelectedSurah();
   }
@@ -142,7 +140,7 @@ String getArabicSurahName(int surahId) {
       final surahs = await _quranService.fetchSurahs();
       _surahNames.value =
           surahs.map((surah) => surah['MSuraName'] as String).toList();
-          _arabicSurahNames.value =
+      _arabicSurahNames.value =
           surahs.map((surah) => surah['ASuraName'] as String).toList();
       _surahIds.value =
           surahs.map((surah) => int.parse(surah['SuraId'].toString())).toList();
@@ -176,9 +174,9 @@ String getArabicSurahName(int surahId) {
   }
 
   void _loadSelectedSurah() {
-    final storedSurah = _sharedPreferences.getString('selectedSurah');
-    final storedSurahId = _sharedPreferences.getInt('selectedSurahId');
-    final storedAyahRange = _sharedPreferences.getString('selectedAyahRange');
+    final storedSurah = _prefsController.getString('selectedSurah');
+    final storedSurahId = _prefsController.getInt('selectedSurahId');
+    final storedAyahRange = _prefsController.getString('selectedAyahRange');
 
     if (storedSurah != null &&
         storedSurahId != null &&
@@ -193,23 +191,20 @@ String getArabicSurahName(int surahId) {
         _selectedAyahRange.value = storedAyahRange;
         _fetchAyahLines(_surahIds[index]);
       } else {
-        // If the stored surah is not found in the list, use the first surah
-        _selectedSurah.value = _surahNames.first;
-        _selectedSurahId.value = _surahIds.first;
-        _selectedSurahAyahCount.value = _surahAyahCounts.first;
-        _selectedAyahNumber.value = 1;
-        _selectedAyahRange.value = '${_surahIds.first} : 1';
-        _fetchAyahLines(_surahIds.first);
+        _useFirstSurah();
       }
     } else if (_surahNames.isNotEmpty) {
-      // If the stored surah information is not available, use the first surah
-      _selectedSurah.value = _surahNames.first;
-      _selectedSurahId.value = _surahIds.first;
-      _selectedSurahAyahCount.value = _surahAyahCounts.first;
-      _selectedAyahNumber.value = 1;
-      _selectedAyahRange.value = '${_surahIds.first} : 1';
-      _fetchAyahLines(_surahIds.first);
+      _useFirstSurah();
     }
+  }
+
+  void _useFirstSurah() {
+    _selectedSurah.value = _surahNames.first;
+    _selectedSurahId.value = _surahIds.first;
+    _selectedSurahAyahCount.value = _surahAyahCounts.first;
+    _selectedAyahNumber.value = 1;
+    _selectedAyahRange.value = '${_surahIds.first} : 1';
+    _fetchAyahLines(_surahIds.first);
   }
 
   final _surahAyahCounts = <int>[].obs;
