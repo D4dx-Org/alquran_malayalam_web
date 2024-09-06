@@ -11,7 +11,7 @@ class QuranComService {
       final data = jsonDecode(response.body);
       return data['chapters'];
     } else {
-      throw Exception('Failed to load Surahs');
+      throw Exception('Failed to load Surahs: ${response.statusCode}');
     }
   }
 
@@ -25,7 +25,7 @@ class QuranComService {
         'englishName': surah['name_simple'],
       };
     } else {
-      throw Exception('Surah not found');
+      throw Exception('Surah not found: $surahNumber');
     }
   }
 
@@ -37,45 +37,65 @@ class QuranComService {
       final ayahsData = jsonDecode(utf8.decode(response.bodyBytes));
       List<QuranVerse> ayahs = [];
 
-      for (int i = 0; i < ayahsData['verses'].length; i++) {
+      for (var verse in ayahsData['verses']) {
         ayahs.add(QuranVerse(
-          verseNumber: ayahsData['verses'][i]['verse_key'].toString(),
-          arabicText: ayahsData['verses'][i]['text_uthmani'].toString(),
+          verseNumber: verse['verse_key'].toString(),
+          arabicText: verse['text_uthmani'].toString(),
         ));
       }
 
       return ayahs;
     } else {
-      throw Exception('Failed to load Ayahs');
+      throw Exception(
+          'Failed to load Ayahs for Surah $surahId: ${response.statusCode}');
     }
   }
 
-  Future<String> fetchAyahAudio(int ayahId) async {
-    final response = await http
-        .get(Uri.parse("$baseUrl/verses/by_key/$ayahId/recitations/1"));
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return data['audio']['url'];
-    } else {
-      throw Exception('Failed to load Ayah audio');
+  Future<String?> fetchAyahAudio(String verseKey) async {
+    try {
+      final response =
+          await http.get(Uri.parse("$baseUrl/verses/by_key/$verseKey?audio=1"));
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final verse = data['verse'] as Map<String, dynamic>?;
+        if (verse != null && verse.containsKey('audio')) {
+          final audio = verse['audio'] as Map<String, dynamic>?;
+          if (audio != null && audio.containsKey('url')) {
+            String audioUrl = audio['url'] as String;
+            // Check if the audioUrl is a relative path
+            if (!audioUrl.startsWith('http')) {
+              // Prepend the base URL if necessary
+              audioUrl = 'https://audio.qurancdn.com/' + audioUrl;
+            }
+            return audioUrl;
+          }
+        }
+        print('No audio URL found for verse $verseKey');
+        return null;
+      } else {
+        throw Exception('Failed to load Ayah audio: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching audio for verse $verseKey: $e');
+      return null;
     }
   }
 
   Future<List<QuranVerse>> searchAyahs(String query, String language) async {
     final response = await http
-        .get(Uri.parse("$baseUrl/quran/search?q=$query&language=$language"));
+        .get(Uri.parse("$baseUrl/search?q=$query&language=$language"));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       List<QuranVerse> results = [];
-      for (var item in data['results']) {
+      for (var item in data['search']['results']) {
         results.add(QuranVerse(
-          verseNumber: '${item['sura']['id']}:${item['ayah']['id']}',
-          arabicText: item['ayah']['text'],
+          verseNumber: item['verse_key'],
+          arabicText: item['text'],
         ));
       }
       return results;
     } else {
-      throw Exception('Failed to search Ayahs');
+      throw Exception('Failed to search Ayahs: ${response.statusCode}');
     }
   }
 }

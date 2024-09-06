@@ -57,7 +57,7 @@ class _TranslationPageState extends State<TranslationPage> {
             _quranController.selectedSurahAyahCount.toString();
   }
 
-  final AudioController audioController = Get.find<AudioController>();
+  final AudioController _audioController = Get.find<AudioController>();
 
   @override
   Widget build(BuildContext context) {
@@ -125,8 +125,9 @@ class _TranslationPageState extends State<TranslationPage> {
   }
 
   Widget _buildAyah(Map<String, dynamic> ayah) {
-    int ayahNumber = int.tryParse(ayah['AyaNo']) ?? 0;
+    int ayahNumber = int.tryParse(ayah['AyaNo'] ?? '') ?? 0;
     String lineId = ayah['LineId'] ?? '';
+    String verseKey = "${_quranController.selectedSurahId}:$ayahNumber";
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -144,7 +145,7 @@ class _TranslationPageState extends State<TranslationPage> {
                           ayahNumber: ayahNumber,
                           lineId: lineId,
                           onPlayPressed: () {
-                            audioController.playAyah(ayahNumber);
+                            _audioController.playAyah(verseKey);
                           },
                           onBookmarkPressed: () {
                             _bookmarkController.toggleBookmark(
