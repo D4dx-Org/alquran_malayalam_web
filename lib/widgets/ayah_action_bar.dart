@@ -26,6 +26,12 @@ class AyahActionBar extends StatelessWidget {
   final AudioController audioController = Get.find<AudioController>();  
 
 
+  void _handlePlayPressed() {  
+    audioController.showPlayer(); // Show the player  
+    onPlayPressed(); // Call the existing onPlayPressed callback  
+  } 
+
+
   @override
   Widget build(BuildContext context) {
     final quranController = Get.find<QuranController>();
@@ -48,7 +54,7 @@ class AyahActionBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          _buildSvgIconButton('icons/PlayAyah_Icon.svg', onPlayPressed),
+          _buildSvgIconButton('icons/PlayAyah_Icon.svg', _handlePlayPressed),
           const SizedBox(width: 16),
           _buildIconButton(
             isBookmarked ? Icons.bookmark : Icons.bookmark_border,

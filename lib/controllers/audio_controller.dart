@@ -10,6 +10,7 @@ class AudioController extends GetxController {
   Rx<Duration> duration = Duration.zero.obs;
   RxBool isPlaying = false.obs;
   RxString currentAyah = ''.obs;
+  RxBool isVisible = false.obs;
 
   @override
   void onInit() {
@@ -24,6 +25,7 @@ class AudioController extends GetxController {
 
   Future<void> playAyah(String verseKey) async {
     try {
+      showPlayer(); // Make sure the player is visible
       currentAyah.value = verseKey;
       String? audioUrl = await _quranComService.fetchAyahAudio(verseKey);
       if (audioUrl != null) {
@@ -56,6 +58,19 @@ class AudioController extends GetxController {
 
   void seek(Duration position) {
     _audioPlayer.seek(position);
+  }
+
+  void toggleVisibility() {
+    isVisible.toggle();
+  }
+
+  void showPlayer() {
+    isVisible.value = true;
+  }
+
+  void hidePlayer() {
+    isVisible.value = false;
+    _audioPlayer.pause(); // Pause the audio when hiding the player
   }
 
   @override
