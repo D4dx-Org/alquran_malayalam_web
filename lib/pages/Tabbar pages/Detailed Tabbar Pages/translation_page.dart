@@ -1,4 +1,6 @@
+import 'package:alquran_web/controllers/audio_controller.dart';
 import 'package:alquran_web/controllers/bookmarks_controller.dart';
+import 'package:alquran_web/widgets/audio_player_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
@@ -55,32 +57,41 @@ class _TranslationPageState extends State<TranslationPage> {
             _quranController.selectedSurahAyahCount.toString();
   }
 
+  final AudioController audioController = Get.find<AudioController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32.0),
-        child: Obx(
-          () => ListView.builder(
-            controller: _scrollController,
-            itemCount: _quranController.ayahLines.length + 3,
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                return _buildHeader();
-              } else if (index == _quranController.ayahLines.length + 1) {
-                return _isEndOfSurah()
-                    ? _buildEndOfSurahMessage()
-                    : const SizedBox.shrink();
-              } else if (index == _quranController.ayahLines.length + 2) {
-                return _isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : const SizedBox.shrink();
-              } else {
-                return _buildAyah(_quranController.ayahLines[index - 1]);
-              }
-            },
+      body: Column(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              child: Obx(
+                () => ListView.builder(
+                  controller: _scrollController,
+                  itemCount: _quranController.ayahLines.length + 3,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return _buildHeader();
+                    } else if (index == _quranController.ayahLines.length + 1) {
+                      return _isEndOfSurah()
+                          ? _buildEndOfSurahMessage()
+                          : const SizedBox.shrink();
+                    } else if (index == _quranController.ayahLines.length + 2) {
+                      return _isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : const SizedBox.shrink();
+                    } else {
+                      return _buildAyah(_quranController.ayahLines[index - 1]);
+                    }
+                  },
+                ),
+              ),
+            ),
           ),
-        ),
+          AudioPlayerWidget(),
+        ],
       ),
     );
   }
@@ -133,7 +144,7 @@ class _TranslationPageState extends State<TranslationPage> {
                           ayahNumber: ayahNumber,
                           lineId: lineId,
                           onPlayPressed: () {
-                            debugPrint("Play button Pressed");
+                            audioController.playAyah(ayahNumber);
                           },
                           onBookmarkPressed: () {
                             _bookmarkController.toggleBookmark(

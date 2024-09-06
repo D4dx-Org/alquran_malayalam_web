@@ -1,3 +1,4 @@
+import 'package:alquran_web/controllers/audio_controller.dart';
 import 'package:alquran_web/controllers/bookmarks_controller.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/controllers/reading_controller.dart';
@@ -17,7 +18,7 @@ void main() async {
       permanent: true);
   Get.put(BookmarkController(sharedPreferences: sharedPreferences));
   Get.put(ReadingController(sharedPreferences: sharedPreferences));
-
+  Get.put(AudioController());
   runApp(const MyApp());
 }
 

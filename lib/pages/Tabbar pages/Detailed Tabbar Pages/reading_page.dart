@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
-import 'package:quran/quran.dart' as quran;
 
 class ReadingPage extends StatelessWidget {
   final ReadingController _readingController = Get.find<ReadingController>();
@@ -72,18 +71,22 @@ class ReadingPage extends StatelessWidget {
         child: Directionality(
           textDirection: TextDirection.rtl,
           child: Obx(
-            () => Text(
-              _readingController.verses.map((verse) {
-                // Parse the verse number to an integer
-                int verseNumber =
-                    int.tryParse(verse.verseNumber.split(':').last) ?? 1;
-                return '${verse.arabicText} ${quran.getVerseEndSymbol(verseNumber)}';
-              }).join(' '),
-              style: TextStyle(
-                fontSize: _settingsController.quranFontSize.value,
-                fontWeight: FontWeight.normal,
-                fontFamily: 'Uthmanic_Script',
-                height: 2.0,
+            () => RichText(
+              text: TextSpan(
+                style: TextStyle(
+                  fontSize: _settingsController.quranFontSize.value + 10,
+                  fontWeight: FontWeight.normal,
+                  fontFamily: 'Uthmanic_Script',
+                  height: 2.0,
+                  color: Colors.black, // Adjust color as needed
+                ),
+                children: _readingController.verses.map((verse) {
+                  String arabicNumber = _convertToArabicNumbers(
+                      verse.verseNumber.split(':').last);
+                  return TextSpan(
+                    text: '${verse.arabicText} \uFD3F$arabicNumber\uFD3E ',
+                  );
+                }).toList(),
               ),
               textAlign: TextAlign.justify,
             ),
@@ -91,5 +94,13 @@ class ReadingPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _convertToArabicNumbers(String number) {
+    const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+    return number
+        .split('')
+        .map((digit) => arabicNumbers[int.parse(digit)])
+        .join();
   }
 }

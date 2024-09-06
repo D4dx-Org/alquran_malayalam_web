@@ -1,3 +1,4 @@
+import 'package:alquran_web/controllers/audio_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -12,7 +13,7 @@ class AyahActionBar extends StatelessWidget {
   final VoidCallback onSharePressed;
   final bool isBookmarked;
 
-  const AyahActionBar({
+   AyahActionBar({
     super.key,
     required this.ayahNumber,
     required this.lineId,
@@ -21,6 +22,9 @@ class AyahActionBar extends StatelessWidget {
     required this.onSharePressed,
     required this.isBookmarked,
   });
+
+  final AudioController audioController = Get.find<AudioController>();  
+
 
   @override
   Widget build(BuildContext context) {

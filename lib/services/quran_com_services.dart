@@ -34,7 +34,7 @@ class QuranComService {
         Uri.parse("$baseUrl/quran/verses/uthmani?chapter_number=$surahId"));
 
     if (response.statusCode == 200) {
-      final ayahsData = jsonDecode(response.body);
+      final ayahsData = jsonDecode(utf8.decode(response.bodyBytes));
       List<QuranVerse> ayahs = [];
 
       for (int i = 0; i < ayahsData['verses'].length; i++) {
@@ -49,7 +49,6 @@ class QuranComService {
       throw Exception('Failed to load Ayahs');
     }
   }
-
 
   Future<String> fetchAyahAudio(int ayahId) async {
     final response = await http
