@@ -64,18 +64,6 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                     scaleFactor: widget.scaleFactor,
                   ),
                 ),
-                // Obx(
-                //   () => CustomDropdown(
-                //     options: _quranController.surahIds.map((id) => id.toString()).toList(),
-                //     selectedValue: _quranController.selectedSurahId.toString(),
-                //     onChanged: (value) {
-                //       if (value != null) {
-                //         _quranController.updateSelectedSurahId(int.parse(value));
-                //       }
-                //     },
-                //     scaleFactor: widget.scaleFactor,
-                //   ),
-                // ),
                 Obx(
                   () => CustomDropdown(
                     options: List.generate(

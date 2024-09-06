@@ -1,3 +1,4 @@
+import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/services/quran_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,6 +42,8 @@ class QuranController extends GetxController {
     if (currentIndex > 0) {
       updateSelectedSurahId(_surahIds[currentIndex - 1]);
       _fetchAyahLines(_surahIds[currentIndex - 1]);
+          Get.find<ReadingController>().fetchSurah(_surahIds[currentIndex - 1]);  
+
     }
   }
 
@@ -49,6 +52,8 @@ class QuranController extends GetxController {
     if (currentIndex < _surahIds.length - 1) {
       updateSelectedSurahId(_surahIds[currentIndex + 1]);
       _fetchAyahLines(_surahIds[currentIndex + 1]);
+          Get.find<ReadingController>().fetchSurah(_surahIds[currentIndex + 1]);  
+
     }
   }
 
@@ -67,6 +72,8 @@ void updateSelectedSurah(String surahName) {
     _sharedPreferences.setString(  
         'selectedAyahRange', '${_surahIds[index]} : 1');  
     _fetchAyahLines(_surahIds[index]);  
+        Get.find<ReadingController>().fetchSurah(_surahIds[index]);  
+
   }  
 }
 

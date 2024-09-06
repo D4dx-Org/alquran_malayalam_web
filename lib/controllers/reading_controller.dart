@@ -1,15 +1,30 @@
-
-import 'package:alquran_web/services/quran_com_services.dart';
 import 'package:get/get.dart';
+import 'package:alquran_web/services/quran_com_services.dart';
 import 'package:alquran_web/models/verse_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class QuranApiController extends GetxController {
+class ReadingController extends GetxController {
   final QuranComService _quranComService = QuranComService();
-  
+  final SharedPreferences sharedPreferences;
+
   final RxList<QuranVerse> verses = <QuranVerse>[].obs;
   final RxBool isLoading = false.obs;
   final RxString surahName = ''.obs;
   final RxString surahEnglishName = ''.obs;
+  final RxInt currentSurahId = 1.obs;
+
+  ReadingController({required this.sharedPreferences});
+
+  @override
+  void onInit() {
+    super.onInit();
+    _loadLastReadSurah();
+  }
+
+  void _loadLastReadSurah() {
+    final lastReadSurahId = sharedPreferences.getInt('lastReadSurahId') ?? 1;
+    fetchSurah(lastReadSurahId);
+  }
 
   Future<void> fetchSurah(int surahId) async {
     isLoading.value = true;
@@ -22,6 +37,14 @@ class QuranApiController extends GetxController {
       // Fetch verses
       final fetchedVerses = await _quranComService.fetchAyahs(surahId);
       verses.assignAll(fetchedVerses);
+
+      currentSurahId.value = surahId;
+
+      // Save the current surah id
+      sharedPreferences.setInt('lastReadSurahId', surahId);
+
+      // Print the ayahs
+      // printAyahs();
     } catch (e) {
       print('Error fetching surah: $e');
       // You might want to show an error message to the user here
@@ -30,8 +53,27 @@ class QuranApiController extends GetxController {
     }
   }
 
+  // void printAyahs() {
+  //   print('Ayahs of Surah ${surahEnglishName.value} (${surahName.value}):');
+  //   for (var verse in verses) {
+  //     print('${verse.verseNumber}: ${verse.arabicText}');
+  //   }
+  // }
+
   String getArabicSurahName() => surahName.value;
   String getEnglishSurahName() => surahEnglishName.value;
   int getVerseCount() => verses.length;
   bool isEndOfSurah(int index) => index >= verses.length - 1;
+
+  void nextSurah() {
+    if (currentSurahId.value < 114) {
+      fetchSurah(currentSurahId.value + 1);
+    }
+  }
+
+  void previousSurah() {
+    if (currentSurahId.value > 1) {
+      fetchSurah(currentSurahId.value - 1);
+    }
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:alquran_web/controllers/bookmarks_controller.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
+import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:alquran_web/routes/app_pages.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ void main() async {
   Get.put(SettingsController(sharedPreferences: sharedPreferences),
       permanent: true);
   Get.put(BookmarkController(sharedPreferences: sharedPreferences));
+  Get.put(ReadingController(sharedPreferences: sharedPreferences));
 
   runApp(const MyApp());
 }
