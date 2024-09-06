@@ -14,12 +14,12 @@ class HorizontalCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double cardHeight = 34;
-    double cardWidth = 150;
+    double cardWidth = 160;
 
     final List<Map<String, dynamic>> surahs = [
       {
         'id': 2,
-        'name': 'തൗൽ കുർസി'
+        'name': 'ആയത്തൗൽ കുർസി'
       }, // Ayat al-Kursi is from Surah Al-Baqarah (2)
       {'id': 36, 'name': 'സൂറ: യാസീൻ'},
       {'id': 67, 'name': 'സൂറ: അൽമുൽക്ക്'},

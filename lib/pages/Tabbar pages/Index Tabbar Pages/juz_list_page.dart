@@ -1,8 +1,11 @@
+import 'package:alquran_web/controllers/quran_controller.dart';
+import 'package:alquran_web/routes/app_pages.dart';
 import 'package:alquran_web/services/quran_services.dart';
 import 'package:alquran_web/services/utils.dart';
 import 'package:alquran_web/widgets/star_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class JuzListPage extends StatefulWidget {
@@ -17,6 +20,7 @@ class _JuzListPageState extends State<JuzListPage> {
   late Future<Map<int, List<Map<String, dynamic>>>> _juzMappedData;
   final QuranService _quranService = QuranService();
   final JuzJsonParser _juzJsonParser = JuzJsonParser();
+  final _quranController = Get.find<QuranController>();
 
   double getScaleFactor(double screenWidth) {
     if (screenWidth < 600) return 0.05;
@@ -243,7 +247,22 @@ class _JuzListPageState extends State<JuzListPage> {
           ),
         ),
         onTap: () {
-          // Navigate to Surah Detailed page with the selected surah
+          _quranController.updateSelectedSurah(surah['MSuraName']);
+          _quranController
+              .updateSelectedSurahId(int.parse(surah['SuraId'].toString()));
+          final surahId = int.parse(surah['SuraId'].toString());
+          final surahName = surah['MSuraName'];
+          debugPrint('Navigating to SURAH_DETAILED with arguments:');
+          debugPrint('surahId: $surahId');
+          debugPrint('surahName: $surahName');
+          Get.toNamed(
+            Routes.SURAH_DETAILED,
+            arguments: {
+              'surahId': surahId,
+              'surahName': surahName,
+              'ayahNumber': 1, // Include the initial ayah number
+            },
+          );
         },
       ),
     );

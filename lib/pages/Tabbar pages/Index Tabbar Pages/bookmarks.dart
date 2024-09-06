@@ -17,22 +17,47 @@ class BookmarksPage extends StatelessWidget {
       body: Obx(() {
         final bookmarkedAyahs = bookmarkController.getBookmarkedAyahsList();
 
-        return GridView.builder(
-          itemCount: bookmarkedAyahs.length,
-          itemBuilder: (context, index) {
-            final bookmark = bookmarkedAyahs[index];
-            final surahId = bookmark['surahId']!;
-            final ayahNumber = bookmark['ayahNumber']!;
-            final lineId = bookmark['lineId']!;
-            final surahName = quranController.getSurahName(surahId);
-
-            return _buildBookmarksCard(surahName, surahId, ayahNumber, lineId);
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth > 800) {
+              return _buildMultipleListViews(
+                  bookmarkedAyahs, 3, quranController);
+            } else if (constraints.maxWidth > 650) {
+              return _buildMultipleListViews(
+                  bookmarkedAyahs, 2, quranController);
+            } else {
+              return _buildMultipleListViews(
+                  bookmarkedAyahs, 1, quranController);
+            }
           },
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: _getCrossAxisCount(context),
-            childAspectRatio: _getChildAspectRatio(context),
-            crossAxisSpacing: 10.0,
-            mainAxisSpacing: 5.0,
+        );
+      }),
+    );
+  }
+
+  Widget _buildMultipleListViews(List<Map<String, dynamic>> bookmarkedAyahs,
+      int columnCount, QuranController quranController) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: List.generate(columnCount, (columnIndex) {
+        return Expanded(
+          child: ListView.builder(
+            itemCount: (bookmarkedAyahs.length / columnCount).ceil(),
+            itemBuilder: (context, index) {
+              final itemIndex = index * columnCount + columnIndex;
+              if (itemIndex < bookmarkedAyahs.length) {
+                final bookmark = bookmarkedAyahs[itemIndex];
+                final surahId = bookmark['surahId']!;
+                final ayahNumber = bookmark['ayahNumber']!;
+                final lineId = bookmark['lineId']!;
+                final surahName = quranController.getSurahName(surahId);
+
+                return _buildBookmarksCard(
+                    surahName, surahId, ayahNumber, lineId);
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
           ),
         );
       }),
@@ -104,23 +129,5 @@ class BookmarksPage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  int _getCrossAxisCount(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    if (screenWidth < 480) return 1;
-    if (screenWidth < 800) return 2;
-    return 3;
-  }
-
-  double _getChildAspectRatio(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    double ratio = screenWidth / screenHeight;
-
-    if (screenWidth < 480) return ratio * 6;
-    if (screenWidth < 800) return ratio * 3;
-    if (screenWidth < 1025) return ratio * 2;
-    return ratio * 3;
   }
 }
