@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class BookmarksPage extends StatelessWidget {
-  const BookmarksPage({Key? key}) : super(key: key);
+  const BookmarksPage({super.key});
 
   @override
   Widget build(BuildContext context) {

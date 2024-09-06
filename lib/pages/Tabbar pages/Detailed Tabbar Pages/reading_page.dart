@@ -84,7 +84,7 @@ class ReadingPage extends StatelessWidget {
                   String arabicNumber = _convertToArabicNumbers(
                       verse.verseNumber.split(':').last);
                   return TextSpan(
-                    text: '${verse.arabicText} \uFD3F$arabicNumber\uFD3E ',
+                    text: '${verse.arabicText} $arabicNumber ',
                   );
                 }).toList(),
               ),

@@ -7,9 +7,9 @@ class HorizontalCardWidget extends StatelessWidget {
   final QuranController quranController;
 
   const HorizontalCardWidget({
-    Key? key,
+    super.key,
     required this.quranController,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +17,15 @@ class HorizontalCardWidget extends StatelessWidget {
     double cardWidth = 150;
 
     final List<Map<String, dynamic>> surahs = [
-      {'id': 1, 'name': 'തൗൽ കുർസി'},
-      {'id': 2, 'name': 'സൂറ: യാസീൻ'},
-      {'id': 3, 'name': 'സൂറ: അൽമുൽക്ക്'},
-      {'id': 4, 'name': 'സൂറ: അർറഹ്മാൻ'},
-      {'id': 5, 'name': 'സൂറ: അൽവാഖിഅ'},
-      {'id': 6, 'name': 'സൂറ: അൽകഹ്ഫ്'},
+      {
+        'id': 2,
+        'name': 'തൗൽ കുർസി'
+      }, // Ayat al-Kursi is from Surah Al-Baqarah (2)
+      {'id': 36, 'name': 'സൂറ: യാസീൻ'},
+      {'id': 67, 'name': 'സൂറ: അൽമുൽക്ക്'},
+      {'id': 55, 'name': 'സൂറ: അർറഹ്മാൻ'},
+      {'id': 56, 'name': 'സൂറ: അൽവാഖിഅ'},
+      {'id': 18, 'name': 'സൂറ: അൽകഹ്ഫ്'},
     ];
 
     return LayoutBuilder(
