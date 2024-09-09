@@ -50,7 +50,6 @@ class _IndexPageState extends State<IndexPage>
                     width: MediaQuery.of(context).size.width,
                     onSearch: (searchText) {
                       // Perform search operation here
-                      print('Searching for: $searchText');
                     },
                   ),
                   const SizedBox(height: 25),

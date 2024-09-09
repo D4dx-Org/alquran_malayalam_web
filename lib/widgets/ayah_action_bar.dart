@@ -1,41 +1,52 @@
-import 'package:alquran_web/controllers/audio_controller.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:alquran_web/controllers/audio_controller.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
 
 class AyahActionBar extends StatelessWidget {
   final int ayahNumber;
   final String lineId;
-
   final VoidCallback onPlayPressed;
   final VoidCallback onBookmarkPressed;
-  final VoidCallback onSharePressed;
+  final Function(String) onSharePressed;
   final bool isBookmarked;
+  final List<Map<String, dynamic>> lineWords;
+  final String translation;
 
-   AyahActionBar({
-    super.key,
+  AyahActionBar({
+    Key? key,
     required this.ayahNumber,
     required this.lineId,
     required this.onPlayPressed,
     required this.onBookmarkPressed,
     required this.onSharePressed,
     required this.isBookmarked,
-  });
+    required this.lineWords,
+    required this.translation,
+  }) : super(key: key);
 
-  final AudioController audioController = Get.find<AudioController>();  
+  final AudioController audioController = Get.find<AudioController>();
+  final QuranController quranController = Get.find<QuranController>();
 
+  void _handlePlayPressed() {
+    audioController.showPlayer();
+    onPlayPressed();
+  }
 
-  void _handlePlayPressed() {  
-    audioController.showPlayer(); // Show the player  
-    onPlayPressed(); // Call the existing onPlayPressed callback  
-  } 
-
+  void _handleSharePressed() {
+    final arabicWords = lineWords.map((word) => word['ArabWord']).join(' ');
+    final wordMeanings = lineWords.map((word) => word['MalWord']).join(' ');
+    final shareText = 'Surah ${quranController.selectedSurah}, Ayah $ayahNumber\n\n'
+        'Arabic: $arabicWords\n\n'
+        'Word Meanings: $wordMeanings\n\n'
+        'Translation: $translation';
+    onSharePressed(shareText);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final quranController = Get.find<QuranController>();
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
@@ -62,7 +73,7 @@ class AyahActionBar extends StatelessWidget {
             isBookmarked,
           ),
           const SizedBox(width: 16),
-          _buildSvgIconButton('icons/ShareAyah_Icon.svg', onSharePressed),
+          _buildSvgIconButton('icons/ShareAyah_Icon.svg', _handleSharePressed),
         ],
       ),
     );

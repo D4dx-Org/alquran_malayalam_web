@@ -7,6 +7,7 @@ import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:alquran_web/widgets/ayah_action_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share_plus/share_plus.dart';
 
 class TranslationPage extends StatefulWidget {
   const TranslationPage({super.key});
@@ -19,6 +20,7 @@ class _TranslationPageState extends State<TranslationPage> {
   final _quranController = Get.find<QuranController>();
   final _settingsController = Get.find<SettingsController>();
   final _bookmarkController = Get.find<BookmarkController>();
+  final _audioController = Get.find<AudioController>();
   final _scrollController = ScrollController();
   bool _isLoading = false;
 
@@ -56,8 +58,6 @@ class _TranslationPageState extends State<TranslationPage> {
         _quranController.ayahLines.last['AyaNo'] ==
             _quranController.selectedSurahAyahCount.toString();
   }
-
-  final AudioController _audioController = Get.find<AudioController>();
 
   @override
   Widget build(BuildContext context) {
@@ -163,14 +163,16 @@ class _TranslationPageState extends State<TranslationPage> {
                               lineId,
                             );
                           },
-                          onSharePressed: () {
-                            debugPrint("Share button Pressed");
+                          onSharePressed: (String shareText) {
+                            Share.share(shareText);
                           },
                           isBookmarked: _bookmarkController.isAyahBookmarked(
                             _quranController.selectedSurahId,
                             ayahNumber,
                             lineId,
                           ),
+                          lineWords: ayah['LineWords'],
+                          translation: ayah['MalTran'],
                         )),
                   ),
                   Row(

@@ -5,13 +5,13 @@ import 'package:get/get.dart';
 class AudioPlayerWidget extends StatelessWidget {
   final AudioController audioController = Get.find<AudioController>();
 
-  AudioPlayerWidget({Key? key}) : super(key: key);
+  AudioPlayerWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       if (!audioController.isVisible.value) {
-        return SizedBox.shrink(); // Hide the widget when not visible
+        return const SizedBox.shrink(); // Hide the widget when not visible
       }
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -63,7 +63,7 @@ class AudioPlayerWidget extends StatelessWidget {
                             ? 1
                             : audioController.duration.value.inSeconds),
                     backgroundColor: Colors.grey[300],
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.brown),
+                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.brown),
                   )),
             ),
             IconButton(

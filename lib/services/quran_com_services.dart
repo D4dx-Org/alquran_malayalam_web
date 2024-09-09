@@ -65,18 +65,16 @@ class QuranComService {
             // Check if the audioUrl is a relative path
             if (!audioUrl.startsWith('http')) {
               // Prepend the base URL if necessary
-              audioUrl = 'https://audio.qurancdn.com/' + audioUrl;
+              audioUrl = 'https://audio.qurancdn.com/$audioUrl';
             }
             return audioUrl;
           }
         }
-        print('No audio URL found for verse $verseKey');
         return null;
       } else {
         throw Exception('Failed to load Ayah audio: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error fetching audio for verse $verseKey: $e');
       return null;
     }
   }

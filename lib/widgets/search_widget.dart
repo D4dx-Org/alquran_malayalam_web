@@ -8,12 +8,13 @@ class SearchWidget extends StatefulWidget {
   final Function(String)? onSearch;
 
   const SearchWidget({
-    Key? key,
+    super.key,
     this.width,
     this.onSearch,
-  }) : super(key: key);
+  });
 
   @override
+  // ignore: library_private_types_in_public_api
   _SearchWidgetState createState() => _SearchWidgetState();
 }
 

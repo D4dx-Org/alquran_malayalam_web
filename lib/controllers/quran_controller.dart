@@ -142,16 +142,12 @@ class QuranController extends GetxController {
   void printSelectedSurahMalMean() {
     final index = _surahIds.indexOf(_selectedSurahId.value);
     if (index != -1) {
-      print(
-          'Malayalam Meaning of ${_surahNames[index]}: ${_surahMalMeans[index]}');
     } else {
-      print('No Surah selected or MalMean not available.');
     }
   }
 
   void printAllSurahMalMeans() {
     for (int i = 0; i < _surahNames.length; i++) {
-      print('${_surahNames[i]} - Malayalam Meaning: ${_surahMalMeans[i]}');
     }
   }
 

@@ -6,6 +6,7 @@ class Tab1 extends StatefulWidget {
   const Tab1({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _Tab1State createState() => _Tab1State();
 }
 

@@ -19,7 +19,6 @@ class QuranSearchController extends GetxController {
       searchResults.value =
           await quranService.fetchSearchResult(searchQuery.value);
     } catch (e) {
-      print('Error fetching search results: $e');
       searchResults.clear();
     } finally {
       isLoading.value = false;

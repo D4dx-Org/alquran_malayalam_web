@@ -124,7 +124,6 @@ class BookmarksPage extends StatelessWidget {
                 'lineId': lineId,
               },
             );
-            print('Line ID is $lineId');
           },
         ),
       ),

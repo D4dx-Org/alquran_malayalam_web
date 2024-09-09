@@ -46,7 +46,6 @@ class ReadingController extends GetxController {
       // Print the ayahs
       // printAyahs();
     } catch (e) {
-      print('Error fetching surah: $e');
       // You might want to show an error message to the user here
     } finally {
       isLoading.value = false;

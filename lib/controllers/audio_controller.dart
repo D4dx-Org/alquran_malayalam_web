@@ -32,17 +32,15 @@ class AudioController extends GetxController {
         // Check if the audioUrl is a relative path
         if (!audioUrl.startsWith('http')) {
           // Prepend the base URL if necessary
-          audioUrl = 'https://audio.qurancdn.com/' + audioUrl;
+          audioUrl = 'https://audio.qurancdn.com/$audioUrl';
         }
         await _audioPlayer.setUrl(audioUrl);
         await _audioPlayer.play();
       } else {
-        print('No audio URL available for verse $verseKey');
         // You might want to show a snackbar or some UI feedback here
         Get.snackbar('Audio Unavailable', 'No audio found for this verse.');
       }
     } catch (e) {
-      print('Error playing ayah: $e');
       // Show an error message to the user
       Get.snackbar('Error', 'Failed to play audio: $e');
     }

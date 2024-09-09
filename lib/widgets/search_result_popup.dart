@@ -17,7 +17,7 @@ class SearchResultPopup extends StatelessWidget {
   Widget build(BuildContext context) {
     final QuranSearchController searchController =
         Get.find<QuranSearchController>();
-    final _quranController = Get.find<QuranController>();
+    final quranController = Get.find<QuranController>();
 
     return Container(
       padding: const EdgeInsets.all(8.0),
@@ -75,9 +75,9 @@ class SearchResultPopup extends StatelessWidget {
                           ' ${result['MSuraName']}, ആയ ${result['AyaNo']}'),
                       subtitle: Text(result['MalTran']),
                       onTap: () {
-                        _quranController
+                        quranController
                             .updateSelectedSurah(result['MSuraName']);
-                        _quranController.updateSelectedSurahId(
+                        quranController.updateSelectedSurahId(
                             int.parse(result['SuraNo'].toString()));
                         final surahId = int.parse(result['SuraNo'].toString());
                         final surahName = result['MSuraName'];
