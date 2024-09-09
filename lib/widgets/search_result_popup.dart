@@ -48,7 +48,6 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 
 class SearchResultPopup extends StatelessWidget {
