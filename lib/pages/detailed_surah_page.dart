@@ -15,14 +15,36 @@ class DetailedSurahPage extends StatefulWidget {
 class _DetailedSurahPageState extends State<DetailedSurahPage>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
+  late TransformationController _transformationController;
+  bool _isZoomed = false;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _transformationController = TransformationController();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _transformationController.dispose();
+    super.dispose();
   }
 
   TabController get tabController => _tabController;
+
+  void _handleDoubleTap() {
+    if (_isZoomed) {
+      _transformationController.value = Matrix4.identity();
+    } else {
+      _transformationController.value = Matrix4.identity()..scale(2.0);
+    }
+    setState(() {
+      _isZoomed = !_isZoomed;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -34,29 +56,38 @@ class _DetailedSurahPageState extends State<DetailedSurahPage>
           tabController: tabController,
         ),
         drawer: const NavigationDrawerWidget(),
-        body: Column(
-          children: [
-            if (screenWidth < 600)
-              DetailedTabbar(
-                controller: tabController,
-              )
-            else
-              SizedBox(
-                width: screenWidth * 0.5,
-                child: DetailedTabbar(
-                  controller: tabController,
+        body: GestureDetector(
+          onDoubleTap: _handleDoubleTap,
+          child: InteractiveViewer(
+            transformationController: _transformationController,
+            minScale: 1.0,
+            maxScale: 4.0,
+            child: Column(
+              children: [
+                if (screenWidth < 600)
+                  DetailedTabbar(
+                    controller: tabController,
+                  )
+                else
+                  SizedBox(
+                    width: screenWidth * 0.5,
+                    child: DetailedTabbar(
+                      controller: tabController,
+                    ),
+                  ),
+                Expanded(
+                  child: TabBarView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    controller: tabController,
+                    children: [
+                      const TranslationPage(),
+                      ReadingPage(),
+                    ],
+                  ),
                 ),
-              ),
-            Expanded(
-              child: TabBarView(
-                controller: tabController,
-                children: [
-                  const TranslationPage(),
-                  ReadingPage(),
-                ],
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

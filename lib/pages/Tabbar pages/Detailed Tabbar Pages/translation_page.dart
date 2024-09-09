@@ -470,7 +470,7 @@ class _TranslationPageState extends State<TranslationPage> {
                                         horizontal: 8.0),
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.end,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         _buildArabicWord(word['ArabWord']),
                                         _buildTranslation(word['MalWord']),
