@@ -69,23 +69,52 @@ class QuranService {
     }
   }
 
+  // Future<List<Map<String, dynamic>>> fetchSearchResult(
+  //     String searchword) async {
+  //   final response =
+  //       await http.get(Uri.parse("$baseUrl/searchword/0/$searchword"));
+  //   if (response.statusCode == 200) {
+  //     final data = jsonDecode(response.body) as List;
+  //     return data
+  //         .map(
+  //           (item) => {
+  //             "LineId": item["LineId"],
+  //             "SuraNo": item["SuraNo"],
+  //             "AyaNo": item["AyaNo"],
+  //             "MalTran": item["MalTran"],
+  //             "LineWords": item["LineWords"],
+  //           },
+  //         )
+  //         .toList();
+  //   } else {
+  //     throw Exception('Failed to load Search Results');
+  //   }
+  // }
+
   Future<List<Map<String, dynamic>>> fetchSearchResult(
       String searchword) async {
     final response =
         await http.get(Uri.parse("$baseUrl/searchword/0/$searchword"));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as List;
-      return data
-          .map(
-            (item) => {
-              "LineId": item["LineId"],
-              "SuraNo": item["SuraNo"],
-              "AyaNo": item["AyaNo"],
-              "MalTran": item["MalTran"],
-              "LineWords": item["LineWords"],
-            },
-          )
-          .toList();
+
+      // Fetch all surahs to get the MSuraName
+      List<Map<String, dynamic>> surahs = await fetchSurahs();
+
+      return data.map((item) {
+        // Find the corresponding surah
+        var surah = surahs.firstWhere((s) => s['SuraId'] == item['SuraNo'],
+            orElse: () => {'MSuraName': 'Unknown'});
+
+        return {
+          "LineId": item["LineId"],
+          "SuraNo": item["SuraNo"],
+          "MSuraName": surah['MSuraName'],
+          "AyaNo": item["AyaNo"],
+          "MalTran": item["MalTran"],
+          "LineWords": item["LineWords"],
+        };
+      }).toList();
     } else {
       throw Exception('Failed to load Search Results');
     }

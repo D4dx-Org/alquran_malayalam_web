@@ -1,67 +1,21 @@
-
-// import 'package:flutter/material.dart';
-
-// class SearchResultPopup extends StatelessWidget {
-//   final String searchText;
-
-//   const SearchResultPopup({Key? key, required this.searchText}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       padding: const EdgeInsets.all(8.0),
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.circular(8),
-//         boxShadow: [
-//           BoxShadow(
-//             color: Colors.grey.withOpacity(0.3),
-//             spreadRadius: 1,
-//             blurRadius: 3,
-//             offset: const Offset(0, 1),
-//           ),
-//         ],
-//       ),
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min,
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Padding(
-//             padding: const EdgeInsets.all(8.0),
-//             child: Text(
-//               'Results for "$searchText"',
-//               style: const TextStyle(fontWeight: FontWeight.bold),
-//             ),
-//           ),
-//           ListView(
-//             shrinkWrap: true,
-//             children: [
-//               // Replace this with actual search results
-//               ListTile(title: Text('Result 1 for $searchText')),
-//               ListTile(title: Text('Result 2 for $searchText')),
-//               ListTile(title: Text('Result 3 for $searchText')),
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:alquran_web/controllers/search_controller.dart'; // Make sure to import the correct path
 
 class SearchResultPopup extends StatelessWidget {
-  final String searchText;
   final VoidCallback onClose;
 
   const SearchResultPopup({
-    Key? key,
-    required this.searchText,
+    super.key,
     required this.onClose,
-  }) : super(key: key);
+    required String searchText,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final QuranSearchController searchController =
+        Get.find<QuranSearchController>();
+
     return Container(
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
@@ -76,6 +30,8 @@ class SearchResultPopup extends StatelessWidget {
           ),
         ],
       ),
+      height: 300,
+      width: 300,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,10 +41,10 @@ class SearchResultPopup extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Results for "$searchText"',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
+                child: Obx(() => Text(
+                      'Results for "${searchController.currentSearchQuery}"',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    )),
               ),
               IconButton(
                 icon: const Icon(Icons.close),
@@ -98,15 +54,28 @@ class SearchResultPopup extends StatelessWidget {
               ),
             ],
           ),
-          ListView(
-            shrinkWrap: true,
-            children: [
-              // Replace this with actual search results
-              ListTile(title: Text('Result 1 for $searchText')),
-              ListTile(title: Text('Result 2 for $searchText')),
-              ListTile(title: Text('Result 3 for $searchText')),
-            ],
-          ),
+          Obx(() {
+            if (searchController.isLoading.value) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (searchController.searchResults.isEmpty) {
+              return const Center(child: Text('No results found'));
+            } else {
+              return Expanded(
+                child: ListView.builder(
+                  itemCount: searchController.searchResults.length,
+                  itemBuilder: (context, index) {
+                    final result = searchController.searchResults[index];
+
+                    return ListTile(
+                      title: Text(
+                          'Surah ${result['MSuraName']}, Ayah ${result['AyaNo']}'),
+                      subtitle: Text(result['MalTran']),
+                    );
+                  },
+                ),
+              );
+            }
+          }),
         ],
       ),
     );

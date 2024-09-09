@@ -2,6 +2,7 @@ import 'package:alquran_web/controllers/audio_controller.dart';
 import 'package:alquran_web/controllers/bookmarks_controller.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/controllers/reading_controller.dart';
+import 'package:alquran_web/controllers/search_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:alquran_web/controllers/shared_preference_controller.dart';
 import 'package:alquran_web/routes/app_pages.dart';
@@ -22,6 +23,7 @@ void main() async {
   Get.put(BookmarkController(sharedPreferences: sharedPreferences));
   Get.put(ReadingController(sharedPreferences: sharedPreferences));
   Get.put(AudioController());
+  Get.put(QuranSearchController());
   runApp(const MyApp());
 }
 
