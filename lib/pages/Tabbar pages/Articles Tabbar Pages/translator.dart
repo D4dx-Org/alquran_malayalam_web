@@ -6,7 +6,6 @@ class Tab1 extends StatefulWidget {
   const Tab1({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _Tab1State createState() => _Tab1State();
 }
 
@@ -107,8 +106,7 @@ class _Tab1State extends State<Tab1> {
                             child: Padding(
                               padding: const EdgeInsets.only(left: 50, top: 10),
                               child: _translatorsnote != null
-                                  ? Flexible(
-                                      fit: FlexFit.loose,
+                                  ? SingleChildScrollView(
                                       child: HtmlWidget(
                                         _translatorsnote?.join('\n') ?? '',
                                         textStyle:
