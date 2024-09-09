@@ -92,7 +92,7 @@ flutter:
   fonts:
     - family: Uthmanic_Script
       fonts:
-        - asset: assets/fonts/kfgqpchafsuthmanicscript_regula.ttf
+        - asset: assets/fonts/kfgqpc-uthmanic-script-hafs-regular.ttf
     # - family: Uthmani_Numbers
     #   fonts:
     #     - asset: assets/fonts/kfgqpchafsuthmanicscript_regula.otf

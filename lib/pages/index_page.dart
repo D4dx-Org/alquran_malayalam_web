@@ -48,11 +48,9 @@ class _IndexPageState extends State<IndexPage>
                 children: [
                   SearchWidget(
                     width: MediaQuery.of(context).size.width,
-                    onChanged: (value) {
-                      // Handle search text changes
-                    },
-                    onClear: () {
-                      // Handle clear button press
+                    onSearch: (searchText) {
+                      // Perform search operation here
+                      print('Searching for: $searchText');
                     },
                   ),
                   const SizedBox(height: 25),

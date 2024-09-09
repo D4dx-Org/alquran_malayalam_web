@@ -8,6 +8,7 @@ class QuranService {
   var surahNumber = 1;
   var ayahNumber = 1;
   var pageNumber = 0;
+  String searchword = '';
 
   Future<List<Map<String, dynamic>>> fetchSurahs() async {
     final response = await http.get(Uri.parse("$baseUrl/suranames"));
@@ -65,6 +66,28 @@ class QuranService {
       }).toList(); // Call toList() here
     } else {
       throw Exception('Failed to load Ayah');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchSearchResult(
+      String searchword) async {
+    final response =
+        await http.get(Uri.parse("$baseUrl/searchword/0/$searchword"));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as List;
+      return data
+          .map(
+            (item) => {
+              "LineId": item["LineId"],
+              "SuraNo": item["SuraNo"],
+              "AyaNo": item["AyaNo"],
+              "MalTran": item["MalTran"],
+              "LineWords": item["LineWords"],
+            },
+          )
+          .toList();
+    } else {
+      throw Exception('Failed to load Search Results');
     }
   }
 }
