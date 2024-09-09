@@ -1,6 +1,8 @@
+import 'package:alquran_web/controllers/quran_controller.dart';
+import 'package:alquran_web/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:alquran_web/controllers/search_controller.dart'; // Make sure to import the correct path
+import 'package:alquran_web/controllers/search_controller.dart';
 
 class SearchResultPopup extends StatelessWidget {
   final VoidCallback onClose;
@@ -15,6 +17,7 @@ class SearchResultPopup extends StatelessWidget {
   Widget build(BuildContext context) {
     final QuranSearchController searchController =
         Get.find<QuranSearchController>();
+    final _quranController = Get.find<QuranController>();
 
     return Container(
       padding: const EdgeInsets.all(8.0),
@@ -61,15 +64,32 @@ class SearchResultPopup extends StatelessWidget {
               return const Center(child: Text('No results found'));
             } else {
               return Expanded(
-                child: ListView.builder(
+                child: ListView.separated(
                   itemCount: searchController.searchResults.length,
+                  separatorBuilder: (context, index) => const Divider(),
                   itemBuilder: (context, index) {
                     final result = searchController.searchResults[index];
 
                     return ListTile(
                       title: Text(
-                          'Surah ${result['MSuraName']}, Ayah ${result['AyaNo']}'),
+                          ' ${result['MSuraName']}, ആയ ${result['AyaNo']}'),
                       subtitle: Text(result['MalTran']),
+                      onTap: () {
+                        _quranController
+                            .updateSelectedSurah(result['MSuraName']);
+                        _quranController.updateSelectedSurahId(
+                            int.parse(result['SuraNo'].toString()));
+                        final surahId = int.parse(result['SuraNo'].toString());
+                        final surahName = result['MSuraName'];
+                        Get.toNamed(
+                          Routes.SURAH_DETAILED,
+                          arguments: {
+                            'surahId': surahId,
+                            'surahName': surahName,
+                            'ayahNumber': 1, // Include the initial ayah number
+                          },
+                        );
+                      },
                     );
                   },
                 ),
