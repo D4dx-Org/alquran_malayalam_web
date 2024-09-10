@@ -158,6 +158,7 @@ class _SurahListPageState extends State<SurahListPage> {
                 'surahId': surahId,
                 'surahName': surahName,
                 'ayahNumber': 1, // Include the initial ayah number
+                'initialTab': 0, // Add this line to specify the initial tab
               },
             );
           },

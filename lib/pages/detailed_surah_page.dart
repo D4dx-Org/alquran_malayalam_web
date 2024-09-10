@@ -4,6 +4,7 @@ import 'package:alquran_web/widgets/detailed_appbar.dart';
 import 'package:alquran_web/widgets/detailed_tabbar.dart';
 import 'package:alquran_web/widgets/navigation_drawer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class DetailedSurahPage extends StatefulWidget {
   const DetailedSurahPage({super.key});
@@ -16,14 +17,14 @@ class _DetailedSurahPageState extends State<DetailedSurahPage>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   late TransformationController _transformationController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-    _transformationController = TransformationController();
-  }
-
+@override  
+void initState() {  
+  super.initState();  
+  final arguments = Get.arguments as Map<String, dynamic>?;  
+  final initialTab = arguments?['initialTab'] as int? ?? 0;  
+  _tabController = TabController(length: 2, vsync: this, initialIndex: initialTab);  
+  _transformationController = TransformationController();  
+}
   @override
   void dispose() {
     _tabController.dispose();
