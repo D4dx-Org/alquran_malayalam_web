@@ -67,8 +67,10 @@ class _SurahListPageState extends State<SurahListPage> {
       crossAxisCount = 1;
     } else if (screenWidth < 950) {
       crossAxisCount = 2;
-    } else {
+    } else if (screenWidth < 1500) {
       crossAxisCount = 3;
+    } else {
+      crossAxisCount = 4;
     }
 
     return Scaffold(

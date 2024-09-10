@@ -5,10 +5,13 @@ import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
 
+import '../../../controllers/audio_controller.dart';
+
 class ReadingPage extends StatelessWidget {
   final ReadingController _readingController = Get.find<ReadingController>();
   final SettingsController _settingsController = Get.find<SettingsController>();
   final QuranController _quranController = Get.find<QuranController>();
+  final AudioController _audioController = Get.find<AudioController>();
 
   ReadingPage({super.key});
 
@@ -53,6 +56,7 @@ class ReadingPage extends StatelessWidget {
             ),
           ),
         ),
+        
         Text(
           _quranController.selectedSurah,
           style:

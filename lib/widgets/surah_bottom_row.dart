@@ -159,7 +159,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8 * widget.scaleFactor),
+      padding: EdgeInsets.symmetric(horizontal: 2 * widget.scaleFactor),
       decoration: BoxDecoration(
         color: const Color.fromRGBO(92, 62, 5, 1),
         border: Border.all(
@@ -174,16 +174,16 @@ class _CustomDropdownState extends State<CustomDropdown> {
           child: DropdownButton<String>(
             value: widget.selectedValue,
             icon: Padding(
-              padding: const EdgeInsets.only(left: 32.0),
+              padding: EdgeInsets.only(left: 8.0 * widget.scaleFactor),
               child: Icon(
                 Icons.arrow_drop_down_circle_outlined,
                 color: const Color.fromRGBO(130, 91, 17, 1),
-                size: 18 * widget.scaleFactor,
+                size: 20 * widget.scaleFactor,
               ),
             ),
             style: GoogleFonts.notoSansMalayalam(
               color: const Color.fromRGBO(217, 217, 217, 1),
-              fontSize: 12 * widget.scaleFactor,
+              fontSize: 14 * widget.scaleFactor,
             ),
             dropdownColor: const Color.fromRGBO(130, 90, 17, 1),
             items: widget.options.map<DropdownMenuItem<String>>((String value) {

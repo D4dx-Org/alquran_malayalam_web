@@ -39,17 +39,6 @@ class _IndexPageState extends State<IndexPage>
     super.dispose();
   }
 
-  void _handleDoubleTap() {
-    if (_isZoomed) {
-      _transformationController.value = Matrix4.identity();
-    } else {
-      _transformationController.value = Matrix4.identity()..scale(2.0);
-    }
-    setState(() {
-      _isZoomed = !_isZoomed;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

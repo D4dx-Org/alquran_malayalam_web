@@ -16,7 +16,6 @@ class _DetailedSurahPageState extends State<DetailedSurahPage>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   late TransformationController _transformationController;
-  bool _isZoomed = false;
 
   @override
   void initState() {
@@ -33,17 +32,6 @@ class _DetailedSurahPageState extends State<DetailedSurahPage>
   }
 
   TabController get tabController => _tabController;
-
-  void _handleDoubleTap() {
-    if (_isZoomed) {
-      _transformationController.value = Matrix4.identity();
-    } else {
-      _transformationController.value = Matrix4.identity()..scale(2.0);
-    }
-    setState(() {
-      _isZoomed = !_isZoomed;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

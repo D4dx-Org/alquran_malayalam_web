@@ -13,14 +13,14 @@ class SettingsController extends GetxController {
   }
 
   RxDouble quranFontSize = 25.0.obs;
-  RxDouble translationFontSize = 20.0.obs;
+  RxDouble translationFontSize = 15.0.obs;
   Rx<TextStyle> quranFontStyle = const TextStyle().obs;
 
   void _loadFontSizes() {
     quranFontSize.value =
         _sharedPreferences.getDouble('quran_font_size') ?? 25.0;
     translationFontSize.value =
-        _sharedPreferences.getDouble('translation_font_size') ?? 20.0;
+        _sharedPreferences.getDouble('translation_font_size') ?? 15.0;
   }
 
   void _loadFontFamily() {

@@ -79,6 +79,27 @@ class QuranComService {
     }
   }
 
+  Future<List<String>> fetchSurahAudio(int surahNumber,
+      {int recitationId = 7}) async {
+    final response = await http.get(Uri.parse(
+        "$baseUrl/recitations/$recitationId/by_chapter/$surahNumber"));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final audioFiles = data['audio_files'] as List;
+
+      return audioFiles.map((file) {
+        String audioUrl = file['url'];
+        if (!audioUrl.startsWith('http')) {
+          return 'https://verses.quran.com/$audioUrl';
+        }
+        return audioUrl;
+      }).toList();
+    } else {
+      throw Exception('Failed to load Surah audio: ${response.statusCode}');
+    }
+  }
+
   Future<List<QuranVerse>> searchAyahs(String query, String language) async {
     final response = await http
         .get(Uri.parse("$baseUrl/search?q=$query&language=$language"));
