@@ -74,14 +74,7 @@ class ReadingPage extends StatelessWidget {
           style:
               GoogleFonts.notoSans(fontSize: 18, fontStyle: FontStyle.italic),
         ),
-        const SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: () {
-            _audioController.playSurah(_quranController.selectedSurahId);
-          },
-          child: Text('Play Entire Surah'),
-        ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
       ],
     );
   }
@@ -90,27 +83,59 @@ class ReadingPage extends StatelessWidget {
     return Center(
       child: Container(
         constraints: const BoxConstraints(maxWidth: 800),
-        child: Directionality(
-          textDirection: TextDirection.rtl,
-          child: Obx(
-            () => RichText(
-              text: TextSpan(
-                style: _settingsController.quranFontStyle.value,
-                children: _readingController.verses.map((verse) {
-                  String arabicNumber = _convertToArabicNumbers(
-                      verse.verseNumber.split(':').last);
-                  return TextSpan(
-                    text: '${verse.arabicText} $arabicNumber ',
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        _audioController.playAyah(verse.verseNumber);
-                      },
-                  );
-                }).toList(),
-              ),
-              textAlign: TextAlign.justify,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    _audioController
+                        .playSurah(_quranController.selectedSurahId);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 241, 241,
+                        241), // Change this to your desired background color
+                    foregroundColor: Colors
+                        .black, // This sets the color of the text and icon
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize
+                        .min, // This ensures the button size fits its content
+                    children: [
+                      Icon(Icons.play_arrow_rounded),
+                      SizedBox(
+                          width: 8), // Add some space between the icon and text
+                      Text('Play'),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ),
+            const SizedBox(height: 10),
+            Directionality(
+              textDirection: TextDirection.rtl,
+              child: Obx(
+                () => RichText(
+                  text: TextSpan(
+                    style: _settingsController.quranFontStyle.value,
+                    children: _readingController.verses.map((verse) {
+                      String arabicNumber = _convertToArabicNumbers(
+                          verse.verseNumber.split(':').last);
+                      return TextSpan(
+                        text: '${verse.arabicText} $arabicNumber ',
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            _audioController.playAyah(verse.verseNumber);
+                          },
+                      );
+                    }).toList(),
+                  ),
+                  textAlign: TextAlign.justify,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
