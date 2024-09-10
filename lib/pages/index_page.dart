@@ -54,50 +54,41 @@ class _IndexPageState extends State<IndexPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const IndexAppbar(),
-      body: GestureDetector(
-        onDoubleTap: _handleDoubleTap,
-        child: InteractiveViewer(
-          transformationController: _transformationController,
-          minScale: 1.0,
-          maxScale: 4.0,
-          child: NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      SearchWidget(
-                        width: MediaQuery.of(context).size.width,
-                        onSearch: (searchText) {
-                          // Perform search operation here
-                        },
-                      ),
-                      const SizedBox(height: 25),
-                      HorizontalCardWidget(quranController: _quranController),
-                      const SizedBox(height: 25),
-                      IndexFloatingTabbar(
-                        controller: _tabController,
-                        isDarkMode: false,
-                        onTabChanged: (index) {
-                          _tabController.animateTo(index);
-                        },
-                      ),
-                    ],
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  SearchWidget(
+                    width: MediaQuery.of(context).size.width,
+                    onSearch: (searchText) {
+                      // Perform search operation here
+                    },
                   ),
-                )
-              ];
-            },
-            body: TabBarView(
-              controller: _tabController,
-              physics: const NeverScrollableScrollPhysics(),
-              children: const [
-                SurahListPage(),
-                JuzListPage(),
-                BookmarksPage(),
-              ],
-            ),
-          ),
+                  const SizedBox(height: 25),
+                  HorizontalCardWidget(quranController: _quranController),
+                  const SizedBox(height: 25),
+                  IndexFloatingTabbar(
+                    controller: _tabController,
+                    isDarkMode: false,
+                    onTabChanged: (index) {
+                      _tabController.animateTo(index);
+                    },
+                  ),
+                ],
+              ),
+            )
+          ];
+        },
+        body: TabBarView(
+          controller: _tabController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: const [
+            SurahListPage(),
+            JuzListPage(),
+            BookmarksPage(),
+          ],
         ),
       ),
       drawer: const NavigationDrawerWidget(),

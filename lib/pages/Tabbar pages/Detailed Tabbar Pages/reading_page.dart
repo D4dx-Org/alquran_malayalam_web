@@ -49,8 +49,7 @@ class ReadingPage extends StatelessWidget {
             child: Text(
               _quranController
                   .getArabicSurahName(_quranController.selectedSurahId),
-              style:
-                  GoogleFonts.amiri(fontSize: 24, fontWeight: FontWeight.bold),
+              style: _settingsController.quranFontStyle.value,
             ),
           ),
         ),
@@ -74,14 +73,6 @@ class ReadingPage extends StatelessWidget {
             () => RichText(
               text: TextSpan(
                 style: _settingsController.quranFontStyle.value,
-
-                // style: TextStyle(
-                //   fontSize: _settingsController.quranFontSize.value + 10,
-                //   fontWeight: FontWeight.normal,
-                //   fontFamily: 'Uthmanic_Script',
-                //   height: 2.0,
-                //   color: Colors.black, // Adjust color as needed
-                // ),
                 children: _readingController.verses.map((verse) {
                   String arabicNumber = _convertToArabicNumbers(
                       verse.verseNumber.split(':').last);

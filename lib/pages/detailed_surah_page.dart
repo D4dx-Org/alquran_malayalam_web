@@ -56,38 +56,30 @@ class _DetailedSurahPageState extends State<DetailedSurahPage>
           tabController: tabController,
         ),
         drawer: const NavigationDrawerWidget(),
-        body: GestureDetector(
-          onDoubleTap: _handleDoubleTap,
-          child: InteractiveViewer(
-            transformationController: _transformationController,
-            minScale: 1.0,
-            maxScale: 4.0,
-            child: Column(
-              children: [
-                if (screenWidth < 600)
-                  DetailedTabbar(
-                    controller: tabController,
-                  )
-                else
-                  SizedBox(
-                    width: screenWidth * 0.5,
-                    child: DetailedTabbar(
-                      controller: tabController,
-                    ),
-                  ),
-                Expanded(
-                  child: TabBarView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    controller: tabController,
-                    children: [
-                      const TranslationPage(),
-                      ReadingPage(),
-                    ],
-                  ),
+        body: Column(
+          children: [
+            if (screenWidth < 600)
+              DetailedTabbar(
+                controller: tabController,
+              )
+            else
+              SizedBox(
+                width: screenWidth * 0.5,
+                child: DetailedTabbar(
+                  controller: tabController,
                 ),
-              ],
+              ),
+            Expanded(
+              child: TabBarView(
+                physics: const NeverScrollableScrollPhysics(),
+                controller: tabController,
+                children: [
+                  const TranslationPage(),
+                  ReadingPage(),
+                ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

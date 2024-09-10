@@ -284,7 +284,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:alquran_web/controllers/audio_controller.dart';
 import 'package:alquran_web/controllers/bookmarks_controller.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
@@ -293,7 +293,7 @@ import 'package:alquran_web/widgets/audio_player_widget.dart';
 import 'package:alquran_web/widgets/ayah_action_bar.dart';
 
 class TranslationPage extends StatefulWidget {
-  const TranslationPage({Key? key}) : super(key: key);
+  const TranslationPage({super.key});
 
   @override
   State<TranslationPage> createState() => _TranslationPageState();
@@ -388,8 +388,7 @@ class _TranslationPageState extends State<TranslationPage> {
             child: Text(
               _quranController
                   .getArabicSurahName(_quranController.selectedSurahId),
-              style:
-                  GoogleFonts.amiri(fontSize: 24, fontWeight: FontWeight.bold),
+              style: _settingsController.quranFontStyle.value,
             ),
           ),
         ),
@@ -467,15 +466,9 @@ class _TranslationPageState extends State<TranslationPage> {
                                 .map(
                                   (word) => Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        _buildArabicWord(word['ArabWord']),
-                                        _buildTranslation(word['MalWord']),
-                                      ],
-                                    ),
+                                        horizontal: 4.0),
+                                    child: _buildArabicWord(
+                                        word['ArabWord'], word['MalWord']),
                                   ),
                                 ),
                           ],
@@ -501,43 +494,46 @@ class _TranslationPageState extends State<TranslationPage> {
           ],
         ),
         const Divider(
-          color: Color.fromRGBO(230, 230, 230, 1),
-          thickness: 1,
+          color: Color.fromRGBO(194, 194, 194, 1),
+          thickness: 2,
           height: 32,
         ),
       ],
     );
   }
 
-  Widget _buildArabicWord(String word) {
+  Widget _buildArabicWord(String arabicWord, String translation) {
     return Container(
       padding: const EdgeInsets.all(8),
+      margin: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
         border: Border.all(
-          color: const Color.fromRGBO(230, 230, 230, 1),
+          color: const Color.fromRGBO(194, 194, 194, 1),
         ),
-        color: const Color.fromRGBO(249, 249, 249, 1),
+        color: const Color.fromARGB(255, 244, 244, 244),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Obx(
-        () => Text(
-          word,
-          style: _settingsController.quranFontStyle.value,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTranslation(String translation) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Obx(
-        () => Text(
-          translation,
-          style: TextStyle(
-            fontSize: _settingsController.translationFontSize.value,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Obx(
+            () => Text(
+              arabicWord,
+              style: _settingsController.quranFontStyle.value,
+              textAlign: TextAlign.center,
+            ),
           ),
-        ),
+          const SizedBox(height: 4),
+          Obx(
+            () => Text(
+              translation,
+              style: TextStyle(
+                fontSize: _settingsController.translationFontSize.value,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
       ),
     );
   }
