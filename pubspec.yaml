@@ -92,11 +92,11 @@ flutter:
   fonts:
     - family: Uthmanic_Script
       fonts:
-        - asset: assets/fonts/kfgqpc-uthmanic-script-hafs-regular.ttf
-    # - family: Uthmani_Numbers
-    #   fonts:
-    #     - asset: assets/fonts/kfgqpchafsuthmanicscript_regula.otf
-    # weight: 700
+        - asset: assets/fonts/UthmanTN1-Ver10.ttf
+  # - family: Uthmani_Numbers
+  #   fonts:
+  #     - asset: assets/fonts/kfgqpchafsuthmanicscript_regula.otf
+  # weight: 700
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

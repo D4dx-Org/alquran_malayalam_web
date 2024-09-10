@@ -1,6 +1,6 @@
-import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:alquran_web/controllers/settings_controller.dart';
 
 class SettingsWidget extends StatelessWidget {
   const SettingsWidget({super.key});
@@ -82,16 +82,17 @@ class SettingsWidget extends StatelessWidget {
                   children: [
                     Obx(() => ElevatedButton(
                           onPressed: () {
-                            controller.setQuranFontFamily('Utmani');
+                            controller.setQuranFontFamily('Uthmani');
                           },
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.black,
                             backgroundColor:
-                                controller.quranFontFamily.value == 'Utmani'
+                                controller.quranFontStyle.value.fontFamily ==
+                                        'Uthmanic_Script'
                                     ? Colors.grey[400]
                                     : Colors.grey[200],
                           ),
-                          child: const Text('Utmani'),
+                          child: const Text('Uthmani'),
                         )),
                     Obx(() => ElevatedButton(
                           onPressed: () {
@@ -100,7 +101,8 @@ class SettingsWidget extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.black,
                             backgroundColor:
-                                controller.quranFontFamily.value == 'Amiri'
+                                controller.quranFontStyle.value.fontFamily ==
+                                        'Amiri'
                                     ? Colors.grey[400]
                                     : Colors.grey[200],
                           ),
@@ -167,16 +169,17 @@ class SettingsWidget extends StatelessWidget {
                       children: [
                         Obx(() => ElevatedButton(
                               onPressed: () {
-                                controller.setQuranFontFamily('Utmani');
+                                controller.setQuranFontFamily('Uthmani');
                               },
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.black,
-                                backgroundColor:
-                                    controller.quranFontFamily.value == 'Utmani'
-                                        ? Colors.grey[400]
-                                        : Colors.grey[200],
+                                backgroundColor: controller
+                                            .quranFontStyle.value.fontFamily ==
+                                        'Uthmanic_Script'
+                                    ? Colors.grey[400]
+                                    : Colors.grey[200],
                               ),
-                              child: const Text('Utmani'),
+                              child: const Text('Uthmani'),
                             )),
                         const SizedBox(width: 10),
                         Obx(() => ElevatedButton(
@@ -185,10 +188,11 @@ class SettingsWidget extends StatelessWidget {
                               },
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.black,
-                                backgroundColor:
-                                    controller.quranFontFamily.value == 'Amiri'
-                                        ? Colors.grey[400]
-                                        : Colors.grey[200],
+                                backgroundColor: controller
+                                            .quranFontStyle.value.fontFamily ==
+                                        'Amiri'
+                                    ? Colors.grey[400]
+                                    : Colors.grey[200],
                               ),
                               child: const Text('Amiri'),
                             )),

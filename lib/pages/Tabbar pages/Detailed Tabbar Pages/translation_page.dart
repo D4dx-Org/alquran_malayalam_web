@@ -522,10 +522,7 @@ class _TranslationPageState extends State<TranslationPage> {
       child: Obx(
         () => Text(
           word,
-          style: GoogleFonts.amiri(
-            fontSize: _settingsController.quranFontSize.value,
-            fontWeight: FontWeight.bold,
-          ),
+          style: _settingsController.quranFontStyle.value,
         ),
       ),
     );

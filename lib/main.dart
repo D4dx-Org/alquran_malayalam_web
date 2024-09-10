@@ -23,6 +23,7 @@ void main() async {
   Get.put(BookmarkController(sharedPreferences: sharedPreferences));
   Get.put(ReadingController(sharedPreferences: sharedPreferences));
   Get.put(AudioController());
+    Get.put(SettingsController(sharedPreferences: sharedPreferences));  
   Get.put(QuranSearchController());
   runApp(const MyApp());
 }

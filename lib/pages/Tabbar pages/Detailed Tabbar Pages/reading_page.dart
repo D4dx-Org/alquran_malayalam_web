@@ -73,13 +73,15 @@ class ReadingPage extends StatelessWidget {
           child: Obx(
             () => RichText(
               text: TextSpan(
-                style: TextStyle(
-                  fontSize: _settingsController.quranFontSize.value + 10,
-                  fontWeight: FontWeight.normal,
-                  fontFamily: 'Uthmanic_Script',
-                  height: 2.0,
-                  color: Colors.black, // Adjust color as needed
-                ),
+                style: _settingsController.quranFontStyle.value,
+
+                // style: TextStyle(
+                //   fontSize: _settingsController.quranFontSize.value + 10,
+                //   fontWeight: FontWeight.normal,
+                //   fontFamily: 'Uthmanic_Script',
+                //   height: 2.0,
+                //   color: Colors.black, // Adjust color as needed
+                // ),
                 children: _readingController.verses.map((verse) {
                   String arabicNumber = _convertToArabicNumbers(
                       verse.verseNumber.split(':').last);
@@ -98,9 +100,8 @@ class ReadingPage extends StatelessWidget {
 
   String _convertToArabicNumbers(String number) {
     const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-    return number
-        .split('')
-        .map((digit) => arabicNumbers[int.parse(digit)])
-        .join();
+    String arabicNumber =
+        number.split('').map((digit) => arabicNumbers[int.parse(digit)]).join();
+    return '\uFD3F$arabicNumber\uFD3E';
   }
 }
