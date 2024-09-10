@@ -12,6 +12,12 @@ class AudioController extends GetxController {
   RxString currentAyah = ''.obs;
   RxBool isVisible = false.obs;
 
+  // New properties for surah playback
+  RxList<String> surahAudioUrls = <String>[].obs;
+  RxInt currentAudioIndex = 0.obs;
+  RxBool isPlayingSurah = false.obs;
+  RxInt currentSurahNumber = 0.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -20,29 +26,66 @@ class AudioController extends GetxController {
         .listen((d) => duration.value = d ?? Duration.zero);
     _audioPlayer.playerStateStream.listen((state) {
       isPlaying.value = state.playing;
+      if (state.processingState == ProcessingState.completed) {
+        if (isPlayingSurah.value) {
+          playNextAyahInSurah();
+        } else {
+          isPlaying.value = false;
+        }
+      }
     });
   }
 
   Future<void> playAyah(String verseKey) async {
     try {
-      showPlayer(); // Make sure the player is visible
+      stopSurahPlayback(); // Stop surah playback if it's ongoing
+      showPlayer();
       currentAyah.value = verseKey;
       String? audioUrl = await _quranComService.fetchAyahAudio(verseKey);
       if (audioUrl != null) {
-        // Check if the audioUrl is a relative path
         if (!audioUrl.startsWith('http')) {
-          // Prepend the base URL if necessary
           audioUrl = 'https://audio.qurancdn.com/$audioUrl';
         }
         await _audioPlayer.setUrl(audioUrl);
         await _audioPlayer.play();
       } else {
-        // You might want to show a snackbar or some UI feedback here
         Get.snackbar('Audio Unavailable', 'No audio found for this verse.');
       }
     } catch (e) {
-      // Show an error message to the user
       Get.snackbar('Error', 'Failed to play audio: $e');
+    }
+  }
+
+  Future<void> fetchSurahAudio(int surahNumber) async {
+    try {
+      currentSurahNumber.value = surahNumber;
+      surahAudioUrls.value =
+          await _quranComService.fetchSurahAudio(surahNumber);
+      currentAudioIndex.value = 0;
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to fetch surah audio: $e');
+    }
+  }
+
+  Future<void> playSurah(int surahNumber) async {
+    await fetchSurahAudio(surahNumber);
+    if (surahAudioUrls.isNotEmpty) {
+      isPlayingSurah.value = true;
+      showPlayer();
+      await playNextAyahInSurah();
+    }
+  }
+
+  Future<void> playNextAyahInSurah() async {
+    if (currentAudioIndex.value < surahAudioUrls.length) {
+      String audioUrl = surahAudioUrls[currentAudioIndex.value];
+      await _audioPlayer.setUrl(audioUrl);
+      await _audioPlayer.play();
+      currentAudioIndex.value++;
+      currentAyah.value =
+          '${currentSurahNumber.value}:${currentAudioIndex.value}';
+    } else {
+      stopSurahPlayback();
     }
   }
 
@@ -68,12 +111,27 @@ class AudioController extends GetxController {
 
   void hidePlayer() {
     isVisible.value = false;
-    _audioPlayer.pause(); // Pause the audio when hiding the player
+    _audioPlayer.pause();
+  }
+
+  void stopSurahPlayback() {
+    isPlayingSurah.value = false;
+    currentAudioIndex.value = 0;
+    if (isPlaying.value) {
+      _audioPlayer.stop();
+    }
   }
 
   @override
   void onClose() {
     _audioPlayer.dispose();
     super.onClose();
+  }
+
+  void playPreviousAyahInSurah() {
+    if (currentAudioIndex.value > 1) {
+      currentAudioIndex.value -= 2;
+      playNextAyahInSurah();
+    }
   }
 }

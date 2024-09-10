@@ -25,7 +25,5 @@ class QuranSearchController extends GetxController {
     }
   }
 
-  
-
   String get currentSearchQuery => searchQuery.value;
 }

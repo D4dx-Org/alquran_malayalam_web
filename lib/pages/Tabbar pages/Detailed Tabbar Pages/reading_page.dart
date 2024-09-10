@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
-
-import '../../../controllers/audio_controller.dart';
+import 'package:alquran_web/controllers/audio_controller.dart';
+import 'package:alquran_web/widgets/audio_player_widget.dart';
 
 class ReadingPage extends StatelessWidget {
   final ReadingController _readingController = Get.find<ReadingController>();
@@ -13,32 +14,44 @@ class ReadingPage extends StatelessWidget {
   final QuranController _quranController = Get.find<QuranController>();
   final AudioController _audioController = Get.find<AudioController>();
 
-  ReadingPage({super.key});
+  ReadingPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(
-        () => _readingController.isLoading.value
-            ? const Center(child: CircularProgressIndicator())
-            : Column(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            _buildHeader(),
-                            _buildContinuousText(),
-                          ],
+      body: Stack(
+        children: [
+          Obx(
+            () => _readingController.isLoading.value
+                ? const Center(child: CircularProgressIndicator())
+                : Column(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                _buildHeader(),
+                                _buildContinuousText(),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+          ),
+          Obx(() => _audioController.isPlaying.value
+              ? Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: AudioPlayerWidget(),
+                )
+              : const SizedBox.shrink()),
+        ],
       ),
     );
   }
@@ -56,11 +69,17 @@ class ReadingPage extends StatelessWidget {
             ),
           ),
         ),
-        
         Text(
           _quranController.selectedSurah,
           style:
               GoogleFonts.notoSans(fontSize: 18, fontStyle: FontStyle.italic),
+        ),
+        const SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: () {
+            _audioController.playSurah(_quranController.selectedSurahId);
+          },
+          child: Text('Play Entire Surah'),
         ),
         const SizedBox(height: 20),
       ],
@@ -82,6 +101,10 @@ class ReadingPage extends StatelessWidget {
                       verse.verseNumber.split(':').last);
                   return TextSpan(
                     text: '${verse.arabicText} $arabicNumber ',
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        _audioController.playAyah(verse.verseNumber);
+                      },
                   );
                 }).toList(),
               ),
