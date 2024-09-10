@@ -1,4 +1,3 @@
-
 import 'package:alquran_web/controllers/audio_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -44,6 +43,8 @@ class AudioPlayerWidget extends StatelessWidget {
                   onPressed: () {
                     if (audioController.isPlayingSurah.value) {
                       audioController.playPreviousAyahInSurah();
+                    } else {
+                      audioController.playPreviousAyah();
                     }
                   },
                 ),
@@ -61,6 +62,8 @@ class AudioPlayerWidget extends StatelessWidget {
                   onPressed: () {
                     if (audioController.isPlayingSurah.value) {
                       audioController.playNextAyahInSurah();
+                    } else {
+                      audioController.playNextAyah();
                     }
                   },
                 ),
@@ -71,9 +74,11 @@ class AudioPlayerWidget extends StatelessWidget {
                                 ? 1
                                 : audioController.duration.value.inSeconds),
                         backgroundColor: Colors.grey[300],
-                        valueColor: const AlwaysStoppedAnimation<Color>(Colors.brown),
+                        valueColor:
+                            const AlwaysStoppedAnimation<Color>(Colors.brown),
                       )),
                 ),
+                _buildSpeedDropdown(),
                 IconButton(
                   icon: const Icon(Icons.close, color: Colors.grey),
                   onPressed: audioController.hidePlayer,
@@ -100,5 +105,22 @@ class AudioPlayerWidget extends StatelessWidget {
         ),
       );
     });
+  }
+
+  Widget _buildSpeedDropdown() {
+    return DropdownButton<double>(
+      value: audioController.playbackSpeed.value,
+      onChanged: (double? newValue) {
+        if (newValue != null) {
+          audioController.setPlaybackSpeed(newValue);
+        }
+      },
+      items: [1.0, 1.5, 2.0].map<DropdownMenuItem<double>>((double value) {
+        return DropdownMenuItem<double>(
+          value: value,
+          child: Text('${value}x'),
+        );
+      }).toList(),
+    );
   }
 }

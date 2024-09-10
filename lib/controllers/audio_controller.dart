@@ -11,6 +11,7 @@ class AudioController extends GetxController {
   RxBool isPlaying = false.obs;
   RxString currentAyah = ''.obs;
   RxBool isVisible = false.obs;
+  RxDouble playbackSpeed = 1.0.obs;
 
   RxList<String> surahAudioUrls = <String>[].obs;
   RxInt currentAudioIndex = 0.obs;
@@ -64,6 +65,20 @@ class AudioController extends GetxController {
       await playAyah(nextAyahKey);
     }
   }
+
+  Future<void> playPreviousAyah() async {  
+    List<String> parts = currentAyah.value.split(':');  
+    if (parts.length == 2) {  
+      int surahNumber = int.parse(parts[0]);  
+      int ayahNumber = int.parse(parts[1]);  
+      if (ayahNumber > 1) {  
+        String previousAyahKey = '$surahNumber:${ayahNumber - 1}';  
+        await playAyah(previousAyahKey);  
+      }  
+    }  
+  }
+
+
 
   Future<void> fetchSurahAudio(int surahNumber) async {
     try {
@@ -137,6 +152,12 @@ class AudioController extends GetxController {
       playNextAyahInSurah();
     }
   }
+
+void setPlaybackSpeed(double speed) {  
+    playbackSpeed.value = speed;  
+    _audioPlayer.setSpeed(speed);  
+  }  
+
 
   @override
   void onClose() {
