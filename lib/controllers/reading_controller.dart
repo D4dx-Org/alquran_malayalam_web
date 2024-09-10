@@ -52,13 +52,6 @@ class ReadingController extends GetxController {
     }
   }
 
-  // void printAyahs() {
-  //   print('Ayahs of Surah ${surahEnglishName.value} (${surahName.value}):');
-  //   for (var verse in verses) {
-  //     print('${verse.verseNumber}: ${verse.arabicText}');
-  //   }
-  // }
-
   String getArabicSurahName() => surahName.value;
   String getEnglishSurahName() => surahEnglishName.value;
   int getVerseCount() => verses.length;

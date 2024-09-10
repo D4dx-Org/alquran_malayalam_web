@@ -22,7 +22,6 @@ class _IndexPageState extends State<IndexPage>
   late TabController _tabController;
   late QuranController _quranController;
   late TransformationController _transformationController;
-  bool _isZoomed = false;
 
   @override
   void initState() {

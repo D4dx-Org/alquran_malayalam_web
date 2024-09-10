@@ -137,7 +137,7 @@ class NavigationDrawerWidget extends StatelessWidget {
                     Flexible(
                       child: IconButton(
                         onPressed: () {},
-                        icon: SvgPicture.asset('assets/icons/Apple_Store.svg'),
+                        icon: SvgPicture.asset('icons/Apple_Store.svg'),
                       ),
                     ),
                   ],

@@ -1,4 +1,3 @@
-
 // import 'package:flutter/material.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 // import 'package:get/get.dart';
@@ -107,7 +106,6 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -147,7 +145,8 @@ class AyahActionBar extends StatelessWidget {
   void _handleSharePressed(BuildContext context) {
     final arabicWords = lineWords.map((word) => word['ArabWord']).join(' ');
     final wordMeanings = lineWords.map((word) => word['MalWord']).join(' ');
-    final shareText = 'Surah ${quranController.selectedSurah}, Ayah $ayahNumber\n\n'
+    final shareText =
+        'Surah ${quranController.selectedSurah}, Ayah $ayahNumber\n\n'
         'Arabic: $arabicWords\n\n'
         'Word Meanings: $wordMeanings\n\n'
         'Translation: $translation';
@@ -214,7 +213,8 @@ class AyahActionBar extends StatelessWidget {
             isBookmarked,
           ),
           const SizedBox(width: 16),
-          _buildSvgIconButton('icons/ShareAyah_Icon.svg', () => _handleSharePressed(context)),
+          _buildSvgIconButton(
+              'icons/ShareAyah_Icon.svg', () => _handleSharePressed(context)),
         ],
       ),
     );

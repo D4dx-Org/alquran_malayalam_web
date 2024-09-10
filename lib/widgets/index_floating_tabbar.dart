@@ -37,8 +37,8 @@ class _IndexFloatingTabbarState extends State<IndexFloatingTabbar> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     final tabs = [
-      _TabData("Surat", "assets/icons/Surat_Page_Icon.svg"),
-      _TabData("Juz", "assets/icons/Juz_Icon.svg"),
+      _TabData("Surat", "icons/Surat_Page_Icon.svg"),
+      _TabData("Juz", "icons/Juz_Icon.svg"),
       _TabData("Bookmarks", "icons/Bookmarks_Tabbar_Icon.svg"),
     ];
 

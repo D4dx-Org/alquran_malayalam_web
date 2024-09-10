@@ -37,6 +37,7 @@ class QuranController extends GetxController {
   String get selectedAyahRange => _selectedAyahRange.value;
   List<Map<String, dynamic>> get ayahLines => _ayahLines;
   List<String> get surahMalMeans => _surahMalMeans;
+  
 
   void navigateToPreviousSurah() {
     final currentIndex = _surahIds.indexOf(_selectedSurahId.value);

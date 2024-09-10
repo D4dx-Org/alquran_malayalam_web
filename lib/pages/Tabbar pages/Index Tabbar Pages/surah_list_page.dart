@@ -149,9 +149,6 @@ class _SurahListPageState extends State<SurahListPage> {
                 .updateSelectedSurahId(int.parse(surah['SuraId'].toString()));
             final surahId = int.parse(surah['SuraId'].toString());
             final surahName = surah['MSuraName'];
-            debugPrint('Navigating to SURAH_DETAILED with arguments:');
-            debugPrint('surahId: $surahId');
-            debugPrint('surahName: $surahName');
             Get.toNamed(
               Routes.SURAH_DETAILED,
               arguments: {

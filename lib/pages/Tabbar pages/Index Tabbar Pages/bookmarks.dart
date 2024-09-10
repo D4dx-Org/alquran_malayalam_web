@@ -77,7 +77,7 @@ class BookmarksPage extends StatelessWidget {
           leading: CircleAvatar(
             backgroundColor: const Color(0xFFF6F6F6),
             child: SvgPicture.asset(
-              'assets/icons/Bookmarks_Icon.svg',
+              'icons/Bookmarks_Icon.svg',
               colorFilter: const ColorFilter.mode(
                   Color.fromRGBO(115, 78, 9, 1), BlendMode.srcIn),
             ),

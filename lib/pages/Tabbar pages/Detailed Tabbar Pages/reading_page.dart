@@ -14,7 +14,7 @@ class ReadingPage extends StatelessWidget {
   final QuranController _quranController = Get.find<QuranController>();
   final AudioController _audioController = Get.find<AudioController>();
 
-  ReadingPage({Key? key}) : super(key: key);
+  ReadingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
