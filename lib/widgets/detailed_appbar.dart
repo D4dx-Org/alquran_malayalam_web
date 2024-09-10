@@ -1,9 +1,9 @@
-
 import 'package:alquran_web/widgets/articles_bottom_row.dart';
 import 'package:alquran_web/widgets/settings_widget.dart';
 import 'package:alquran_web/widgets/surah_bottom_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // Enum to represent different pages
@@ -85,12 +85,17 @@ class _DetailedAppbarState extends State<DetailedAppbar> {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset(
-                        'images/AppBar_Icon.png',
-                        height: logoSize,
-                        width: logoSize,
-                        color: Colors.white,
-                        fit: BoxFit.contain,
+                      GestureDetector(
+                        onTap: () {
+                          Get.offAllNamed('/home');
+                        },
+                        child: Image.asset(
+                          'images/AppBar_Icon.png',
+                          height: logoSize,
+                          width: logoSize,
+                          color: Colors.white,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                       SizedBox(width: 8 * scaleFactor),
                       Flexible(
@@ -143,12 +148,14 @@ class _DetailedAppbarState extends State<DetailedAppbar> {
     );
   }
 
-  Widget _buildBottomRow(BuildContext context, double scaleFactor, TabController tabController) {
+  Widget _buildBottomRow(
+      BuildContext context, double scaleFactor, TabController tabController) {
     switch (widget.currentPage) {
       case AppPage.detailedsurah:
         return SurahBottomRow(scaleFactor, tabController: tabController);
       case AppPage.articles:
-        return ArticlesBottomRow(context, scaleFactor, tabController: tabController);
+        return ArticlesBottomRow(context, scaleFactor,
+            tabController: tabController);
       default:
         return const SizedBox.shrink();
     }

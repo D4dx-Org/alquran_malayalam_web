@@ -1,6 +1,7 @@
 import 'package:alquran_web/widgets/settings_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
@@ -67,11 +68,16 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                'images/AppBar_Icon.png',
-                height: logoSize,
-                width: logoSize,
-                fit: BoxFit.contain,
+              GestureDetector(
+                onTap: () {
+                  Get.offAllNamed('/home');
+                },
+                child: Image.asset(
+                  'images/AppBar_Icon.png',
+                  height: logoSize,
+                  width: logoSize,
+                  fit: BoxFit.contain,
+                ),
               ),
               SizedBox(width: 8 * scaleFactor),
               Flexible(
