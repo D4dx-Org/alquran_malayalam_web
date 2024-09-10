@@ -12,7 +12,6 @@ class AudioController extends GetxController {
   RxString currentAyah = ''.obs;
   RxBool isVisible = false.obs;
 
-  // New properties for surah playback
   RxList<String> surahAudioUrls = <String>[].obs;
   RxInt currentAudioIndex = 0.obs;
   RxBool isPlayingSurah = false.obs;
@@ -30,7 +29,7 @@ class AudioController extends GetxController {
         if (isPlayingSurah.value) {
           playNextAyahInSurah();
         } else {
-          isPlaying.value = false;
+          playNextAyah();
         }
       }
     });
@@ -38,7 +37,7 @@ class AudioController extends GetxController {
 
   Future<void> playAyah(String verseKey) async {
     try {
-      stopSurahPlayback(); // Stop surah playback if it's ongoing
+      isPlayingSurah.value = false;
       showPlayer();
       currentAyah.value = verseKey;
       String? audioUrl = await _quranComService.fetchAyahAudio(verseKey);
@@ -53,6 +52,16 @@ class AudioController extends GetxController {
       }
     } catch (e) {
       Get.snackbar('Error', 'Failed to play audio: $e');
+    }
+  }
+
+  Future<void> playNextAyah() async {
+    List<String> parts = currentAyah.value.split(':');
+    if (parts.length == 2) {
+      int surahNumber = int.parse(parts[0]);
+      int ayahNumber = int.parse(parts[1]);
+      String nextAyahKey = '$surahNumber:${ayahNumber + 1}';
+      await playAyah(nextAyahKey);
     }
   }
 
@@ -81,9 +90,9 @@ class AudioController extends GetxController {
       String audioUrl = surahAudioUrls[currentAudioIndex.value];
       await _audioPlayer.setUrl(audioUrl);
       await _audioPlayer.play();
-      currentAudioIndex.value++;
       currentAyah.value =
-          '${currentSurahNumber.value}:${currentAudioIndex.value}';
+          '${currentSurahNumber.value}:${currentAudioIndex.value + 1}';
+      currentAudioIndex.value++;
     } else {
       stopSurahPlayback();
     }
@@ -122,16 +131,16 @@ class AudioController extends GetxController {
     }
   }
 
-  @override
-  void onClose() {
-    _audioPlayer.dispose();
-    super.onClose();
-  }
-
   void playPreviousAyahInSurah() {
     if (currentAudioIndex.value > 1) {
       currentAudioIndex.value -= 2;
       playNextAyahInSurah();
     }
+  }
+
+  @override
+  void onClose() {
+    _audioPlayer.dispose();
+    super.onClose();
   }
 }

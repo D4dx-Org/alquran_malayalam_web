@@ -51,10 +51,11 @@ class QuranComService {
     }
   }
 
-  Future<String?> fetchAyahAudio(String verseKey) async {
+  Future<String?> fetchAyahAudio(String verseKey,
+      {int recitationId = 7}) async {
     try {
-      final response =
-          await http.get(Uri.parse("$baseUrl/verses/by_key/$verseKey?audio=1"));
+      final response = await http.get(
+          Uri.parse("$baseUrl/verses/by_key/$verseKey?audio=$recitationId"));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final verse = data['verse'] as Map<String, dynamic>?;
