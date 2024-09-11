@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:alquran_web/routes/app_pages.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NavigationDrawerWidget extends StatelessWidget {
   const NavigationDrawerWidget({super.key});
@@ -130,13 +131,29 @@ class NavigationDrawerWidget extends StatelessWidget {
                   children: [
                     Flexible(
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          final Uri url = Uri.parse(
+                              'https://play.google.com/store/apps/details?id=com.d4media.AlQuranMalayalam');
+                          if (await canLaunchUrl(url)) {
+                            await launchUrl(url);
+                          } else {
+                            throw 'Could not launch Play Store';
+                          }
+                        },
                         icon: SvgPicture.asset('icons/Google_Play.svg'),
                       ),
                     ),
                     Flexible(
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          final Uri url = Uri.parse(
+                              'https://apps.apple.com/in/app/al-quran-malayalam/id1229974199');
+                          if (await canLaunchUrl(url)) {
+                            await launchUrl(url);
+                          } else {
+                            throw 'Could not launch Apple Store';
+                          }
+                        },
                         icon: SvgPicture.asset('icons/Apple_Store.svg'),
                       ),
                     ),
