@@ -37,7 +37,6 @@ class QuranController extends GetxController {
   String get selectedAyahRange => _selectedAyahRange.value;
   List<Map<String, dynamic>> get ayahLines => _ayahLines;
   List<String> get surahMalMeans => _surahMalMeans;
-  
 
   void navigateToPreviousSurah() {
     final currentIndex = _surahIds.indexOf(_selectedSurahId.value);
@@ -143,13 +142,11 @@ class QuranController extends GetxController {
   void printSelectedSurahMalMean() {
     final index = _surahIds.indexOf(_selectedSurahId.value);
     if (index != -1) {
-    } else {
-    }
+    } else {}
   }
 
   void printAllSurahMalMeans() {
-    for (int i = 0; i < _surahNames.length; i++) {
-    }
+    for (int i = 0; i < _surahNames.length; i++) {}
   }
 
   @override
@@ -233,5 +230,17 @@ class QuranController extends GetxController {
     _selectedAyahNumber.value = 1;
     _selectedAyahRange.value = '${_surahIds.first} : 1';
     _fetchAyahLines(_surahIds.first);
+  }
+
+  Future<void> ensureAyahIsLoaded(int surahId, int ayahNumber) async {
+    if (surahId != _selectedSurahId.value) {
+      updateSelectedSurahId(surahId);
+      await _fetchAyahLines(surahId);
+    }
+
+    while (_ayahLines.isEmpty ||
+        int.parse(_ayahLines.last['AyaNo']) < ayahNumber) {
+      await fetchMoreAyahLines();
+    }
   }
 }

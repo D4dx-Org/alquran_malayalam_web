@@ -111,10 +111,10 @@ class BookmarksPage extends StatelessWidget {
               fontWeight: FontWeight.w700,
             ),
           ),
-          onTap: () {
+          onTap: () async {
             final quranController = Get.find<QuranController>();
-            quranController.updateSelectedSurah(surahName);
-            quranController.updateSelectedSurahId(surahId);
+                  await quranController.ensureAyahIsLoaded(surahId, ayahNumber);  
+
             Get.toNamed(
               Routes.SURAH_DETAILED,
               arguments: {
