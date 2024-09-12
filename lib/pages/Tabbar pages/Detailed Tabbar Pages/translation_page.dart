@@ -21,7 +21,6 @@ class _TranslationPageState extends State<TranslationPage> {
   final _settingsController = Get.find<SettingsController>();
   final _bookmarkController = Get.find<BookmarkController>();
   final _audioController = Get.find<AudioController>();
-  final _scrollController = ScrollController();
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
@@ -166,20 +165,46 @@ class _TranslationPageState extends State<TranslationPage> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                _quranController.selectedSurah,
-                style: const TextStyle(fontSize: 18),
-              ),
-              const SizedBox(width: 10),
-              Text(
-                '(${_quranController.getSurahMalMean(_quranController.selectedSurahId)})',
-                style:
-                    const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
-              ),
-            ],
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              if (constraints.maxWidth < 600) {
+                // For smaller screens, use a column layout
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _quranController.selectedSurah,
+                      style: const TextStyle(fontSize: 18),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '(${_quranController.getSurahMalMean(_quranController.selectedSurahId)})',
+                      style: const TextStyle(
+                          fontSize: 16, fontStyle: FontStyle.italic),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                );
+              } else {
+                // For larger screens, keep the row layout
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _quranController.selectedSurah,
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      '(${_quranController.getSurahMalMean(_quranController.selectedSurahId)})',
+                      style: const TextStyle(
+                          fontSize: 16, fontStyle: FontStyle.italic),
+                    ),
+                  ],
+                );
+              }
+            },
           ),
         ),
         const SizedBox(height: 20),

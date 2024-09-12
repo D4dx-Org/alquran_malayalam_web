@@ -17,14 +17,16 @@ class _DetailedSurahPageState extends State<DetailedSurahPage>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   late TransformationController _transformationController;
-@override  
-void initState() {  
-  super.initState();  
-  final arguments = Get.arguments as Map<String, dynamic>?;  
-  final initialTab = arguments?['initialTab'] as int? ?? 0;  
-  _tabController = TabController(length: 2, vsync: this, initialIndex: initialTab);  
-  _transformationController = TransformationController();  
-}
+  @override
+  void initState() {
+    super.initState();
+    final arguments = Get.arguments as Map<String, dynamic>?;
+    final initialTab = arguments?['initialTab'] as int? ?? 0;
+    _tabController =
+        TabController(length: 2, vsync: this, initialIndex: initialTab);
+    _transformationController = TransformationController();
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -47,7 +49,7 @@ void initState() {
         drawer: const NavigationDrawerWidget(),
         body: Column(
           children: [
-            if (screenWidth < 600)
+            if (screenWidth < 670)
               DetailedTabbar(
                 controller: tabController,
               )
