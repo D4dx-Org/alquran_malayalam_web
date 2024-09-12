@@ -35,6 +35,7 @@ class StarNumber extends StatelessWidget {
                 color: textColor,
                 fontWeight: FontWeight.w500,
                 fontSize: 14,
+                letterSpacing: -0.5, // Add this line to reduce letter spacing
               ),
             ),
           ),
