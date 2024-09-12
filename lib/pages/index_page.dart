@@ -48,6 +48,7 @@ class _IndexPageState extends State<IndexPage>
             SliverToBoxAdapter(
               child: Column(
                 children: [
+                  const SizedBox(height: 25),
                   SearchWidget(
                     width: MediaQuery.of(context).size.width,
                     onSearch: (searchText) {
@@ -64,6 +65,7 @@ class _IndexPageState extends State<IndexPage>
                       _tabController.animateTo(index);
                     },
                   ),
+                  const SizedBox(height: 25)
                 ],
               ),
             )

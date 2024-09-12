@@ -1,4 +1,3 @@
-// SurahListPage.dart
 import 'package:alquran_web/routes/app_pages.dart';
 import 'package:alquran_web/services/quran_services.dart';
 import 'package:alquran_web/widgets/star_widget.dart';
@@ -13,7 +12,6 @@ class SurahListPage extends StatefulWidget {
   const SurahListPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _SurahListPageState createState() => _SurahListPageState();
 }
 
@@ -51,7 +49,8 @@ class _SurahListPageState extends State<SurahListPage> {
   double getScaleFactor(double screenWidth) {
     if (screenWidth < 600) return 0.05;
     if (screenWidth < 800) return 0.08;
-    return 0.1;
+    if (screenWidth < 1440) return 0.1;
+    return 0.15; // Increased scale factor for larger screens
   }
 
   @override
@@ -59,8 +58,12 @@ class _SurahListPageState extends State<SurahListPage> {
     final screenWidth = MediaQuery.of(context).size.width;
     final scaleFactor = getScaleFactor(screenWidth);
 
-    final horizontalPadding =
-        screenWidth > 800 ? 50.0 : screenWidth * scaleFactor;
+    final horizontalPadding = screenWidth > 1440
+        ? (screenWidth - 1800) / 2 + 50 // Center content and add extra padding
+        : screenWidth > 800
+            ? 50.0
+            : screenWidth * scaleFactor;
+
     int crossAxisCount = 3;
 
     if (screenWidth < 650) {
@@ -70,7 +73,8 @@ class _SurahListPageState extends State<SurahListPage> {
     } else if (screenWidth < 1500) {
       crossAxisCount = 3;
     } else {
-      crossAxisCount = 4;
+      crossAxisCount =
+          3; // Optionally increase to 4 columns for very large screens
     }
 
     return Scaffold(
@@ -121,7 +125,7 @@ class _SurahListPageState extends State<SurahListPage> {
           subtitle: Row(
             children: [
               SvgPicture.asset(
-                surah['SuraType'] == 'مَكِّيَة'
+                surah['SuraType'] == 'مَكِّيَة'
                     ? "icons/Makiyyah_Icon.svg"
                     : "icons/Madaniyya_Icon.svg",
                 height: 11,
@@ -149,13 +153,14 @@ class _SurahListPageState extends State<SurahListPage> {
                 .updateSelectedSurahId(int.parse(surah['SuraId'].toString()));
             final surahId = int.parse(surah['SuraId'].toString());
             final surahName = surah['MSuraName'];
+
             Get.toNamed(
               Routes.SURAH_DETAILED,
               arguments: {
                 'surahId': surahId,
                 'surahName': surahName,
-                'ayahNumber': 1, // Include the initial ayah number
-                'initialTab': 0, // Add this line to specify the initial tab
+                'ayahNumber': 1,
+                'initialTab': 0,
               },
             );
           },
