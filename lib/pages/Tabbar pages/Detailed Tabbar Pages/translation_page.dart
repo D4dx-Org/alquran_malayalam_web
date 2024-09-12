@@ -218,74 +218,61 @@ class _TranslationPageState extends State<TranslationPage> {
     String verseKey = "${_quranController.selectedSurahId}:$ayahNumber";
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Obx(() => AyahActionBar(
+                ayahNumber: ayahNumber,
+                lineId: lineId,
+                onPlayPressed: () {
+                  _audioController.playAyah(verseKey);
+                },
+                onBookmarkPressed: () {
+                  _bookmarkController.toggleBookmark(
+                    _quranController.selectedSurahId,
+                    ayahNumber,
+                    lineId,
+                  );
+                },
+                isBookmarked: _bookmarkController.isAyahBookmarked(
+                  _quranController.selectedSurahId,
+                  ayahNumber,
+                  lineId,
+                ),
+                lineWords: ayah['LineWords'],
+                translation: ayah['MalTran'],
+              )),
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Directionality(
+              textDirection: TextDirection.rtl,
+              child: Wrap(
+                alignment: WrapAlignment.start,
+                runAlignment: WrapAlignment.end,
+                direction: Axis.horizontal,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Obx(() => AyahActionBar(
-                          ayahNumber: ayahNumber,
-                          lineId: lineId,
-                          onPlayPressed: () {
-                            _audioController.playAyah(verseKey);
-                          },
-                          onBookmarkPressed: () {
-                            _bookmarkController.toggleBookmark(
-                              _quranController.selectedSurahId,
-                              ayahNumber,
-                              lineId,
-                            );
-                          },
-                          isBookmarked: _bookmarkController.isAyahBookmarked(
-                            _quranController.selectedSurahId,
-                            ayahNumber,
-                            lineId,
-                          ),
-                          lineWords: ayah['LineWords'],
-                          translation: ayah['MalTran'],
-                        )),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: Wrap(
-                          alignment: WrapAlignment.end,
-                          children: [
-                            ...(ayah['LineWords'] as List<Map<String, dynamic>>)
-                                .reversed
-                                .map(
-                                  (word) => Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 4.0),
-                                    child: _buildArabicWord(
-                                        word['ArabWord'], word['MalWord']),
-                                  ),
-                                ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Obx(
-                      () => Text(
-                        ayah['MalTran'],
-                        style: TextStyle(
-                          fontSize:
-                              _settingsController.translationFontSize.value,
-                        ),
-                      ),
+                  ...(ayah['LineWords'] as List<Map<String, dynamic>>).map(
+                    (word) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child:
+                          _buildArabicWord(word['ArabWord'], word['MalWord']),
                     ),
                   ),
                 ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Obx(
+                () => Text(
+                  ayah['MalTran'],
+                  style: TextStyle(
+                    fontSize: _settingsController.translationFontSize.value,
+                  ),
+                ),
               ),
             ),
           ],
