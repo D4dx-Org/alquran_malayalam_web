@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 
 class SettingsController extends GetxController {
@@ -33,7 +32,10 @@ class SettingsController extends GetxController {
     _sharedPreferences.setString('quran_font_family', fontFamily);
 
     if (fontFamily == 'Amiri') {
-      quranFontStyle.value = GoogleFonts.amiri(fontSize: quranFontSize.value);
+      quranFontStyle.value = TextStyle(
+        fontFamily: 'Amiri_Script',
+        fontSize: quranFontSize.value,
+      );
     } else {
       quranFontStyle.value = TextStyle(
         fontFamily: 'Uthmanic_Script',

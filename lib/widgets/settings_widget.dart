@@ -11,6 +11,13 @@ class SettingsWidget extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
+        double maxWidth;
+        if (MediaQuery.of(context).size.width > 650) {
+          maxWidth = 500; // Set a fixed width for larger screens
+        } else {
+          maxWidth = MediaQuery.of(context).size.width * 0.8;
+        }
+
         return Stack(
           children: [
             Positioned(
@@ -18,7 +25,7 @@ class SettingsWidget extends StatelessWidget {
               right: 5,
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.8,
+                  maxWidth: maxWidth,
                 ),
                 child: Dialog(
                   shape: RoundedRectangleBorder(
@@ -80,34 +87,42 @@ class SettingsWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Obx(() => ElevatedButton(
-                          onPressed: () {
-                            controller.setQuranFontFamily('Uthmani');
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.black,
-                            backgroundColor:
-                                controller.quranFontStyle.value.fontFamily ==
-                                        'Uthmanic_Script'
-                                    ? Colors.grey[400]
-                                    : Colors.grey[200],
-                          ),
-                          child: const Text('Uthmani'),
-                        )),
-                    Obx(() => ElevatedButton(
-                          onPressed: () {
-                            controller.setQuranFontFamily('Amiri');
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.black,
-                            backgroundColor:
-                                controller.quranFontStyle.value.fontFamily ==
-                                        'Amiri'
-                                    ? Colors.grey[400]
-                                    : Colors.grey[200],
-                          ),
-                          child: const Text('Amiri'),
-                        )),
+                    Obx(
+                      () => ElevatedButton(
+                        onPressed: () {
+                          controller.setQuranFontFamily('Uthmani');
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.black,
+                          backgroundColor:
+                              controller.quranFontStyle.value.fontFamily ==
+                                      'Uthmanic_Script'
+                                  ? Colors.grey
+                                  : Colors.grey[200],
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                        ),
+                        child: const Text('Uthmani'),
+                      ),
+                    ),
+                    Obx(
+                      () => ElevatedButton(
+                        onPressed: () {
+                          controller.setQuranFontFamily('Amiri');
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.black,
+                          backgroundColor:
+                              controller.quranFontStyle.value.fontFamily ==
+                                      'Amiri_Script'
+                                  ? Colors.grey
+                                  : Colors.grey[200],
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                        ),
+                        child: const Text('Amiri'),
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -133,7 +148,7 @@ class SettingsWidget extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 20),
-                const Text('Translation Font Size :',
+                const Text('Translation Font Size:',
                     style: TextStyle(fontSize: 18)),
                 const SizedBox(height: 10),
                 Row(
@@ -176,8 +191,10 @@ class SettingsWidget extends StatelessWidget {
                                 backgroundColor: controller
                                             .quranFontStyle.value.fontFamily ==
                                         'Uthmanic_Script'
-                                    ? Colors.grey[400]
+                                    ? Colors.grey
                                     : Colors.grey[200],
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
                               ),
                               child: const Text('Uthmani'),
                             )),
@@ -190,9 +207,11 @@ class SettingsWidget extends StatelessWidget {
                                 foregroundColor: Colors.black,
                                 backgroundColor: controller
                                             .quranFontStyle.value.fontFamily ==
-                                        'Amiri'
-                                    ? Colors.grey[400]
+                                        'Amiri_Script'
+                                    ? Colors.grey
                                     : Colors.grey[200],
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
                               ),
                               child: const Text('Amiri'),
                             )),

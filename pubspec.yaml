@@ -91,6 +91,10 @@ flutter:
     - family: Uthmanic_Script
       fonts:
         - asset: assets/fonts/UthmanTN1-Ver10.ttf
+
+    - family: Amiri_Script
+      fonts:
+        - asset: assets/fonts/Amiri-Regular.ttf
   # - family: Uthmani_Numbers
   #   fonts:
   #     - asset: assets/fonts/kfgqpchafsuthmanicscript_regula.otf
