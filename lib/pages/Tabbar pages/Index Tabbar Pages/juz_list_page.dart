@@ -215,7 +215,7 @@ class _JuzListPageState extends State<JuzListPage> {
           surah['MSuraName'],
           style: GoogleFonts.notoSansMalayalam(
             color: Colors.black,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w500,
             fontSize: 14,
           ),
         ),
@@ -231,7 +231,7 @@ class _JuzListPageState extends State<JuzListPage> {
             const SizedBox(width: 4),
             Text(
               '${surah['TotalAyas']} Ayat',
-              style: const TextStyle(
+              style: GoogleFonts.poppins(
                 fontSize: 12,
                 color: Colors.black,
               ),
@@ -240,9 +240,10 @@ class _JuzListPageState extends State<JuzListPage> {
         ),
         trailing: Text(
           surah['ASuraName'],
-          style: GoogleFonts.amiri(
+          style: const TextStyle(
+            fontFamily: 'Uthmanic_Script',
             color: Colors.black,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
             fontSize: 18,
           ),
         ),

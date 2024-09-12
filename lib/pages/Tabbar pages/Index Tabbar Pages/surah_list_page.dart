@@ -12,6 +12,7 @@ class SurahListPage extends StatefulWidget {
   const SurahListPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SurahListPageState createState() => _SurahListPageState();
 }
 
@@ -118,8 +119,8 @@ class _SurahListPageState extends State<SurahListPage> {
           title: Text(
             surah['MSuraName'],
             style: GoogleFonts.notoSansMalayalam(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
             ),
           ),
           subtitle: Row(
@@ -134,7 +135,7 @@ class _SurahListPageState extends State<SurahListPage> {
               const SizedBox(width: 8),
               Text(
                 '${surah['TotalAyas']} Ayat',
-                style: const TextStyle(
+                style: GoogleFonts.poppins(
                   fontSize: 8,
                 ),
               ),
@@ -142,9 +143,10 @@ class _SurahListPageState extends State<SurahListPage> {
           ),
           trailing: Text(
             surah['ASuraName'],
-            style: GoogleFonts.amiri(
+            style: const TextStyle(
+              fontFamily: "Uthmanic_Script",
               fontSize: 18,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w600,
             ),
           ),
           onTap: () {
