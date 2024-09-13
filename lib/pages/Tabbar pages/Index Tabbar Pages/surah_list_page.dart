@@ -51,7 +51,8 @@ class _SurahListPageState extends State<SurahListPage> {
     if (screenWidth < 600) return 0.05;
     if (screenWidth < 800) return 0.08;
     if (screenWidth < 1440) return 0.1;
-    return 0.15; // Increased scale factor for larger screens
+    return 0.15 +
+        (screenWidth - 1440) / 10000; // Dynamic scaling for larger screens
   }
 
   @override
@@ -60,16 +61,16 @@ class _SurahListPageState extends State<SurahListPage> {
     final scaleFactor = getScaleFactor(screenWidth);
 
     final horizontalPadding = screenWidth > 1440
-        ? (screenWidth - 1800) / 2 + 50 // Center content and add extra padding
+        ? (screenWidth - 1440) * 0.3 + 50 // Dynamic padding for larger screens
         : screenWidth > 800
-            ? 100.0
+            ? 50.0
             : screenWidth * scaleFactor;
 
     int crossAxisCount = 3;
 
     if (screenWidth < 650) {
       crossAxisCount = 1;
-    } else if (screenWidth < 950) {
+    } else if (screenWidth < 1000) {
       crossAxisCount = 2;
     } else if (screenWidth < 1500) {
       crossAxisCount = 3;

@@ -43,43 +43,47 @@ class HorizontalCardWidget extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: SizedBox(
                       width: cardWidth,
-                      child: GestureDetector(
-                        onTap: () {
-                          if (surah['name'] != null && surah['id'] != null) {
-                            quranController
-                                .updateSelectedSurah(surah['name'].toString());
-                            quranController.updateSelectedSurahId(surah['id']);
-                            debugPrint(
-                                'Navigating to SURAH_DETAILED with arguments:');
-                            debugPrint('surahId: ${surah['id']}');
-                            debugPrint('surahName: ${surah['name']}');
-                            Get.toNamed(
-                              Routes.SURAH_DETAILED,
-                              arguments: {
-                                'surahId': surah['id'],
-                                'surahName': surah['name'],
-                                'ayahNumber': 1,
-                              },
-                            );
-                          } else {
-                            debugPrint('Invalid surah data');
-                          }
-                        },
-                        child: Container(
-                          height: cardHeight,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
-                            color: const Color.fromRGBO(226, 226, 226, 1),
-                          ),
-                          child: Center(
-                            child: Text(
-                              surah['name']?.toString() ?? '',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Color.fromRGBO(130, 130, 130, 1),
-                                fontWeight: FontWeight.normal,
-                                height: 1.5,
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: GestureDetector(
+                          onTap: () {
+                            if (surah['name'] != null && surah['id'] != null) {
+                              quranController.updateSelectedSurah(
+                                  surah['name'].toString());
+                              quranController
+                                  .updateSelectedSurahId(surah['id']);
+                              debugPrint(
+                                  'Navigating to SURAH_DETAILED with arguments:');
+                              debugPrint('surahId: ${surah['id']}');
+                              debugPrint('surahName: ${surah['name']}');
+                              Get.toNamed(
+                                Routes.SURAH_DETAILED,
+                                arguments: {
+                                  'surahId': surah['id'],
+                                  'surahName': surah['name'],
+                                  'ayahNumber': 1,
+                                },
+                              );
+                            } else {
+                              debugPrint('Invalid surah data');
+                            }
+                          },
+                          child: Container(
+                            height: cardHeight,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              color: const Color.fromRGBO(226, 226, 226, 1),
+                            ),
+                            child: Center(
+                              child: Text(
+                                surah['name']?.toString() ?? '',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Color.fromRGBO(130, 130, 130, 1),
+                                  fontWeight: FontWeight.normal,
+                                  height: 1.5,
+                                ),
                               ),
                             ),
                           ),

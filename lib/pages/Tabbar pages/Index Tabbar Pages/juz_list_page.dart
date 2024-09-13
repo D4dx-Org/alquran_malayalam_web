@@ -25,7 +25,9 @@ class _JuzListPageState extends State<JuzListPage> {
   double getScaleFactor(double screenWidth) {
     if (screenWidth < 600) return 0.05;
     if (screenWidth < 800) return 0.08;
-    return 0.1;
+    if (screenWidth < 1440) return 0.1;
+    return 0.15 +
+        (screenWidth - 1440) / 10000; // Dynamic scaling for larger screens
   }
 
   @override
@@ -62,9 +64,9 @@ class _JuzListPageState extends State<JuzListPage> {
     final scaleFactor = getScaleFactor(screenWidth);
 
     final horizontalPadding = screenWidth > 1440
-        ? (screenWidth - 1800) / 2 + 50 // Center content and add extra padding
+        ? (screenWidth - 1440) * 0.3 + 50 // Dynamic padding for larger screens
         : screenWidth > 800
-            ? 100.0
+            ? 50.0
             : screenWidth * scaleFactor;
 
     return Scaffold(

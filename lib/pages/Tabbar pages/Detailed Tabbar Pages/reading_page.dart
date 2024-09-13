@@ -114,27 +114,29 @@ class ReadingPage extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Directionality(
-              textDirection: TextDirection.rtl,
-              child: Obx(
-                () => RichText(
-                  text: TextSpan(
-                    style: _settingsController.quranFontStyle.value,
-                    children: _readingController.verses.map((verse) {
-                      String arabicNumber = _convertToArabicNumbers(
-                          verse.verseNumber.split(':').last);
-                      return TextSpan(
-                        text: '${verse.arabicText} $arabicNumber ',
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            _audioController.playAyah(verse.verseNumber);
-                          },
-                      );
-                    }).toList(),
+                textDirection: TextDirection.rtl,
+                child: Obx(
+                  () => RichText(
+                    text: TextSpan(
+                      style: _settingsController.quranFontStyle.value.copyWith(
+                        height:
+                            2.0, // Adjust this value to increase or decrease line spacing
+                      ),
+                      children: _readingController.verses.map((verse) {
+                        String arabicNumber = _convertToArabicNumbers(
+                            verse.verseNumber.split(':').last);
+                        return TextSpan(
+                          text: '${verse.arabicText} $arabicNumber ',
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              _audioController.playAyah(verse.verseNumber);
+                            },
+                        );
+                      }).toList(),
+                    ),
+                    textAlign: TextAlign.justify,
                   ),
-                  textAlign: TextAlign.justify,
-                ),
-              ),
-            ),
+                )),
           ],
         ),
       ),
