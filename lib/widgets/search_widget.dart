@@ -6,11 +6,13 @@ import 'package:get/get.dart';
 class SearchWidget extends StatefulWidget {
   final double? width;
   final Function(String)? onSearch;
+  final FocusNode? focusNode; // Add this line
 
   const SearchWidget({
     super.key,
     this.width,
     this.onSearch,
+    this.focusNode, // Add this line
   });
 
   @override
@@ -22,11 +24,14 @@ class _SearchWidgetState extends State<SearchWidget> {
   final TextEditingController _controller = TextEditingController();
   final LayerLink _layerLink = LayerLink();
   OverlayEntry? _overlayEntry;
+  late FocusNode _focusNode; // Add this line
 
   @override
   void initState() {
     super.initState();
     _controller.addListener(_onSearchChanged);
+    _focusNode = widget.focusNode ?? FocusNode(); // Add this line
+    _focusNode.addListener(_onFocusChange);
   }
 
   @override
@@ -34,7 +39,18 @@ class _SearchWidgetState extends State<SearchWidget> {
     _hideSearchResult();
     _controller.removeListener(_onSearchChanged);
     _controller.dispose();
+    _focusNode.removeListener(_onFocusChange); // Add this line
+    if (widget.focusNode == null) {
+      // Add this block
+      _focusNode.dispose();
+    }
     super.dispose();
+  }
+
+  void _onFocusChange() {
+    if (!_focusNode.hasFocus) {
+      _hideSearchResult();
+    }
   }
 
   void _onSearchChanged() {
@@ -134,6 +150,7 @@ class _SearchWidgetState extends State<SearchWidget> {
               ),
               child: TextField(
                 controller: _controller,
+                focusNode: _focusNode, // Add this line
                 onChanged: (value) {
                   widget.onSearch?.call(value);
                 },

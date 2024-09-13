@@ -325,7 +325,7 @@ class _TranslationPageState extends State<TranslationPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Obx(
-            () => Text(
+            () => SelectableText(
               arabicWord,
               style: _settingsController.quranFontStyle.value,
               textAlign: TextAlign.center,
@@ -333,7 +333,7 @@ class _TranslationPageState extends State<TranslationPage> {
           ),
           const SizedBox(height: 4),
           Obx(
-            () => Text(
+            () => SelectableText(
               translation,
               style: TextStyle(
                 fontSize: _settingsController.translationFontSize.value,
