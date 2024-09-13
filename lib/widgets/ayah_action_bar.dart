@@ -16,7 +16,7 @@ class AyahActionBar extends StatelessWidget {
   final String translation;
 
   AyahActionBar({
-    Key? key,
+    super.key,
     required this.ayahNumber,
     required this.lineId,
     required this.onPlayPressed,
@@ -24,7 +24,7 @@ class AyahActionBar extends StatelessWidget {
     required this.isBookmarked,
     required this.lineWords,
     required this.translation,
-  }) : super(key: key);
+  });
 
   final AudioController audioController = Get.find<AudioController>();
   final QuranController quranController = Get.find<QuranController>();
@@ -47,26 +47,26 @@ class AyahActionBar extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Share Options'),
+          title: const Text('Share Options'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: Icon(Icons.share),
-                title: Text('Share'),
+                leading: const Icon(Icons.share),
+                title: const Text('Share'),
                 onTap: () {
                   Navigator.pop(context);
                   Share.share(shareText);
                 },
               ),
               ListTile(
-                leading: Icon(Icons.content_copy),
-                title: Text('Copy to Clipboard'),
+                leading: const Icon(Icons.content_copy),
+                title: const Text('Copy to Clipboard'),
                 onTap: () {
                   Clipboard.setData(ClipboardData(text: shareText));
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Copied to clipboard')),
+                    const SnackBar(content:  Text('Copied to clipboard')),
                   );
                 },
               ),
