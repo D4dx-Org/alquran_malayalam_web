@@ -112,14 +112,31 @@ class _TranslationPageState extends State<TranslationPage> {
             _quranController.selectedSurahAyahCount.toString();
   }
 
+  double getScaleFactor(double screenWidth) {
+    if (screenWidth < 600) return 0.05;
+    if (screenWidth < 800) return 0.08;
+    if (screenWidth < 1440) return 0.1;
+    return 0.15 +
+        (screenWidth - 1440) / 10000; // Dynamic scaling for larger screens
+  }
+
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final scaleFactor = getScaleFactor(screenWidth);
+
+    final horizontalPadding = screenWidth > 1640
+        ? (screenWidth - 1640) * 0.3 + 50 // Dynamic padding for larger screens
+        : screenWidth > 800
+            ? 50.0
+            : screenWidth * scaleFactor;
+
     return Scaffold(
       body: Column(
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
               child: Obx(
                 () => ScrollablePositionedList.builder(
                   itemScrollController: itemScrollController,

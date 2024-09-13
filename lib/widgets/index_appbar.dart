@@ -25,20 +25,19 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
             ? 50.0
             : screenWidth * scaleFactor;
 
-    // Calculate icon sizes based on screen width
     final iconScaleFactor = (screenWidth / 1440).clamp(0.9, 1.2);
     final menuIconSize = 24.0 * iconScaleFactor;
     final settingsIconSize = 24.0 * iconScaleFactor;
     final logoSize = 64.0 * (screenWidth / 1440).clamp(0.7, 1.0);
 
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      automaticallyImplyLeading: false,
-      toolbarHeight: 80 * (screenWidth / 1440).clamp(0.7, 1.0),
-      leadingWidth: 100 * (screenWidth / 1440).clamp(0.7, 1.0),
-      leading: Padding(
-        padding: EdgeInsets.only(left: horizontalPadding),
-        child: IconButton(
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: AppBar(
+        backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
+        toolbarHeight: 80 * (screenWidth / 1440).clamp(0.7, 1.0),
+        leadingWidth: 100 * (screenWidth / 1440).clamp(0.7, 1.0),
+        leading: IconButton(
           icon: Icon(
             Icons.menu_sharp,
             size: menuIconSize,
@@ -49,11 +48,8 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
             Scaffold.of(context).openDrawer();
           },
         ),
-      ),
-      actions: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(right: horizontalPadding),
-          child: IconButton(
+        actions: <Widget>[
+          IconButton(
             icon: SvgPicture.asset(
               "icons/Settings_Icon.svg",
               height: settingsIconSize,
@@ -68,60 +64,61 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
               );
             },
           ),
-        ),
-      ],
-      title: LayoutBuilder(
-        builder: (context, constraints) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Get.offAllNamed('/home');
-                },
-                child: Image.asset(
-                  'images/AppBar_Icon.png',
-                  height: logoSize,
-                  width: logoSize,
-                  fit: BoxFit.contain,
+        ],
+        title: LayoutBuilder(
+          builder: (context, constraints) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Get.offAllNamed('/home');
+                  },
+                  child: Image.asset(
+                    'images/AppBar_Icon.png',
+                    height: logoSize,
+                    width: logoSize,
+                    fit: BoxFit.contain,
+                  ),
                 ),
-              ),
-              SizedBox(width: 8 * (screenWidth / 1440).clamp(0.7, 1.0)),
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        "അല്‍-ഖുര്‍ആന്‍",
-                        style: GoogleFonts.anekMalayalam(
-                            fontSize: 35 * (screenWidth / 1440).clamp(0.7, 1.0),
-                            fontWeight: FontWeight.w900,
-                            color: const Color.fromRGBO(115, 78, 9, 1)),
-                      ),
-                    ),
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        "വാക്കര്‍ത്ഥത്തോടുകൂടിയ പരിഭാഷ",
-                        style: GoogleFonts.anekMalayalam(
-                          color: const Color.fromRGBO(74, 74, 74, 1),
-                          fontSize: 18 * (screenWidth / 1440).clamp(0.7, 1.0),
-                          fontWeight: FontWeight.normal,
+                SizedBox(width: 8 * (screenWidth / 1440).clamp(0.7, 1.0)),
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          "അല്‍-ഖുര്‍ആന്‍",
+                          style: GoogleFonts.anekMalayalam(
+                              fontSize:
+                                  35 * (screenWidth / 1440).clamp(0.7, 1.0),
+                              fontWeight: FontWeight.w900,
+                              color: const Color.fromRGBO(115, 78, 9, 1)),
                         ),
                       ),
-                    ),
-                  ],
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          "വാക്കര്‍ത്ഥത്തോടുകൂടിയ പരിഭാഷ",
+                          style: GoogleFonts.anekMalayalam(
+                            color: const Color.fromRGBO(74, 74, 74, 1),
+                            fontSize: 18 * (screenWidth / 1440).clamp(0.7, 1.0),
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
+        centerTitle: true,
+        scrolledUnderElevation: 0.0,
       ),
-      centerTitle: true,
-      scrolledUnderElevation: 0.0,
     );
   }
 
