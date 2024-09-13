@@ -239,72 +239,74 @@ class _TranslationPageState extends State<TranslationPage> {
     String lineId = ayah['LineId'] ?? '';
     String verseKey = "${_quranController.selectedSurahId}:$ayahNumber";
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Obx(() => AyahActionBar(
-                ayahNumber: ayahNumber,
-                lineId: lineId,
-                onPlayPressed: () {
-                  _audioController.playAyah(verseKey);
-                },
-                onBookmarkPressed: () {
-                  _bookmarkController.toggleBookmark(
+    return HoverableAyah(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Obx(() => AyahActionBar(
+                  ayahNumber: ayahNumber,
+                  lineId: lineId,
+                  onPlayPressed: () {
+                    _audioController.playAyah(verseKey);
+                  },
+                  onBookmarkPressed: () {
+                    _bookmarkController.toggleBookmark(
+                      _quranController.selectedSurahId,
+                      ayahNumber,
+                      lineId,
+                    );
+                  },
+                  isBookmarked: _bookmarkController.isAyahBookmarked(
                     _quranController.selectedSurahId,
                     ayahNumber,
                     lineId,
-                  );
-                },
-                isBookmarked: _bookmarkController.isAyahBookmarked(
-                  _quranController.selectedSurahId,
-                  ayahNumber,
-                  lineId,
+                  ),
+                  lineWords: ayah['LineWords'],
+                  translation: ayah['MalTran'],
+                )),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Directionality(
+                textDirection: TextDirection.rtl,
+                child: Wrap(
+                  alignment: WrapAlignment.start,
+                  runAlignment: WrapAlignment.end,
+                  direction: Axis.horizontal,
+                  children: [
+                    ...(ayah['LineWords'] as List<Map<String, dynamic>>).map(
+                      (word) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child:
+                            _buildArabicWord(word['ArabWord'], word['MalWord']),
+                      ),
+                    ),
+                  ],
                 ),
-                lineWords: ayah['LineWords'],
-                translation: ayah['MalTran'],
-              )),
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Directionality(
-              textDirection: TextDirection.rtl,
-              child: Wrap(
-                alignment: WrapAlignment.start,
-                runAlignment: WrapAlignment.end,
-                direction: Axis.horizontal,
-                children: [
-                  ...(ayah['LineWords'] as List<Map<String, dynamic>>).map(
-                    (word) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child:
-                          _buildArabicWord(word['ArabWord'], word['MalWord']),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Obx(
+                  () => Text(
+                    ayah['MalTran'],
+                    style: TextStyle(
+                      fontSize: _settingsController.translationFontSize.value,
                     ),
                   ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Obx(
-                () => Text(
-                  ayah['MalTran'],
-                  style: TextStyle(
-                    fontSize: _settingsController.translationFontSize.value,
-                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-        const Divider(
-          color: Color.fromRGBO(194, 194, 194, 1),
-          thickness: 2,
-          height: 32,
-        ),
-      ],
+            ],
+          ),
+          const Divider(
+            color: Color.fromRGBO(194, 194, 194, 1),
+            thickness: 2,
+            height: 32,
+          ),
+        ],
+      ),
     );
   }
 
@@ -355,6 +357,36 @@ class _TranslationPageState extends State<TranslationPage> {
             fontWeight: FontWeight.normal,
             color: Colors.black,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class HoverableAyah extends StatefulWidget {
+  final Widget child;
+
+  const HoverableAyah({Key? key, required this.child}) : super(key: key);
+
+  @override
+  _HoverableAyahState createState() => _HoverableAyahState();
+}
+
+class _HoverableAyahState extends State<HoverableAyah> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTapDown: (_) => setState(() => _isHovered = true),
+        onTapUp: (_) => setState(() => _isHovered = true),
+        onTapCancel: () => setState(() => _isHovered = false),
+        child: Container(
+          color: _isHovered ? Colors.grey[200] : Colors.transparent,
+          child: widget.child,
         ),
       ),
     );

@@ -115,32 +115,13 @@ class ReadingPage extends StatelessWidget {
             Directionality(
               textDirection: TextDirection.rtl,
               child: Obx(
-                () => SelectableText.rich(
-                  TextSpan(
-                    style: _settingsController.quranFontStyle.value.copyWith(
-                      height: 2.0,
-                    ),
-                    children: _readingController.verses.expand((verse) {
-                      String arabicNumber = _convertToArabicNumbers(
-                          verse.verseNumber.split(':').last);
-                      return [
-                        TextSpan(text: verse.arabicText + ' '),
-                        TextSpan(
-                          text: arabicNumber + ' ',
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              _audioController.playAyah(verse.verseNumber);
-                            },
-                          style:
-                              _settingsController.quranFontStyle.value.copyWith(
-                            color: const Color.fromARGB(255, 0, 0,
-                                0), // Make verse number visually distinct
-                          ),
-                        ),
-                      ];
-                    }).toList(),
-                  ),
-                  textAlign: TextAlign.justify,
+                () => Wrap(
+                  alignment: WrapAlignment.start,
+                  children: _readingController.verses.map((verse) {
+                    return HoverableVerse(
+                      child: _buildVerse(verse),
+                    );
+                  }).toList(),
                 ),
               ),
             ),
@@ -150,10 +131,66 @@ class ReadingPage extends StatelessWidget {
     );
   }
 
+  Widget _buildVerse(dynamic verse) {
+    String arabicNumber =
+        _convertToArabicNumbers(verse.verseNumber.split(':').last);
+    return SelectableText.rich(
+      TextSpan(
+        style: _settingsController.quranFontStyle.value.copyWith(
+          height: 2.0,
+        ),
+        children: [
+          TextSpan(text: verse.arabicText + ' '),
+          TextSpan(
+            text: arabicNumber + ' ',
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                _audioController.playAyah(verse.verseNumber);
+              },
+            style: _settingsController.quranFontStyle.value.copyWith(
+              color: const Color.fromARGB(255, 0, 0, 0),
+            ),
+          ),
+        ],
+      ),
+      textAlign: TextAlign.justify,
+    );
+  }
+
   String _convertToArabicNumbers(String number) {
     const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
     String arabicNumber =
         number.split('').map((digit) => arabicNumbers[int.parse(digit)]).join();
     return '\uFD3F$arabicNumber\uFD3E';
+  }
+}
+
+class HoverableVerse extends StatefulWidget {
+  final Widget child;
+
+  const HoverableVerse({Key? key, required this.child}) : super(key: key);
+
+  @override
+  _HoverableVerseState createState() => _HoverableVerseState();
+}
+
+class _HoverableVerseState extends State<HoverableVerse> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTapDown: (_) => setState(() => _isHovered = true),
+        onTapUp: (_) => setState(() => _isHovered = false),
+        onTapCancel: () => setState(() => _isHovered = false),
+        child: Container(
+          color: _isHovered ? Colors.grey[200] : Colors.transparent,
+          child: widget.child,
+        ),
+      ),
+    );
   }
 }
