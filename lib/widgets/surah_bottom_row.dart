@@ -4,21 +4,25 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/widgets/search_widget.dart';
 
+import '../controllers/audio_controller.dart';
+
 class SurahBottomRow extends StatefulWidget {
   final double scaleFactor;
   final TabController tabController;
 
   const SurahBottomRow(this.scaleFactor,
-      {required this.tabController, Key? key})
-      : super(key: key);
+      {required this.tabController, super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SurahBottomRowState createState() => _SurahBottomRowState();
 }
 
 class _SurahBottomRowState extends State<SurahBottomRow>
     with SingleTickerProviderStateMixin {
   final _quranController = Get.find<QuranController>();
+  final _audioController = Get.find<AudioController>();
+
   bool _showSearchBar = false;
   final FocusNode _searchFocusNode = FocusNode();
 
@@ -68,7 +72,7 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                             focusNode: _searchFocusNode,
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                       ],
                     )
                   : SearchWidget(
@@ -91,6 +95,9 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                       onChanged: (value) {
                         if (value != null) {
                           _quranController.updateSelectedSurah(value);
+                          int newSurahNumber =
+                              _quranController.surahNames.indexOf(value) + 1;
+                          _audioController.changeSurah(newSurahNumber);
                         }
                       },
                       scaleFactor: widget.scaleFactor,
@@ -218,12 +225,12 @@ class CustomDropdown extends StatelessWidget {
   final double scaleFactor;
 
   const CustomDropdown({
-    Key? key,
+    super.key,
     required this.options,
     required this.selectedValue,
     required this.onChanged,
     required this.scaleFactor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

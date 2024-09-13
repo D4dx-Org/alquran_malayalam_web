@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'audio_controller.dart';
+
 class QuranController extends GetxController {
   final QuranService _quranService = QuranService();
   final SharedPreferences sharedPreferences;
@@ -41,18 +43,26 @@ class QuranController extends GetxController {
   void navigateToPreviousSurah() {
     final currentIndex = _surahIds.indexOf(_selectedSurahId.value);
     if (currentIndex > 0) {
-      updateSelectedSurahId(_surahIds[currentIndex - 1]);
-      _fetchAyahLines(_surahIds[currentIndex - 1]);
-      Get.find<ReadingController>().fetchSurah(_surahIds[currentIndex - 1]);
+      final newSurahId = _surahIds[currentIndex - 1];
+      updateSelectedSurahId(newSurahId);
+      _fetchAyahLines(newSurahId);
+      Get.find<ReadingController>().fetchSurah(newSurahId);
+
+      // Add this line to change the audio
+      Get.find<AudioController>().changeSurah(newSurahId);
     }
   }
 
   void navigateToNextSurah() {
     final currentIndex = _surahIds.indexOf(_selectedSurahId.value);
     if (currentIndex < _surahIds.length - 1) {
-      updateSelectedSurahId(_surahIds[currentIndex + 1]);
-      _fetchAyahLines(_surahIds[currentIndex + 1]);
-      Get.find<ReadingController>().fetchSurah(_surahIds[currentIndex + 1]);
+      final newSurahId = _surahIds[currentIndex + 1];
+      updateSelectedSurahId(newSurahId);
+      _fetchAyahLines(newSurahId);
+      Get.find<ReadingController>().fetchSurah(newSurahId);
+
+      // Add this line to change the audio
+      Get.find<AudioController>().changeSurah(newSurahId);
     }
   }
 

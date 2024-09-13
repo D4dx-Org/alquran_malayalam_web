@@ -66,19 +66,17 @@ class AudioController extends GetxController {
     }
   }
 
-  Future<void> playPreviousAyah() async {  
-    List<String> parts = currentAyah.value.split(':');  
-    if (parts.length == 2) {  
-      int surahNumber = int.parse(parts[0]);  
-      int ayahNumber = int.parse(parts[1]);  
-      if (ayahNumber > 1) {  
-        String previousAyahKey = '$surahNumber:${ayahNumber - 1}';  
-        await playAyah(previousAyahKey);  
-      }  
-    }  
+  Future<void> playPreviousAyah() async {
+    List<String> parts = currentAyah.value.split(':');
+    if (parts.length == 2) {
+      int surahNumber = int.parse(parts[0]);
+      int ayahNumber = int.parse(parts[1]);
+      if (ayahNumber > 1) {
+        String previousAyahKey = '$surahNumber:${ayahNumber - 1}';
+        await playAyah(previousAyahKey);
+      }
+    }
   }
-
-
 
   Future<void> fetchSurahAudio(int surahNumber) async {
     try {
@@ -110,6 +108,19 @@ class AudioController extends GetxController {
       currentAudioIndex.value++;
     } else {
       stopSurahPlayback();
+    }
+  }
+
+  Future<void> changeSurah(int newSurahNumber) async {
+    if (isPlaying.value || isPlayingSurah.value) {
+      await _audioPlayer.stop();
+    }
+    await fetchSurahAudio(newSurahNumber);
+    if (isPlayingSurah.value) {
+      await playSurah(newSurahNumber);
+    } else {
+      // Play the first ayah of the new surah
+      await playAyah('$newSurahNumber:1');
     }
   }
 
@@ -153,11 +164,10 @@ class AudioController extends GetxController {
     }
   }
 
-void setPlaybackSpeed(double speed) {  
-    playbackSpeed.value = speed;  
-    _audioPlayer.setSpeed(speed);  
-  }  
-
+  void setPlaybackSpeed(double speed) {
+    playbackSpeed.value = speed;
+    _audioPlayer.setSpeed(speed);
+  }
 
   @override
   void onClose() {
