@@ -67,52 +67,56 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
         ],
         title: LayoutBuilder(
           builder: (context, constraints) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Get.offAllNamed('/home');
-                  },
-                  child: Image.asset(
-                    'images/AppBar_Icon.png',
-                    height: logoSize,
-                    width: logoSize,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                SizedBox(width: 8 * (screenWidth / 1440).clamp(0.7, 1.0)),
-                Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          "അല്‍-ഖുര്‍ആന്‍",
-                          style: GoogleFonts.anekMalayalam(
-                              fontSize:
-                                  35 * (screenWidth / 1440).clamp(0.7, 1.0),
-                              fontWeight: FontWeight.w900,
-                              color: const Color.fromRGBO(115, 78, 9, 1)),
-                        ),
-                      ),
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          "വാക്കര്‍ത്ഥത്തോടുകൂടിയ പരിഭാഷ",
-                          style: GoogleFonts.anekMalayalam(
-                            color: const Color.fromRGBO(74, 74, 74, 1),
-                            fontSize: 18 * (screenWidth / 1440).clamp(0.7, 1.0),
-                            fontWeight: FontWeight.normal,
+            return MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () {
+                  Get.offAllNamed('/home');
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'images/AppBar_Icon.png',
+                      height: logoSize,
+                      width: logoSize,
+                      fit: BoxFit.contain,
+                    ),
+                    SizedBox(width: 8 * (screenWidth / 1440).clamp(0.7, 1.0)),
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              "അല്‍-ഖുര്‍ആന്‍",
+                              style: GoogleFonts.anekMalayalam(
+                                  fontSize:
+                                      35 * (screenWidth / 1440).clamp(0.7, 1.0),
+                                  fontWeight: FontWeight.w900,
+                                  color: const Color.fromRGBO(115, 78, 9, 1)),
+                            ),
                           ),
-                        ),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              "വാക്കര്‍ത്ഥത്തോടുകൂടിയ പരിഭാഷ",
+                              style: GoogleFonts.anekMalayalam(
+                                color: const Color.fromRGBO(74, 74, 74, 1),
+                                fontSize:
+                                    18 * (screenWidth / 1440).clamp(0.7, 1.0),
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             );
           },
         ),

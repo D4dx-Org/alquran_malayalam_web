@@ -131,38 +131,43 @@ class _TranslationPageState extends State<TranslationPage> {
             ? 50.0
             : screenWidth * scaleFactor;
 
-    return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-              child: Obx(
-                () => ScrollablePositionedList.builder(
-                  itemScrollController: itemScrollController,
-                  itemPositionsListener: itemPositionsListener,
-                  itemCount: _quranController.ayahLines.length + 3,
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return _buildHeader();
-                    } else if (index == _quranController.ayahLines.length + 1) {
-                      return _isEndOfSurah()
-                          ? _buildEndOfSurahMessage()
-                          : const SizedBox.shrink();
-                    } else if (index == _quranController.ayahLines.length + 2) {
-                      return _isLoading
-                          ? const Center(child: CircularProgressIndicator())
-                          : const SizedBox.shrink();
-                    } else {
-                      return _buildAyah(_quranController.ayahLines[index - 1]);
-                    }
-                  },
+    return SelectionArea(
+      child: Scaffold(
+        body: Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                child: Obx(
+                  () => ScrollablePositionedList.builder(
+                    itemScrollController: itemScrollController,
+                    itemPositionsListener: itemPositionsListener,
+                    itemCount: _quranController.ayahLines.length + 3,
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return _buildHeader();
+                      } else if (index ==
+                          _quranController.ayahLines.length + 1) {
+                        return _isEndOfSurah()
+                            ? _buildEndOfSurahMessage()
+                            : const SizedBox.shrink();
+                      } else if (index ==
+                          _quranController.ayahLines.length + 2) {
+                        return _isLoading
+                            ? const Center(child: CircularProgressIndicator())
+                            : const SizedBox.shrink();
+                      } else {
+                        return _buildAyah(
+                            _quranController.ayahLines[index - 1]);
+                      }
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
-          AudioPlayerWidget(),
-        ],
+            AudioPlayerWidget(),
+          ],
+        ),
       ),
     );
   }

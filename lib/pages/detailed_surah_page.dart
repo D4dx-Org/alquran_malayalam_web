@@ -40,38 +40,36 @@ class _DetailedSurahPageState extends State<DetailedSurahPage>
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return SelectionArea(
-      child: Scaffold(
-        appBar: DetailedAppbar(
-          currentPage: AppPage.detailedsurah,
-          tabController: tabController,
-        ),
-        drawer: const NavigationDrawerWidget(),
-        body: Column(
-          children: [
-            if (screenWidth < 670)
-              DetailedTabbar(
+    return Scaffold(
+      appBar: DetailedAppbar(
+        currentPage: AppPage.detailedsurah,
+        tabController: tabController,
+      ),
+      drawer: const NavigationDrawerWidget(),
+      body: Column(
+        children: [
+          if (screenWidth < 670)
+            DetailedTabbar(
+              controller: tabController,
+            )
+          else
+            SizedBox(
+              width: screenWidth * 0.5,
+              child: DetailedTabbar(
                 controller: tabController,
-              )
-            else
-              SizedBox(
-                width: screenWidth * 0.5,
-                child: DetailedTabbar(
-                  controller: tabController,
-                ),
-              ),
-            Expanded(
-              child: TabBarView(
-                physics: const NeverScrollableScrollPhysics(),
-                controller: tabController,
-                children: [
-                  const TranslationPage(),
-                  ReadingPage(),
-                ],
               ),
             ),
-          ],
-        ),
+          Expanded(
+            child: TabBarView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: tabController,
+              children: [
+                const TranslationPage(),
+                ReadingPage(),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

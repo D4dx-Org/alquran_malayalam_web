@@ -18,40 +18,43 @@ class ReadingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Obx(
-            () => _readingController.isLoading.value
-                ? const Center(child: CircularProgressIndicator())
-                : Column(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                _buildHeader(),
-                                _buildContinuousText(),
-                              ],
+    return SelectionArea(
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Obx(
+              () => _readingController.isLoading.value
+                  ? const Center(child: CircularProgressIndicator())
+                  : Column(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 32.0),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  _buildHeader(),
+                                  _buildContinuousText(),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-          ),
-          Obx(() => _audioController.isPlaying.value
-              ? Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: AudioPlayerWidget(),
-                )
-              : const SizedBox.shrink()),
-        ],
+                      ],
+                    ),
+            ),
+            Obx(() => _audioController.isPlaying.value
+                ? Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: AudioPlayerWidget(),
+                  )
+                : const SizedBox.shrink()),
+          ],
+        ),
       ),
     );
   }
@@ -94,18 +97,14 @@ class ReadingPage extends StatelessWidget {
                         .playSurah(_quranController.selectedSurahId);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 241, 241,
-                        241), // Change this to your desired background color
-                    foregroundColor: Colors
-                        .black, // This sets the color of the text and icon
+                    backgroundColor: const Color.fromARGB(255, 241, 241, 241),
+                    foregroundColor: Colors.black,
                   ),
                   child: const Row(
-                    mainAxisSize: MainAxisSize
-                        .min, // This ensures the button size fits its content
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(Icons.play_arrow_rounded),
-                      SizedBox(
-                          width: 8), // Add some space between the icon and text
+                      SizedBox(width: 8),
                       Text('Play'),
                     ],
                   ),
@@ -114,29 +113,37 @@ class ReadingPage extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Directionality(
-                textDirection: TextDirection.rtl,
-                child: Obx(
-                  () => RichText(
-                    text: TextSpan(
-                      style: _settingsController.quranFontStyle.value.copyWith(
-                        height:
-                            2.0, // Adjust this value to increase or decrease line spacing
-                      ),
-                      children: _readingController.verses.map((verse) {
-                        String arabicNumber = _convertToArabicNumbers(
-                            verse.verseNumber.split(':').last);
-                        return TextSpan(
-                          text: '${verse.arabicText} $arabicNumber ',
+              textDirection: TextDirection.rtl,
+              child: Obx(
+                () => SelectableText.rich(
+                  TextSpan(
+                    style: _settingsController.quranFontStyle.value.copyWith(
+                      height: 2.0,
+                    ),
+                    children: _readingController.verses.expand((verse) {
+                      String arabicNumber = _convertToArabicNumbers(
+                          verse.verseNumber.split(':').last);
+                      return [
+                        TextSpan(text: verse.arabicText + ' '),
+                        TextSpan(
+                          text: arabicNumber + ' ',
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               _audioController.playAyah(verse.verseNumber);
                             },
-                        );
-                      }).toList(),
-                    ),
-                    textAlign: TextAlign.justify,
+                          style:
+                              _settingsController.quranFontStyle.value.copyWith(
+                            color: const Color.fromARGB(255, 0, 0,
+                                0), // Make verse number visually distinct
+                          ),
+                        ),
+                      ];
+                    }).toList(),
                   ),
-                )),
+                  textAlign: TextAlign.justify,
+                ),
+              ),
+            ),
           ],
         ),
       ),
