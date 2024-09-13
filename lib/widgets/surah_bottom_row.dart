@@ -159,7 +159,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 2 * widget.scaleFactor),
+      padding: EdgeInsets.symmetric(horizontal: 8 * widget.scaleFactor),
       decoration: BoxDecoration(
         color: const Color.fromRGBO(92, 62, 5, 1),
         border: Border.all(

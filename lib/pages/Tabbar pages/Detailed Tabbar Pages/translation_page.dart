@@ -290,7 +290,7 @@ class _TranslationPageState extends State<TranslationPage> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Obx(
-                  () => Text(
+                  () => SelectableText(
                     ayah['MalTran'],
                     style: TextStyle(
                       fontSize: _settingsController.translationFontSize.value,
