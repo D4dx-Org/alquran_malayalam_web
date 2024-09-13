@@ -23,7 +23,7 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
     final horizontalPadding = screenWidth > 1440
         ? (screenWidth - 1800) / 2 + 50.0
         : screenWidth > 800
-            ? 50.0
+            ? 100.0
             : screenWidth * scaleFactor;
 
     // Add top padding

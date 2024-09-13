@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -73,8 +74,7 @@ class _IndexFloatingTabbarState extends State<IndexFloatingTabbar> {
     }
 
     return Container(
-      width:
-          screenWidth, // Adjust the width to be smaller than the screen width
+      width: screenWidth,
       height: 40,
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       child: Row(
@@ -121,32 +121,34 @@ class _IndexFloatingTabbarState extends State<IndexFloatingTabbar> {
                   color: isSelected ? activeIndicatorColor : unselectedColor,
                 ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    tabData.iconPath,
-                    colorFilter: ColorFilter.mode(
-                      isSelected
-                          ? selectedColor
-                          : const Color.fromRGBO(117, 117, 117, 1),
-                      BlendMode.srcIn,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      tabData.iconPath,
+                      colorFilter: ColorFilter.mode(
+                        isSelected
+                            ? selectedColor
+                            : const Color.fromRGBO(117, 117, 117, 1),
+                        BlendMode.srcIn,
+                      ),
+                      height: iconSize,
                     ),
-                    height: iconSize,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    tabData.text,
-                    style: TextStyle(
-                      color: isSelected
-                          ? selectedColor
-                          : const Color.fromRGBO(51, 51, 51, 1),
-                      fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.normal,
-                      fontSize: fontSize,
+                    const SizedBox(width: 8),
+                    Text(
+                      tabData.text,
+                      style: TextStyle(
+                        color: isSelected
+                            ? selectedColor
+                            : const Color.fromRGBO(51, 51, 51, 1),
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.normal,
+                        fontSize: fontSize,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

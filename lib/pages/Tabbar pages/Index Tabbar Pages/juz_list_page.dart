@@ -61,8 +61,11 @@ class _JuzListPageState extends State<JuzListPage> {
     final screenWidth = MediaQuery.of(context).size.width;
     final scaleFactor = getScaleFactor(screenWidth);
 
-    final horizontalPadding =
-        screenWidth > 800 ? 50.0 : screenWidth * scaleFactor;
+    final horizontalPadding = screenWidth > 1440
+        ? (screenWidth - 1800) / 2 + 50 // Center content and add extra padding
+        : screenWidth > 800
+            ? 100.0
+            : screenWidth * scaleFactor;
 
     return Scaffold(
       body: Padding(

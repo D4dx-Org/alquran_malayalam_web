@@ -62,7 +62,7 @@ class _SurahListPageState extends State<SurahListPage> {
     final horizontalPadding = screenWidth > 1440
         ? (screenWidth - 1800) / 2 + 50 // Center content and add extra padding
         : screenWidth > 800
-            ? 50.0
+            ? 100.0
             : screenWidth * scaleFactor;
 
     int crossAxisCount = 3;
