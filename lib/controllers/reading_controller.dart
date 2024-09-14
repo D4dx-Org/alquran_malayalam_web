@@ -1,3 +1,4 @@
+import 'package:alquran_web/services/surah_unicode_data.dart';
 import 'package:get/get.dart';
 import 'package:alquran_web/services/quran_com_services.dart';
 import 'package:alquran_web/models/verse_model.dart';
@@ -8,6 +9,7 @@ class ReadingController extends GetxController {
   final SharedPreferences sharedPreferences;
 
   final RxList<QuranVerse> verses = <QuranVerse>[].obs;
+  Map<String, String> surahNameMapping = {};
   final RxBool isLoading = false.obs;
   final RxString surahName = ''.obs;
   final RxString surahEnglishName = ''.obs;
@@ -18,6 +20,7 @@ class ReadingController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
     _loadLastReadSurah();
   }
 
@@ -67,5 +70,13 @@ class ReadingController extends GetxController {
     if (currentSurahId.value > 1) {
       fetchSurah(currentSurahId.value - 1);
     }
+  }
+
+  String getSurahNameUnicode(int surahId) {
+    if (surahId < 1 || surahId > 114) {
+      return '';
+    }
+    String unicodeChar = SurahUnicodeData.getSurahNameUnicode(surahId);
+    return unicodeChar + String.fromCharCode(0xE000);
   }
 }

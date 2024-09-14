@@ -67,8 +67,11 @@ class ReadingPage extends StatelessWidget {
           child: Center(
             child: Text(
               _quranController
-                  .getArabicSurahName(_quranController.selectedSurahId),
-              style: _settingsController.quranFontStyle.value,
+                  .getSurahNameUnicode(_quranController.selectedSurahId),
+              style: const TextStyle(
+                fontFamily: 'SuraNames',
+                fontSize: 60,
+              ),
             ),
           ),
         ),

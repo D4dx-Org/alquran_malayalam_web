@@ -1,5 +1,6 @@
 import 'package:alquran_web/routes/app_pages.dart';
 import 'package:alquran_web/services/quran_services.dart';
+import 'package:alquran_web/services/surah_unicode_data.dart';
 import 'package:alquran_web/widgets/star_widget.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,6 @@ class SurahListPage extends StatefulWidget {
   const SurahListPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _SurahListPageState createState() => _SurahListPageState();
 }
 
@@ -51,8 +51,7 @@ class _SurahListPageState extends State<SurahListPage> {
     if (screenWidth < 600) return 0.05;
     if (screenWidth < 800) return 0.08;
     if (screenWidth < 1440) return 0.1;
-    return 0.15 +
-        (screenWidth - 1440) / 10000; // Dynamic scaling for larger screens
+    return 0.15 + (screenWidth - 1440) / 10000;
   }
 
   @override
@@ -61,7 +60,7 @@ class _SurahListPageState extends State<SurahListPage> {
     final scaleFactor = getScaleFactor(screenWidth);
 
     final horizontalPadding = screenWidth > 1440
-        ? (screenWidth - 1440) * 0.3 + 50 // Dynamic padding for larger screens
+        ? (screenWidth - 1440) * 0.3 + 50
         : screenWidth > 800
             ? 50.0
             : screenWidth * scaleFactor;
@@ -75,8 +74,7 @@ class _SurahListPageState extends State<SurahListPage> {
     } else if (screenWidth < 1500) {
       crossAxisCount = 3;
     } else {
-      crossAxisCount =
-          3; // Optionally increase to 4 columns for very large screens
+      crossAxisCount = 3;
     }
 
     return Scaffold(
@@ -143,11 +141,11 @@ class _SurahListPageState extends State<SurahListPage> {
             ],
           ),
           trailing: Text(
-            surah['ASuraName'],
+            SurahUnicodeData.getSurahNameUnicode(
+                int.parse(surah['SuraId'].toString())),
             style: const TextStyle(
-              fontFamily: "Uthmanic_Script",
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
+              fontFamily: "SuraNames",
+              fontSize: 24,
             ),
           ),
           onTap: () {

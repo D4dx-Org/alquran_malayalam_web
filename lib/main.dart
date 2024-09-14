@@ -8,7 +8,7 @@ import 'package:alquran_web/controllers/shared_preference_controller.dart';
 import 'package:alquran_web/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -23,7 +23,7 @@ void main() async {
   Get.put(BookmarkController(sharedPreferences: sharedPreferences));
   Get.put(ReadingController(sharedPreferences: sharedPreferences));
   Get.put(AudioController());
-    Get.put(SettingsController(sharedPreferences: sharedPreferences));  
+  Get.put(SettingsController(sharedPreferences: sharedPreferences));
   Get.put(QuranSearchController());
   runApp(const MyApp());
 }
@@ -37,7 +37,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
         appBarTheme: const AppBarTheme(backgroundColor: Colors.white),
-        textTheme: GoogleFonts.notoSansMalayalamTextTheme(),
         scaffoldBackgroundColor: Colors.white,
       ),
       initialRoute: AppPages.INITIAL,

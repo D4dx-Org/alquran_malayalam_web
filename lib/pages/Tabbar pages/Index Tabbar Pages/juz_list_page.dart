@@ -1,7 +1,8 @@
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/routes/app_pages.dart';
 import 'package:alquran_web/services/quran_services.dart';
-import 'package:alquran_web/services/utils.dart';
+import 'package:alquran_web/services/juz_utils.dart';
+import 'package:alquran_web/services/surah_unicode_data.dart';
 import 'package:alquran_web/widgets/star_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -244,12 +245,11 @@ class _JuzListPageState extends State<JuzListPage> {
           ],
         ),
         trailing: Text(
-          surah['ASuraName'],
+          SurahUnicodeData.getSurahNameUnicode(
+              int.parse(surah['SuraId'].toString())),
           style: const TextStyle(
-            fontFamily: 'Uthmanic_Script',
-            color: Colors.black,
-            fontWeight: FontWeight.w600,
-            fontSize: 18,
+            fontFamily: "SuraNames",
+            fontSize: 24,
           ),
         ),
         onTap: () {

@@ -47,7 +47,6 @@ class _TranslationPageState extends State<TranslationPage> {
     }
   }
 
-
   @override
   void dispose() {
     itemPositionsListener.itemPositions.removeListener(_onScroll);
@@ -66,7 +65,6 @@ class _TranslationPageState extends State<TranslationPage> {
     }
   }
 
-
   void scrollToAyah(int ayahNumber, String lineId) {
     final index = _quranController.ayahLines.indexWhere((ayah) =>
         ayah['AyaNo'] == ayahNumber.toString() && ayah['LineId'] == lineId);
@@ -79,8 +77,8 @@ class _TranslationPageState extends State<TranslationPage> {
     } else {
       // If the ayah is not found, it might not be loaded yet.
       // You could show a loading indicator here and retry after a short delay.
-      Future.delayed(
-          const Duration(milliseconds: 500), () => scrollToAyah(ayahNumber, lineId));
+      Future.delayed(const Duration(milliseconds: 500),
+          () => scrollToAyah(ayahNumber, lineId));
     }
   }
 
@@ -166,8 +164,11 @@ class _TranslationPageState extends State<TranslationPage> {
           child: Center(
             child: Text(
               _quranController
-                  .getArabicSurahName(_quranController.selectedSurahId),
-              style: _settingsController.quranFontStyle.value,
+                  .getSurahNameUnicode(_quranController.selectedSurahId),
+              style: const TextStyle(
+                fontFamily: 'SuraNames',
+                fontSize: 60,
+              ),
             ),
           ),
         ),

@@ -1,6 +1,7 @@
 import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/controllers/shared_preference_controller.dart';
 import 'package:alquran_web/services/quran_services.dart';
+import 'package:alquran_web/services/surah_unicode_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -252,5 +253,13 @@ class QuranController extends GetxController {
         int.parse(_ayahLines.last['AyaNo']) < ayahNumber) {
       await fetchMoreAyahLines();
     }
+  }
+
+  String getSurahNameUnicode(int surahId) {
+    if (surahId < 1 || surahId > 114) {
+      return '';
+    }
+    String unicodeChar = SurahUnicodeData.getSurahNameUnicode(surahId);
+    return unicodeChar + String.fromCharCode(0xE000);
   }
 }
