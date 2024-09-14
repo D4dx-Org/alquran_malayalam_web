@@ -47,12 +47,6 @@ class _TranslationPageState extends State<TranslationPage> {
     }
   }
 
-  Future<void> _ensureAyahIsLoaded(int ayahNumber) async {
-    while (_quranController.ayahLines.isEmpty ||
-        int.parse(_quranController.ayahLines.last['AyaNo']) < ayahNumber) {
-      await _loadMoreAyahLines();
-    }
-  }
 
   @override
   void dispose() {
@@ -72,14 +66,6 @@ class _TranslationPageState extends State<TranslationPage> {
     }
   }
 
-  void _scrollToBookmarkedAyahIfNeeded() {
-    final args = Get.arguments;
-    if (args != null && args['ayahNumber'] != null && args['lineId'] != null) {
-      final ayahNumber = args['ayahNumber'] as int;
-      final lineId = args['lineId'] as String;
-      scrollToAyah(ayahNumber, lineId);
-    }
-  }
 
   void scrollToAyah(int ayahNumber, String lineId) {
     final index = _quranController.ayahLines.indexWhere((ayah) =>
@@ -94,7 +80,7 @@ class _TranslationPageState extends State<TranslationPage> {
       // If the ayah is not found, it might not be loaded yet.
       // You could show a loading indicator here and retry after a short delay.
       Future.delayed(
-          Duration(milliseconds: 500), () => scrollToAyah(ayahNumber, lineId));
+          const Duration(milliseconds: 500), () => scrollToAyah(ayahNumber, lineId));
     }
   }
 
@@ -366,9 +352,10 @@ class _TranslationPageState extends State<TranslationPage> {
 class HoverableAyah extends StatefulWidget {
   final Widget child;
 
-  const HoverableAyah({Key? key, required this.child}) : super(key: key);
+  const HoverableAyah({super.key, required this.child});
 
   @override
+  // ignore: library_private_types_in_public_api
   _HoverableAyahState createState() => _HoverableAyahState();
 }
 

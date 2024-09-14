@@ -14,6 +14,7 @@ class IndexFloatingTabbar extends StatefulWidget {
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _IndexFloatingTabbarState createState() => _IndexFloatingTabbarState();
 }
 
@@ -97,7 +98,7 @@ class _IndexFloatingTabbarState extends State<IndexFloatingTabbar> {
             },
             child: Container(
               height: 40,
-              padding: EdgeInsets.symmetric(horizontal: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
                 color: isSelected
                     ? const Color.fromRGBO(115, 78, 9, 1)
