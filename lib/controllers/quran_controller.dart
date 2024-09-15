@@ -1,9 +1,11 @@
 import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/controllers/shared_preference_controller.dart';
+import 'package:alquran_web/routes/app_pages.dart';
 import 'package:alquran_web/services/quran_services.dart';
 import 'package:alquran_web/services/surah_unicode_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,6 +15,8 @@ class QuranController extends GetxController {
   final QuranService _quranService = QuranService();
   final SharedPreferences sharedPreferences;
   final ItemScrollController itemScrollController = ItemScrollController();
+  final ItemPositionsListener itemPositionsListener =
+      ItemPositionsListener.create();
 
   QuranController({required this.sharedPreferences});
 
@@ -246,16 +250,21 @@ class QuranController extends GetxController {
     _fetchAyahLines(_surahIds.first);
   }
 
-  Future<void> ensureAyahIsLoaded(int surahId, int ayahNumber) async {
+  Future<bool> ensureAyahIsLoaded(int surahId, int ayahNumber) async {
+    bool newDataLoaded = false;
     if (surahId != _selectedSurahId.value) {
       updateSelectedSurahId(surahId);
       await _fetchAyahLines(surahId);
+      newDataLoaded = true;
     }
 
     while (_ayahLines.isEmpty ||
         int.parse(_ayahLines.last['AyaNo']) < ayahNumber) {
       await fetchMoreAyahLines();
+      newDataLoaded = true;
     }
+
+    return newDataLoaded;
   }
 
   String getSurahNameUnicode(int surahId) {
@@ -300,4 +309,45 @@ class QuranController extends GetxController {
     }
   }
 
+
+  Future<void> navigateToAyah(int ayahNumber) async {
+    await ensureAyahIsLoaded(_selectedSurahId.value, ayahNumber);
+
+    // Find the lineId for the selected Ayah
+    String lineId = '';
+    int ayahIndex = -1;
+    for (int i = 0; i < _ayahLines.length; i++) {
+      if (int.parse(_ayahLines[i]['AyaNo']) == ayahNumber) {
+        lineId = _ayahLines[i]['LineId'];
+        ayahIndex = i;
+        break;
+      }
+    }
+
+    // Update the selected Ayah number and range
+    _selectedAyahNumber.value = ayahNumber;
+    _selectedAyahRange.value = '${_selectedSurahId.value} : $ayahNumber';
+
+    // Scroll to the selected Ayah
+    if (ayahIndex != -1) {
+      itemScrollController.scrollTo(
+        index: ayahIndex,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
+
+    // Navigate to the SurahDetailed page if not already there
+    if (Get.currentRoute != Routes.SURAH_DETAILED) {
+      Get.toNamed(
+        Routes.SURAH_DETAILED,
+        arguments: {
+          'surahId': _selectedSurahId.value,
+          'surahName': _selectedSurah.value,
+          'ayahNumber': ayahNumber,
+          'lineId': lineId,
+        },
+      );
+    }
+  }
 }
