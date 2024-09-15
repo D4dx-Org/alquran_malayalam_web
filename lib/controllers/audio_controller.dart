@@ -112,15 +112,24 @@ class AudioController extends GetxController {
   }
 
   Future<void> changeSurah(int newSurahNumber) async {
+    bool wasPlaying = isPlaying.value;
+    bool wasSurahPlaying = isPlayingSurah.value;
+
     if (isPlaying.value || isPlayingSurah.value) {
       await _audioPlayer.stop();
     }
+
     await fetchSurahAudio(newSurahNumber);
-    if (isPlayingSurah.value) {
+
+    if (wasSurahPlaying && wasPlaying) {
+      // If a surah was playing and audio was active, resume playing the new surah
       await playSurah(newSurahNumber);
-    } else {
-      // Play the first ayah of the new surah
+    } else if (wasPlaying) {
+      // If single ayah was playing, play the first ayah of the new surah
       await playAyah('$newSurahNumber:1');
+    } else {
+      // If nothing was playing, don't start playback
+      currentAyah.value = '$newSurahNumber:1';
     }
   }
 

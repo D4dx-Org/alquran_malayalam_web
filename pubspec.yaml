@@ -100,10 +100,8 @@ flutter:
 
     - family: SuraNames
       fonts:
-        # - asset: assets/fonts/sura_names.eot
         - asset: assets/fonts/sura_names.ttf
-        - asset: assets/fonts/sura_names.woff
-        # - asset: assets/fonts/sura_names.woff2
+
   # weight: 700
   #
   # For details regarding fonts from package dependencies,
