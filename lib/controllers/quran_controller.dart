@@ -4,6 +4,7 @@ import 'package:alquran_web/services/quran_services.dart';
 import 'package:alquran_web/services/surah_unicode_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'audio_controller.dart';
@@ -11,6 +12,7 @@ import 'audio_controller.dart';
 class QuranController extends GetxController {
   final QuranService _quranService = QuranService();
   final SharedPreferences sharedPreferences;
+  final ItemScrollController itemScrollController = ItemScrollController();
 
   QuranController({required this.sharedPreferences});
 
@@ -193,6 +195,7 @@ class QuranController extends GetxController {
       currentPage = 0;
       _ayahLines.value =
           await _quranService.fetchAyahLines(surahNumber, currentPage);
+      Map<int, int> startingLineIds = getAyahStartingLineIds();
     } catch (e) {
       debugPrint('Error fetching ayah lines: $e');
     }
@@ -262,4 +265,39 @@ class QuranController extends GetxController {
     String unicodeChar = SurahUnicodeData.getSurahNameUnicode(surahId);
     return unicodeChar + String.fromCharCode(0xE000);
   }
+
+  Map<int, int> getAyahStartingLineIds() {
+    Map<int, int> ayahStartingLineIds = {};
+    int currentAyahNumber = 0;
+
+    for (var line in _ayahLines) {
+      int ayahNumber = int.parse(line['AyaNo']);
+      int lineId = int.parse(line['LineId']);
+
+      if (ayahNumber != currentAyahNumber) {
+        ayahStartingLineIds[ayahNumber] = lineId;
+        currentAyahNumber = ayahNumber;
+      }
+    }
+
+    return ayahStartingLineIds;
+  }
+
+ void scrollToAyah(int ayahNumber, String lineId) {
+    final index = _ayahLines.indexWhere((ayah) =>
+        ayah['AyaNo'] == ayahNumber.toString() && ayah['LineId'] == lineId);
+    if (index != -1) {
+      itemScrollController.scrollTo(
+        index: index + 1, // +1 to account for the header
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOutCubic,
+      );
+    } else {
+      // If the ayah is not found, it might not be loaded yet.
+      // You could show a loading indicator here and retry after a short delay.
+      Future.delayed(const Duration(milliseconds: 500),
+          () => scrollToAyah(ayahNumber, lineId));
+    }
+  }
+
 }

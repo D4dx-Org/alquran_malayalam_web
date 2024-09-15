@@ -103,23 +103,31 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                       scaleFactor: widget.scaleFactor,
                     ),
                   ),
-                  Obx(
-                    () => CustomDropdown(
-                      options: List.generate(
-                        _quranController.selectedSurahAyahCount,
-                        (index) => '${index + 1}',
-                      ),
-                      selectedValue:
-                          _quranController.selectedAyahNumber.toString(),
-                      onChanged: (value) {
-                        if (value != null) {
-                          _quranController.updateSelectedAyahRange(
-                              '${_quranController.selectedSurahId} : $value');
-                        }
-                      },
-                      scaleFactor: widget.scaleFactor,
-                    ),
-                  ),
+ Obx(  
+  () => CustomDropdown(  
+    options: List.generate(  
+      _quranController.selectedSurahAyahCount,  
+      (index) => '${index + 1}',  
+    ),  
+    selectedValue: _quranController.selectedAyahNumber.toString(),  
+    onChanged: (value) {  
+      if (value != null) {  
+        int ayahNumber = int.parse(value);  
+        _quranController.updateSelectedAyahRange(  
+            '${_quranController.selectedSurahId} : $ayahNumber');  
+        
+        // Get the lineId for the selected ayah  
+        Map<int, int> startingLineIds = _quranController.getAyahStartingLineIds();  
+        int? lineId = startingLineIds[ayahNumber];  
+        
+        if (lineId != null) {  
+          _quranController.scrollToAyah(ayahNumber, lineId.toString());  
+        }  
+      }  
+    },  
+    scaleFactor: widget.scaleFactor,  
+  ),  
+),
                   Obx(
                     () => CustomDropdown(
                       options: List.generate(

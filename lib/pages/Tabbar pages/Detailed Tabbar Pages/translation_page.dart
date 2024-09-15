@@ -21,7 +21,7 @@ class _TranslationPageState extends State<TranslationPage> {
   final _settingsController = Get.find<SettingsController>();
   final _bookmarkController = Get.find<BookmarkController>();
   final _audioController = Get.find<AudioController>();
-  final ItemScrollController itemScrollController = ItemScrollController();
+  // final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
 
@@ -69,7 +69,7 @@ class _TranslationPageState extends State<TranslationPage> {
     final index = _quranController.ayahLines.indexWhere((ayah) =>
         ayah['AyaNo'] == ayahNumber.toString() && ayah['LineId'] == lineId);
     if (index != -1) {
-      itemScrollController.scrollTo(
+      _quranController.itemScrollController.scrollTo(
         index: index + 1, // +1 to account for the header
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOutCubic,
@@ -124,7 +124,7 @@ class _TranslationPageState extends State<TranslationPage> {
                 padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                 child: Obx(
                   () => ScrollablePositionedList.builder(
-                    itemScrollController: itemScrollController,
+                    itemScrollController: _quranController.itemScrollController,
                     itemPositionsListener: itemPositionsListener,
                     itemCount: _quranController.ayahLines.length + 3,
                     itemBuilder: (context, index) {
