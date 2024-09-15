@@ -374,4 +374,9 @@ class QuranController extends GetxController {
           'selectedAyahRange', '${_selectedSurahId.value} : $ayahNumber');
     }
   }
+
+    void resetToFirstAyah() {  
+    updateSelectedAyahNumber(1);  
+    scrollToAyah(1, '1');  
+  } 
 }

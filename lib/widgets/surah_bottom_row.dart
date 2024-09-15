@@ -98,6 +98,7 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                           int newSurahNumber =
                               _quranController.surahNames.indexOf(value) + 1;
                           _audioController.changeSurah(newSurahNumber);
+                          _quranController.resetToFirstAyah(); // Add this line
                         }
                       },
                       scaleFactor: widget.scaleFactor,
@@ -215,6 +216,7 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                 ElevatedButton(
                   onPressed: () {
                     _quranController.navigateToPreviousSurah();
+                    _quranController.resetToFirstAyah(); // Add this line
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -235,6 +237,7 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                 ElevatedButton(
                   onPressed: () {
                     _quranController.navigateToNextSurah();
+                    _quranController.resetToFirstAyah(); // Add this line
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
