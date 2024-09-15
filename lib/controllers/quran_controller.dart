@@ -293,7 +293,7 @@ class QuranController extends GetxController {
 
   Future<void> scrollToAyah(int ayahNumber, String lineId) async {
     await ensureAyahIsLoaded(_selectedSurahId.value, ayahNumber);
-    await Future.delayed(Duration(milliseconds: 50));
+    await Future.delayed(const Duration(milliseconds: 50));
     int index = _ayahLines.indexWhere((ayah) =>
         int.parse(ayah['AyaNo']) == ayahNumber && ayah['LineId'] == lineId);
     if (index != -1) {
@@ -362,6 +362,16 @@ class QuranController extends GetxController {
           'lineId': lineId,
         },
       );
+    }
+  }
+
+  void updateSelectedAyahNumber(int ayahNumber) {
+    if (ayahNumber <= _selectedSurahAyahCount.value) {
+      _selectedAyahNumber.value = ayahNumber;
+      _selectedAyahRange.value = '${_selectedSurahId.value} : $ayahNumber';
+      _prefsController.setInt('selectedAyahNumber', ayahNumber);
+      _prefsController.setString(
+          'selectedAyahRange', '${_selectedSurahId.value} : $ayahNumber');
     }
   }
 }

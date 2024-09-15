@@ -115,20 +115,22 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                       onChanged: (value) async {
                         if (value != null) {
                           int ayahNumber = int.parse(value);
-
                           // Show loading indicator
                           Get.dialog(
-                              const Center(child: CircularProgressIndicator()),
-                              barrierDismissible: false);
+                            const Center(child: CircularProgressIndicator()),
+                            barrierDismissible: false,
+                          );
 
                           try {
-                            // Update the selected ayah range
-                            _quranController.updateSelectedAyahRange(
-                                '${_quranController.selectedSurahId} : $ayahNumber');
+                            // Update the selected ayah number
+                            _quranController
+                                .updateSelectedAyahNumber(ayahNumber);
 
                             // Ensure the ayah is loaded
                             await _quranController.ensureAyahIsLoaded(
-                                _quranController.selectedSurahId, ayahNumber);
+                              _quranController.selectedSurahId,
+                              ayahNumber,
+                            );
 
                             // Get the lineId for the selected ayah
                             Map<int, int> startingLineIds =
@@ -139,14 +141,13 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                               // Scroll to the ayah
                               _quranController.scrollToAyah(
                                   ayahNumber, lineId.toString());
-
                             } else {
                               throw Exception(
                                   'LineId not found for ayah $ayahNumber');
                             }
                           } catch (e) {
                             // Handle any errors
-                            print('Error navigating to ayah: $e');
+                            debugPrint('Error navigating to ayah: $e');
                             Get.snackbar(
                               'Error',
                               'Failed to navigate to the selected ayah',

@@ -30,9 +30,24 @@ class _TranslationPageState extends State<TranslationPage> {
   void initState() {
     super.initState();
     itemPositionsListener.itemPositions.addListener(_onScroll);
+    itemPositionsListener.itemPositions.addListener(_updateCurrentAyah);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _handleInitialNavigation();
     });
+  }
+
+  void _updateCurrentAyah() {
+    if (itemPositionsListener.itemPositions.value.isNotEmpty) {
+      final firstVisibleItemIndex =
+          itemPositionsListener.itemPositions.value.first.index;
+      if (firstVisibleItemIndex > 0 &&
+          firstVisibleItemIndex < _quranController.ayahLines.length) {
+        final visibleAyah =
+            _quranController.ayahLines[firstVisibleItemIndex - 1];
+        final ayahNumber = int.parse(visibleAyah['AyaNo']);
+        _quranController.updateSelectedAyahNumber(ayahNumber);
+      }
+    }
   }
 
   void _handleInitialNavigation() async {
@@ -50,6 +65,7 @@ class _TranslationPageState extends State<TranslationPage> {
   @override
   void dispose() {
     itemPositionsListener.itemPositions.removeListener(_onScroll);
+    itemPositionsListener.itemPositions.removeListener(_updateCurrentAyah);
     super.dispose();
   }
 
