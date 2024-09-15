@@ -6,7 +6,6 @@ import 'package:alquran_web/services/surah_unicode_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'audio_controller.dart';
@@ -199,7 +198,7 @@ class QuranController extends GetxController {
       currentPage = 0;
       _ayahLines.value =
           await _quranService.fetchAyahLines(surahNumber, currentPage);
-      Map<int, int> startingLineIds = getAyahStartingLineIds();
+      getAyahStartingLineIds();
     } catch (e) {
       debugPrint('Error fetching ayah lines: $e');
     }
@@ -292,23 +291,38 @@ class QuranController extends GetxController {
     return ayahStartingLineIds;
   }
 
- void scrollToAyah(int ayahNumber, String lineId) {
-    final index = _ayahLines.indexWhere((ayah) =>
-        ayah['AyaNo'] == ayahNumber.toString() && ayah['LineId'] == lineId);
+  Future<void> scrollToAyah(int ayahNumber, String lineId) async {
+    await ensureAyahIsLoaded(_selectedSurahId.value, ayahNumber);
+    await Future.delayed(Duration(milliseconds: 50));
+    int index = _ayahLines.indexWhere((ayah) =>
+        int.parse(ayah['AyaNo']) == ayahNumber && ayah['LineId'] == lineId);
     if (index != -1) {
-      itemScrollController.scrollTo(
-        index: index + 1, // +1 to account for the header
-        duration: const Duration(milliseconds: 500),
+      await itemScrollController.scrollTo(
+        index: index + 1,
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOutCubic,
       );
     } else {
-      // If the ayah is not found, it might not be loaded yet.
-      // You could show a loading indicator here and retry after a short delay.
-      Future.delayed(const Duration(milliseconds: 500),
-          () => scrollToAyah(ayahNumber, lineId));
+      index = _ayahLines
+          .indexWhere((ayah) => int.parse(ayah['AyaNo']) >= ayahNumber);
+      if (index != -1) {
+        await itemScrollController.scrollTo(
+          index: index + 1,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOutCubic,
+        );
+      } else {
+        await itemScrollController.scrollTo(
+          index: _ayahLines.length,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOutCubic,
+        );
+      }
     }
+    _selectedAyahNumber.value = ayahNumber;
+    _selectedAyahRange.value = '${_selectedSurahId.value} : $ayahNumber';
+    update();
   }
-
 
   Future<void> navigateToAyah(int ayahNumber) async {
     await ensureAyahIsLoaded(_selectedSurahId.value, ayahNumber);

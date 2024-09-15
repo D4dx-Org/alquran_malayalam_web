@@ -103,31 +103,64 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                       scaleFactor: widget.scaleFactor,
                     ),
                   ),
- Obx(  
-  () => CustomDropdown(  
-    options: List.generate(  
-      _quranController.selectedSurahAyahCount,  
-      (index) => '${index + 1}',  
-    ),  
-    selectedValue: _quranController.selectedAyahNumber.toString(),  
-    onChanged: (value) {  
-      if (value != null) {  
-        int ayahNumber = int.parse(value);  
-        _quranController.updateSelectedAyahRange(  
-            '${_quranController.selectedSurahId} : $ayahNumber');  
-        
-        // Get the lineId for the selected ayah  
-        Map<int, int> startingLineIds = _quranController.getAyahStartingLineIds();  
-        int? lineId = startingLineIds[ayahNumber];  
-        
-        if (lineId != null) {  
-          _quranController.scrollToAyah(ayahNumber, lineId.toString());  
-        }  
-      }  
-    },  
-    scaleFactor: widget.scaleFactor,  
-  ),  
-),
+                  //Second Drop Down
+                  Obx(
+                    () => CustomDropdown(
+                      options: List.generate(
+                        _quranController.selectedSurahAyahCount,
+                        (index) => '${index + 1}',
+                      ),
+                      selectedValue:
+                          _quranController.selectedAyahNumber.toString(),
+                      onChanged: (value) async {
+                        if (value != null) {
+                          int ayahNumber = int.parse(value);
+
+                          // Show loading indicator
+                          Get.dialog(
+                              const Center(child: CircularProgressIndicator()),
+                              barrierDismissible: false);
+
+                          try {
+                            // Update the selected ayah range
+                            _quranController.updateSelectedAyahRange(
+                                '${_quranController.selectedSurahId} : $ayahNumber');
+
+                            // Ensure the ayah is loaded
+                            await _quranController.ensureAyahIsLoaded(
+                                _quranController.selectedSurahId, ayahNumber);
+
+                            // Get the lineId for the selected ayah
+                            Map<int, int> startingLineIds =
+                                _quranController.getAyahStartingLineIds();
+                            int? lineId = startingLineIds[ayahNumber];
+
+                            if (lineId != null) {
+                              // Scroll to the ayah
+                              _quranController.scrollToAyah(
+                                  ayahNumber, lineId.toString());
+
+                            } else {
+                              throw Exception(
+                                  'LineId not found for ayah $ayahNumber');
+                            }
+                          } catch (e) {
+                            // Handle any errors
+                            print('Error navigating to ayah: $e');
+                            Get.snackbar(
+                              'Error',
+                              'Failed to navigate to the selected ayah',
+                              snackPosition: SnackPosition.BOTTOM,
+                            );
+                          } finally {
+                            // Hide loading indicator
+                            Get.back();
+                          }
+                        }
+                      },
+                      scaleFactor: widget.scaleFactor,
+                    ),
+                  ),
                   Obx(
                     () => CustomDropdown(
                       options: List.generate(
