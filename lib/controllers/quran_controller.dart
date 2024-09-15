@@ -54,8 +54,17 @@ class QuranController extends GetxController {
       _fetchAyahLines(newSurahId);
       Get.find<ReadingController>().fetchSurah(newSurahId);
 
-      // Add this line to change the audio
+      // Reset ayah number to 1
+      _selectedAyahNumber.value = 1;
+      _selectedAyahRange.value = '$newSurahId : 1';
+      _prefsController.setInt('selectedAyahNumber', 1);
+      _prefsController.setString('selectedAyahRange', '$newSurahId : 1');
+
+      // Change the audio
       Get.find<AudioController>().changeSurah(newSurahId);
+
+      // Scroll to the first ayah
+      scrollToAyah(1, '1');
     }
   }
 
@@ -67,8 +76,17 @@ class QuranController extends GetxController {
       _fetchAyahLines(newSurahId);
       Get.find<ReadingController>().fetchSurah(newSurahId);
 
-      // Add this line to change the audio
+      // Reset ayah number to 1
+      _selectedAyahNumber.value = 1;
+      _selectedAyahRange.value = '$newSurahId : 1';
+      _prefsController.setInt('selectedAyahNumber', 1);
+      _prefsController.setString('selectedAyahRange', '$newSurahId : 1');
+
+      // Change the audio
       Get.find<AudioController>().changeSurah(newSurahId);
+
+      // Scroll to the first ayah
+      scrollToAyah(1, '1');
     }
   }
 
@@ -78,8 +96,11 @@ class QuranController extends GetxController {
       _selectedSurah.value = surahName;
       _selectedSurahId.value = _surahIds[index];
       _selectedSurahAyahCount.value = _surahAyahCounts[index];
+
+      // Reset ayah number to 1
       _selectedAyahNumber.value = 1;
       _selectedAyahRange.value = '${_surahIds[index]} : 1';
+
       _prefsController.setString('selectedSurah', surahName);
       _prefsController.setString(
           'selectedArabicSurah', _arabicSurahNames[index]);
@@ -88,8 +109,12 @@ class QuranController extends GetxController {
       _prefsController.setString(
           'selectedAyahRange', '${_surahIds[index]} : 1');
       _prefsController.setString('selectedSurahMalMean', _surahMalMeans[index]);
+
       _fetchAyahLines(_surahIds[index]);
       Get.find<ReadingController>().fetchSurah(_surahIds[index]);
+
+      // Scroll to the first ayah
+      scrollToAyah(1, '1');
     }
   }
 
@@ -117,17 +142,20 @@ class QuranController extends GetxController {
     final surahNumber = int.parse(parts[0]);
     final ayahNumber = int.parse(parts[1]);
 
-    if (surahNumber == _selectedSurahId.value &&
-        ayahNumber <= _selectedSurahAyahCount.value) {
+    if (surahNumber != _selectedSurahId.value) {
+      updateSelectedSurahId(surahNumber);
+    }
+
+    if (ayahNumber <= _selectedSurahAyahCount.value) {
       _selectedAyahRange.value = ayahRange;
       _selectedAyahNumber.value = ayahNumber;
       _prefsController.setString('selectedAyahRange', ayahRange);
     } else {
       final lastAyahNumber = _selectedSurahAyahCount.value;
-      _selectedAyahRange.value = '${_selectedSurahId.value} : $lastAyahNumber';
+      _selectedAyahRange.value = '$surahNumber : $lastAyahNumber';
       _selectedAyahNumber.value = lastAyahNumber;
       _prefsController.setString(
-          'selectedAyahRange', '${_selectedSurahId.value} : $lastAyahNumber');
+          'selectedAyahRange', '$surahNumber : $lastAyahNumber');
     }
   }
 

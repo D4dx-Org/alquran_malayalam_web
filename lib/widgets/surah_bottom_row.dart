@@ -88,6 +88,7 @@ class _SurahBottomRowState extends State<SurahBottomRow>
               child: Wrap(
                 spacing: 5.0,
                 children: [
+                  //First Drop Down
                   Obx(
                     () => CustomDropdown(
                       options: _quranController.surahNames,
@@ -106,10 +107,9 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                   //Second Drop Down
                   Obx(
                     () => CustomDropdown(
-                      options: List.generate(
-                        _quranController.selectedSurahAyahCount,
-                        (index) => '${index + 1}',
-                      ),
+                      options: _quranController.surahIds
+                          .map((id) => id.toString())
+                          .toList(),
                       selectedValue:
                           _quranController.selectedAyahNumber.toString(),
                       onChanged: (value) async {
@@ -139,7 +139,6 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                               // Scroll to the ayah
                               _quranController.scrollToAyah(
                                   ayahNumber, lineId.toString());
-
                             } else {
                               throw Exception(
                                   'LineId not found for ayah $ayahNumber');
