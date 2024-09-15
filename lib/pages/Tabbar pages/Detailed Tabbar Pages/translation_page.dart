@@ -124,8 +124,9 @@ class _TranslationPageState extends State<TranslationPage> {
                 padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                 child: Obx(
                   () => ScrollablePositionedList.builder(
-                    itemScrollController: itemScrollController,
-                    itemPositionsListener: itemPositionsListener,
+                    itemScrollController: _quranController.itemScrollController,
+                    itemPositionsListener:
+                        _quranController.itemPositionsListener,
                     itemCount: _quranController.ayahLines.length + 3,
                     itemBuilder: (context, index) {
                       if (index == 0) {
