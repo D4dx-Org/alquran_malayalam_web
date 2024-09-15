@@ -8,23 +8,27 @@ import 'package:alquran_web/controllers/shared_preference_controller.dart';
 import 'package:alquran_web/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final sharedPreferences = await SharedPreferences.getInstance();
+
+  // Initialize essential controllers
   Get.put(SharedPreferencesController(sharedPreferences: sharedPreferences));
   Get.put(QuranController(sharedPreferences: sharedPreferences),
       permanent: true);
-
   Get.put(SettingsController(sharedPreferences: sharedPreferences),
       permanent: true);
-  Get.put(BookmarkController(sharedPreferences: sharedPreferences));
-  Get.put(ReadingController(sharedPreferences: sharedPreferences));
-  Get.put(AudioController());
-  Get.put(SettingsController(sharedPreferences: sharedPreferences));
-  Get.put(QuranSearchController());
+
+  // Lazy load other controllers
+  Get.lazyPut(() => BookmarkController(sharedPreferences: sharedPreferences),
+      fenix: true);
+  Get.lazyPut(() => ReadingController(sharedPreferences: sharedPreferences),
+      fenix: true);
+  Get.lazyPut(() => AudioController(), fenix: true);
+  Get.lazyPut(() => QuranSearchController(), fenix: true);
+
   runApp(const MyApp());
 }
 
