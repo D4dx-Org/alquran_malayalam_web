@@ -113,8 +113,8 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                           _quranController.selectedAyahNumber.toString(),
                       onChanged: (value) {
                         if (value != null) {
-                          _quranController.updateSelectedAyahRange(
-                              '${_quranController.selectedSurahId} : $value');
+                          int ayahNumber = int.parse(value);
+                          _quranController.navigateToAyah(ayahNumber);
                         }
                       },
                       scaleFactor: widget.scaleFactor,
