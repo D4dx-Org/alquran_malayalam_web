@@ -237,6 +237,8 @@
 
 // ignore_for_file: avoid_print
 
+import 'package:alquran_web/controllers/quran_controller.dart';
+import 'package:alquran_web/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -270,6 +272,7 @@ class _SearchWidgetState extends State<SearchWidget> {
   bool _isListening = false;
   List<stt.LocaleName> _localeNames = [];
   Timer? _listenTimer;
+  Timer? _navigationDebounceTimer;
 
   @override
   void initState() {
@@ -292,6 +295,7 @@ class _SearchWidgetState extends State<SearchWidget> {
     }
     _speech.cancel();
     _listenTimer?.cancel();
+    _navigationDebounceTimer?.cancel();
     super.dispose();
   }
 
@@ -321,8 +325,49 @@ class _SearchWidgetState extends State<SearchWidget> {
       searchController.updateSearchQuery(_controller.text);
       searchController.performSearch();
       _showSearchResult(_controller.text);
+
+      // Add this line to check for surah:ayah pattern
+      _checkAndNavigateToAyah(_controller.text);
     } else {
       _hideSearchResult();
+    }
+  }
+
+  // Add this new method
+  void _checkAndNavigateToAyah(String input) {
+    final pattern = RegExp(r'^(\d+):(\d+)$');
+    final match = pattern.firstMatch(input);
+
+    if (match != null) {
+      // Cancel any existing timer
+      _navigationDebounceTimer?.cancel();
+
+      // Start a new timer
+      _navigationDebounceTimer = Timer(const Duration(seconds: 2), () {
+        final surahNumber = int.parse(match.group(1)!);
+        final ayahNumber = int.parse(match.group(2)!);
+
+        if (surahNumber >= 1 && surahNumber <= 114) {
+          final quranController = Get.find<QuranController>();
+          final surahName = quranController.getSurahName(surahNumber);
+
+          quranController.updateSelectedSurahId(surahNumber);
+          quranController.updateSelectedAyahNumber(ayahNumber);
+
+          Get.toNamed(
+            Routes.SURAH_DETAILED,
+            arguments: {
+              'surahId': surahNumber,
+              'surahName': surahName,
+              'ayahNumber': ayahNumber,
+            },
+          );
+
+          // Clear the search field after navigation
+          _controller.clear();
+          _hideSearchResult();
+        }
+      });
     }
   }
 
