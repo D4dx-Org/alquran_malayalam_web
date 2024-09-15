@@ -30,7 +30,7 @@ class _TranslationPageState extends State<TranslationPage> {
   void initState() {
     super.initState();
     itemPositionsListener.itemPositions.addListener(_onScroll);
-    itemPositionsListener.itemPositions.addListener(_updateCurrentAyah);
+    // itemPositionsListener.itemPositions.addListener(_updateCurrentAyah);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _handleInitialNavigation();
     });

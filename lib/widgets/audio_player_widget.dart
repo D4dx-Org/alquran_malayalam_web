@@ -81,7 +81,9 @@ class AudioPlayerWidget extends StatelessWidget {
                 _buildSpeedDropdown(),
                 IconButton(
                   icon: const Icon(Icons.close, color: Colors.grey),
-                  onPressed: audioController.hidePlayer,
+                  onPressed: () async {
+                    await audioController.hidePlayer();
+                  },
                 ),
               ],
             ),

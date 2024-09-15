@@ -372,11 +372,13 @@ class QuranController extends GetxController {
       _prefsController.setInt('selectedAyahNumber', ayahNumber);
       _prefsController.setString(
           'selectedAyahRange', '${_selectedSurahId.value} : $ayahNumber');
+      Get.find<AudioController>()
+          .playSpecificAyah(_selectedSurahId.value, ayahNumber);
     }
   }
 
-    void resetToFirstAyah() {  
-    updateSelectedAyahNumber(1);  
-    scrollToAyah(1, '1');  
-  } 
+  void resetToFirstAyah() {
+    updateSelectedAyahNumber(1);
+    scrollToAyah(1, '1');
+  }
 }

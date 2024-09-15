@@ -46,6 +46,7 @@ class AudioController extends GetxController {
         if (!audioUrl.startsWith('http')) {
           audioUrl = 'https://audio.qurancdn.com/$audioUrl';
         }
+        await _audioPlayer.stop(); // Stop any current playback
         await _audioPlayer.setUrl(audioUrl);
         await _audioPlayer.play();
       } else {
@@ -53,6 +54,7 @@ class AudioController extends GetxController {
       }
     } catch (e) {
       Get.snackbar('Error', 'Failed to play audio: $e');
+      hidePlayer(); // Hide the player if an error occurs
     }
   }
 
@@ -153,9 +155,14 @@ class AudioController extends GetxController {
     isVisible.value = true;
   }
 
-  void hidePlayer() {
+  Future<void> hidePlayer() async {
     isVisible.value = false;
-    _audioPlayer.pause();
+    await _audioPlayer.stop();
+    position.value = Duration.zero;
+    duration.value = Duration.zero;
+    currentAyah.value = '';
+    isPlayingSurah.value = false;
+    currentAudioIndex.value = 0;
   }
 
   void stopSurahPlayback() {
@@ -176,6 +183,11 @@ class AudioController extends GetxController {
   void setPlaybackSpeed(double speed) {
     playbackSpeed.value = speed;
     _audioPlayer.setSpeed(speed);
+  }
+
+  Future<void> playSpecificAyah(int surahNumber, int ayahNumber) async {
+    String verseKey = '$surahNumber:$ayahNumber';
+    await playAyah(verseKey);
   }
 
   @override

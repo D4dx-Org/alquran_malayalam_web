@@ -88,6 +88,7 @@ class _SurahBottomRowState extends State<SurahBottomRow>
               child: Wrap(
                 spacing: 5.0,
                 children: [
+                  // First Drop Down
                   Obx(
                     () => CustomDropdown(
                       options: _quranController.surahNames,
