@@ -17,6 +17,7 @@ class AudioController extends GetxController {
   RxInt currentAudioIndex = 0.obs;
   RxBool isPlayingSurah = false.obs;
   RxInt currentSurahNumber = 0.obs;
+  RxBool shouldPlayNextAyah = true.obs; // Add this line
 
   @override
   void onInit() {
@@ -46,7 +47,7 @@ class AudioController extends GetxController {
         if (!audioUrl.startsWith('http')) {
           audioUrl = 'https://audio.qurancdn.com/$audioUrl';
         }
-        await _audioPlayer.stop(); // Stop any current playback
+        // await _audioPlayer.stop(); // Stop any current playback
         await _audioPlayer.setUrl(audioUrl);
         await _audioPlayer.play();
       } else {
@@ -59,12 +60,14 @@ class AudioController extends GetxController {
   }
 
   Future<void> playNextAyah() async {
-    List<String> parts = currentAyah.value.split(':');
-    if (parts.length == 2) {
-      int surahNumber = int.parse(parts[0]);
-      int ayahNumber = int.parse(parts[1]);
-      String nextAyahKey = '$surahNumber:${ayahNumber + 1}';
-      await playAyah(nextAyahKey);
+    if (shouldPlayNextAyah.value) {
+      List<String> parts = currentAyah.value.split(':');
+      if (parts.length == 2) {
+        int surahNumber = int.parse(parts[0]);
+        int ayahNumber = int.parse(parts[1]);
+        String nextAyahKey = '$surahNumber:${ayahNumber + 1}';
+        await playAyah(nextAyahKey);
+      }
     }
   }
 
@@ -122,7 +125,8 @@ class AudioController extends GetxController {
   }
 
   Future<void> playNextAyahInSurah() async {
-    if (currentAudioIndex.value < surahAudioUrls.length) {
+    if (shouldPlayNextAyah.value &&
+        currentAudioIndex.value < surahAudioUrls.length) {
       String audioUrl = surahAudioUrls[currentAudioIndex.value];
       await _audioPlayer.setUrl(audioUrl);
       await _audioPlayer.play();

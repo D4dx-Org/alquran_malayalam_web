@@ -111,7 +111,7 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                       scaleFactor: widget.scaleFactor,
                     ),
                   ),
-                  //Second Drop Down
+                  // Second Drop Down
                   Obx(
                     () => CustomDropdown(
                       options: List.generate(
@@ -123,17 +123,19 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                       onChanged: (value) async {
                         if (value != null) {
                           int ayahNumber = int.parse(value);
-                          // // Show loading indicator
+
+                          // Stop current audio if playing
+                          if (_audioController.isPlaying.value) {
+                            _audioController.stopSurahPlayback();
+                          }
+
+                          // Show loading indicator
                           Get.dialog(
                             const Center(child: CircularProgressIndicator()),
                             barrierDismissible: false,
                           );
 
                           try {
-                            // Update the selected ayah number
-                            // _quranController
-                            //     .updateSelectedAyahNumber(ayahNumber);
-
                             // Ensure the ayah is loaded
                             await _quranController.ensureAyahIsLoaded(
                               _quranController.selectedSurahId,
@@ -149,6 +151,9 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                               // Scroll to the ayah
                               _quranController.scrollToAyah(
                                   ayahNumber, lineId.toString());
+                              // Play the selected Ayah
+                              await _audioController.playSpecificAyah(
+                                  _quranController.selectedSurahId, ayahNumber);
                             } else {
                               throw Exception(
                                   'LineId not found for ayah $ayahNumber');

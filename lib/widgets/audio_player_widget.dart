@@ -1,4 +1,5 @@
 import 'package:alquran_web/controllers/audio_controller.dart';
+import 'package:alquran_web/widgets/audio_player_settings_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -35,7 +36,12 @@ class AudioPlayerWidget extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.settings, color: Colors.grey),
                   onPressed: () {
-                    // Implement settings logic
+                    showDialog(
+                      context: context,
+                      builder: (_) => AudioPlayerSettingsPopup(
+                   
+                      ),
+                    );
                   },
                 ),
                 IconButton(
