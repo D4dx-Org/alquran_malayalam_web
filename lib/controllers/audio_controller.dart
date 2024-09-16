@@ -1,5 +1,4 @@
-
-    import 'package:alquran_web/services/quran_com_services.dart';
+import 'package:alquran_web/services/quran_com_services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:get/get.dart';
 
@@ -44,7 +43,8 @@ class AudioController extends GetxController {
       isPlayingSurah.value = false;
       showPlayer();
       currentAyah.value = verseKey;
-      String? audioUrl = await _quranComService.fetchAyahAudio(verseKey, recitationId: currentRecitationId.value); // Pass recitationId
+      String? audioUrl = await _quranComService.fetchAyahAudio(verseKey,
+          recitationId: currentRecitationId.value); // Pass recitationId
       if (audioUrl != null) {
         if (!audioUrl.startsWith('http')) {
           audioUrl = 'https://audio.qurancdn.com/$audioUrl';
@@ -87,8 +87,8 @@ class AudioController extends GetxController {
   Future<void> fetchSurahAudio(int surahNumber) async {
     try {
       currentSurahNumber.value = surahNumber;
-      surahAudioUrls.value =
-          await _quranComService.fetchSurahAudio(surahNumber, recitationId: currentRecitationId.value); // Pass recitationId
+      surahAudioUrls.value = await _quranComService.fetchSurahAudio(surahNumber,
+          recitationId: currentRecitationId.value); // Pass recitationId
       currentAudioIndex.value = 0;
     } catch (e) {
       Get.snackbar('Error', 'Failed to fetch surah audio: $e');
@@ -96,32 +96,27 @@ class AudioController extends GetxController {
   }
 
   Future<void> playSurah(int surahNumber) async {
-    try {
-      currentSurahNumber.value = surahNumber;
-      surahAudioUrls.value =
-          await _quranComService.fetchSurahAudio(surahNumber, recitationId: currentRecitationId.value); // Pass recitationId
+    // Step 1: Play Bismillah audio first
+    String? bismillahAudioUrl = await _quranComService.fetchBismiAudio(
+        recitationId: currentRecitationId.value); // Fetch Bismillah audio
 
-      // Check if the surah is not the first surah (Al-Fatihah) or the ninth surah (At-Tawbah)
-      if (surahNumber != 1 && surahNumber != 9) {
-        // Fetch and play the Bismillah audio
-        String? bismillahAudioUrl =
-            await _quranComService.fetchAyahAudio('1:1', recitationId: currentRecitationId.value); // Pass recitationId
-        if (bismillahAudioUrl != null) {
-          if (!bismillahAudioUrl.startsWith('http')) {
-            bismillahAudioUrl = 'https://audio.qurancdn.com/$bismillahAudioUrl';
-          }
-          await _audioPlayer.setUrl(bismillahAudioUrl);
-          await _audioPlayer.play();
-        }
-      }
+    if (bismillahAudioUrl != null) {
+      isPlayingSurah.value = true;
+      showPlayer();
+      await _audioPlayer.setUrl(bismillahAudioUrl);
+      await _audioPlayer.play(); // Play Bismillah audio
 
+      // Step 2: Wait for Bismillah audio to finish
+      await _audioPlayer.playerStateStream.firstWhere(
+          (state) => state.processingState == ProcessingState.completed);
+
+      // Step 3: Now fetch and play the surah audio
+      await fetchSurahAudio(surahNumber);
       if (surahAudioUrls.isNotEmpty) {
-        isPlayingSurah.value = true;
-        showPlayer();
-        await playNextAyahInSurah();
+        await playNextAyahInSurah(); // Start playing the surah
       }
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch surah audio: $e');
+    } else {
+      Get.snackbar('Audio Unavailable', 'No audio found for Bismillah.');
     }
   }
 
