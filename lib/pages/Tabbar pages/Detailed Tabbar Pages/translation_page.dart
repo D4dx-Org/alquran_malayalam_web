@@ -233,6 +233,29 @@ class _TranslationPageState extends State<TranslationPage> {
           ),
         ),
         const SizedBox(height: 20),
+        // Only show Bismillah image if it's not Surah Al-Fatihah
+        if (_quranController.selectedSurahId != 1 &&
+            _quranController.selectedSurahId != 9)
+          Obx(
+            () {
+              // Calculate image size based on Quran font size
+              double imageSize = _settingsController.quranFontSize.value *
+                  8; // Adjust the multiplier as needed
+
+              return ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: imageSize,
+                  maxHeight: imageSize /
+                      2, // Assuming a 2:1 aspect ratio, adjust as needed
+                ),
+                child: Image.asset(
+                  'images/Bismi.png',
+                  fit: BoxFit.contain,
+                ),
+              );
+            },
+          ),
+        const SizedBox(height: 10),
       ],
     );
   }

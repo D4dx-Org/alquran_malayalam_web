@@ -164,23 +164,23 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                       scaleFactor: widget.scaleFactor,
                     ),
                   ),
-                  Obx(
-                    () => CustomDropdown(
-                      options: List.generate(
-                        _quranController.selectedSurahAyahCount,
-                        (index) => '${index + 1}',
-                      ),
-                      selectedValue:
-                          _quranController.selectedAyahNumber.toString(),
-                      onChanged: (value) {
-                        if (value != null) {
-                          _quranController.updateSelectedAyahRange(
-                              '${_quranController.selectedSurahId} : $value');
-                        }
-                      },
-                      scaleFactor: widget.scaleFactor,
-                    ),
-                  ),
+                  // Obx(
+                  //   () => CustomDropdown(
+                  //     options: List.generate(
+                  //       _quranController.selectedSurahAyahCount,
+                  //       (index) => '${index + 1}',
+                  //     ),
+                  //     selectedValue:
+                  //         _quranController.selectedAyahNumber.toString(),
+                  //     onChanged: (value) {
+                  //       if (value != null) {
+                  //         _quranController.updateSelectedAyahRange(
+                  //             '${_quranController.selectedSurahId} : $value');
+                  //       }
+                  //     },
+                  //     scaleFactor: widget.scaleFactor,
+                  //   ),
+                  // ),
                 ],
               ),
             ),

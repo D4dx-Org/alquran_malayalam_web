@@ -322,8 +322,6 @@ class QuranController extends GetxController {
           curve: Curves.easeInOutCubic,
         );
       } else {
-        print(
-            'ScrollController is not attached. Trying post-frame callback...');
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (itemScrollController.isAttached) {
             itemScrollController.scrollTo(
@@ -331,9 +329,7 @@ class QuranController extends GetxController {
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOutCubic,
             );
-          } else {
-            print('ScrollController still not attached after frame.');
-          }
+          } else {}
         });
       }
 

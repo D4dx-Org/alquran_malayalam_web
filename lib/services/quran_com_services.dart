@@ -118,4 +118,32 @@ class QuranComService {
       throw Exception('Failed to search Ayahs: ${response.statusCode}');
     }
   }
+
+  Future<String?> fetchBismiAudio({int recitationId = 7}) async {
+    try {
+      final response = await http
+          .get(Uri.parse("$baseUrl/verses/by_key/1:1?audio=$recitationId"));
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final verse = data['verse'] as Map<String, dynamic>?;
+        if (verse != null && verse.containsKey('audio')) {
+          final audio = verse['audio'] as Map<String, dynamic>?;
+          if (audio != null && audio.containsKey('url')) {
+            String audioUrl = audio['url'] as String;
+            // Check if the audioUrl is a relative path
+            if (!audioUrl.startsWith('http')) {
+              // Prepend the base URL if necessary
+              audioUrl = 'https://audio.qurancdn.com/$audioUrl';
+            }
+            return audioUrl;
+          }
+        }
+        return null;
+      } else {
+        throw Exception('Failed to load Ayah audio: ${response.statusCode}');
+      }
+    } catch (e) {
+      return null;
+    }
+  }
 }

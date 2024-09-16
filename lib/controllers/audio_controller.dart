@@ -92,11 +92,32 @@ class AudioController extends GetxController {
   }
 
   Future<void> playSurah(int surahNumber) async {
-    await fetchSurahAudio(surahNumber);
-    if (surahAudioUrls.isNotEmpty) {
-      isPlayingSurah.value = true;
-      showPlayer();
-      await playNextAyahInSurah();
+    try {
+      currentSurahNumber.value = surahNumber;
+      surahAudioUrls.value =
+          await _quranComService.fetchSurahAudio(surahNumber);
+
+      // Check if the surah is not the first surah (Al-Fatihah) or the ninth surah (At-Tawbah)
+      if (surahNumber != 1 && surahNumber != 9) {
+        // Fetch and play the Bismillah audio
+        String? bismillahAudioUrl =
+            await _quranComService.fetchAyahAudio('1:1');
+        if (bismillahAudioUrl != null) {
+          if (!bismillahAudioUrl.startsWith('http')) {
+            bismillahAudioUrl = 'https://audio.qurancdn.com/$bismillahAudioUrl';
+          }
+          await _audioPlayer.setUrl(bismillahAudioUrl);
+          await _audioPlayer.play();
+        }
+      }
+
+      if (surahAudioUrls.isNotEmpty) {
+        isPlayingSurah.value = true;
+        showPlayer();
+        await playNextAyahInSurah();
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to fetch surah audio: $e');
     }
   }
 
@@ -134,7 +155,6 @@ class AudioController extends GetxController {
       currentAyah.value = '$newSurahNumber:1';
     }
   }
-
 
   void togglePlayPause() {
     if (isPlaying.value) {

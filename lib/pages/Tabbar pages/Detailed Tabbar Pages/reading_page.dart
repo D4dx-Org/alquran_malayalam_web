@@ -114,6 +114,28 @@ class ReadingPage extends StatelessWidget {
                 ),
               ],
             ),
+            // Only show Bismillah image if it's not Surah Al-Fatihah (1) or At-Tawbah (9)
+            if (_quranController.selectedSurahId != 1 &&
+                _quranController.selectedSurahId != 9)
+              Obx(
+                () {
+                  // Calculate image size based on Quran font size
+                  double imageSize = _settingsController.quranFontSize.value *
+                      8; // Adjust the multiplier as needed
+
+                  return ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: imageSize,
+                      maxHeight: imageSize /
+                          2, // Assuming a 2:1 aspect ratio, adjust as needed
+                    ),
+                    child: Image.asset(
+                      'images/Bismi.png',
+                      fit: BoxFit.contain,
+                    ),
+                  );
+                },
+              ),
             const SizedBox(height: 10),
             Directionality(
               textDirection: TextDirection.rtl,

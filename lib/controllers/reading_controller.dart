@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ReadingController extends GetxController {
   final QuranComService _quranComService = QuranComService();
   final SharedPreferences sharedPreferences;
+  
 
   final RxList<QuranVerse> verses = <QuranVerse>[].obs;
   Map<String, String> surahNameMapping = {};
