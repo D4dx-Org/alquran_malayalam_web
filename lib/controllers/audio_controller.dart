@@ -1,4 +1,5 @@
-import 'package:alquran_web/services/quran_com_services.dart';
+
+    import 'package:alquran_web/services/quran_com_services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:get/get.dart';
 
@@ -18,6 +19,7 @@ class AudioController extends GetxController {
   RxBool isPlayingSurah = false.obs;
   RxInt currentSurahNumber = 0.obs;
   RxBool shouldPlayNextAyah = true.obs; // Add this line
+  RxInt currentRecitationId = 7.obs; // Add this line for dynamic recitation ID
 
   @override
   void onInit() {
@@ -42,12 +44,11 @@ class AudioController extends GetxController {
       isPlayingSurah.value = false;
       showPlayer();
       currentAyah.value = verseKey;
-      String? audioUrl = await _quranComService.fetchAyahAudio(verseKey);
+      String? audioUrl = await _quranComService.fetchAyahAudio(verseKey, recitationId: currentRecitationId.value); // Pass recitationId
       if (audioUrl != null) {
         if (!audioUrl.startsWith('http')) {
           audioUrl = 'https://audio.qurancdn.com/$audioUrl';
         }
-        // await _audioPlayer.stop(); // Stop any current playback
         await _audioPlayer.setUrl(audioUrl);
         await _audioPlayer.play();
       } else {
@@ -87,7 +88,7 @@ class AudioController extends GetxController {
     try {
       currentSurahNumber.value = surahNumber;
       surahAudioUrls.value =
-          await _quranComService.fetchSurahAudio(surahNumber);
+          await _quranComService.fetchSurahAudio(surahNumber, recitationId: currentRecitationId.value); // Pass recitationId
       currentAudioIndex.value = 0;
     } catch (e) {
       Get.snackbar('Error', 'Failed to fetch surah audio: $e');
@@ -98,13 +99,13 @@ class AudioController extends GetxController {
     try {
       currentSurahNumber.value = surahNumber;
       surahAudioUrls.value =
-          await _quranComService.fetchSurahAudio(surahNumber);
+          await _quranComService.fetchSurahAudio(surahNumber, recitationId: currentRecitationId.value); // Pass recitationId
 
       // Check if the surah is not the first surah (Al-Fatihah) or the ninth surah (At-Tawbah)
       if (surahNumber != 1 && surahNumber != 9) {
         // Fetch and play the Bismillah audio
         String? bismillahAudioUrl =
-            await _quranComService.fetchAyahAudio('1:1');
+            await _quranComService.fetchAyahAudio('1:1', recitationId: currentRecitationId.value); // Pass recitationId
         if (bismillahAudioUrl != null) {
           if (!bismillahAudioUrl.startsWith('http')) {
             bismillahAudioUrl = 'https://audio.qurancdn.com/$bismillahAudioUrl';
@@ -141,7 +142,6 @@ class AudioController extends GetxController {
   Future<void> changeSurah(int newSurahNumber) async {
     bool wasPlaying = isPlaying.value;
     bool wasSurahPlaying = isPlayingSurah.value;
-    print(isPlaying);
     if (isPlaying.value || isPlayingSurah.value) {
       await _audioPlayer.stop();
     }
@@ -214,6 +214,10 @@ class AudioController extends GetxController {
   Future<void> playSpecificAyah(int surahNumber, int ayahNumber) async {
     String verseKey = '$surahNumber:$ayahNumber';
     await playAyah(verseKey);
+  }
+
+  void changeRecitation(int newRecitationId) {
+    currentRecitationId.value = newRecitationId; // Update the recitation ID
   }
 
   @override
