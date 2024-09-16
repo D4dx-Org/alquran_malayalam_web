@@ -292,36 +292,61 @@ class QuranController extends GetxController {
   }
 
   Future<void> scrollToAyah(int ayahNumber, String lineId) async {
-    await ensureAyahIsLoaded(_selectedSurahId.value, ayahNumber);
-    await Future.delayed(const Duration(milliseconds: 50));
-    int index = _ayahLines.indexWhere((ayah) =>
-        int.parse(ayah['AyaNo']) == ayahNumber && ayah['LineId'] == lineId);
-    if (index != -1) {
-      await itemScrollController.scrollTo(
-        index: index + 1,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOutCubic,
-      );
-    } else {
-      index = _ayahLines
-          .indexWhere((ayah) => int.parse(ayah['AyaNo']) >= ayahNumber);
-      if (index != -1) {
+    try {
+      // Ensure the ayah is loaded
+      await ensureAyahIsLoaded(_selectedSurahId.value, ayahNumber);
+
+      // Add a small delay to allow for widget initialization
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      // Find the index of the ayah
+      int index = _ayahLines.indexWhere((ayah) =>
+          int.parse(ayah['AyaNo']) == ayahNumber && ayah['LineId'] == lineId);
+
+      if (index == -1) {
+        // If exact match not found, find the nearest ayah
+        index = _ayahLines
+            .indexWhere((ayah) => int.parse(ayah['AyaNo']) >= ayahNumber);
+      }
+
+      if (index == -1) {
+        // If still not found, scroll to the end
+        index = _ayahLines.length - 1;
+      }
+
+      // Attempt to scroll
+      if (itemScrollController.isAttached) {
         await itemScrollController.scrollTo(
-          index: index + 1,
+          index: index,
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOutCubic,
         );
       } else {
-        await itemScrollController.scrollTo(
-          index: _ayahLines.length,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOutCubic,
-        );
+        print(
+            'ScrollController is not attached. Trying post-frame callback...');
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (itemScrollController.isAttached) {
+            itemScrollController.scrollTo(
+              index: index,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOutCubic,
+            );
+          } else {
+            print('ScrollController still not attached after frame.');
+          }
+        });
       }
+
+      // Update the selected ayah number and range
+      _selectedAyahNumber.value = ayahNumber;
+      _selectedAyahRange.value = '${_selectedSurahId.value} : $ayahNumber';
+
+      // Update the UI
+      update();
+    } catch (e) {
+      print('Error in scrollToAyah: $e');
+      // You might want to show a user-friendly error message here
     }
-    _selectedAyahNumber.value = ayahNumber;
-    _selectedAyahRange.value = '${_selectedSurahId.value} : $ayahNumber';
-    update();
   }
 
   Future<void> navigateToAyah(int ayahNumber) async {
@@ -372,8 +397,8 @@ class QuranController extends GetxController {
       _prefsController.setInt('selectedAyahNumber', ayahNumber);
       _prefsController.setString(
           'selectedAyahRange', '${_selectedSurahId.value} : $ayahNumber');
-      Get.find<AudioController>()
-          .playSpecificAyah(_selectedSurahId.value, ayahNumber);
+      // Get.find<AudioController>()
+      //     .playSpecificAyah(_selectedSurahId.value, ayahNumber);
     }
   }
 

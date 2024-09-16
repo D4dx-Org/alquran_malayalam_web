@@ -125,8 +125,8 @@ class _SurahBottomRowState extends State<SurahBottomRow>
 
                           try {
                             // Update the selected ayah number
-                            _quranController
-                                .updateSelectedAyahNumber(ayahNumber);
+                            // _quranController
+                            //     .updateSelectedAyahNumber(ayahNumber);
 
                             // Ensure the ayah is loaded
                             await _quranController.ensureAyahIsLoaded(

@@ -116,7 +116,7 @@ class AudioController extends GetxController {
   Future<void> changeSurah(int newSurahNumber) async {
     bool wasPlaying = isPlaying.value;
     bool wasSurahPlaying = isPlayingSurah.value;
-
+    print(isPlaying);
     if (isPlaying.value || isPlayingSurah.value) {
       await _audioPlayer.stop();
     }
@@ -134,6 +134,7 @@ class AudioController extends GetxController {
       currentAyah.value = '$newSurahNumber:1';
     }
   }
+
 
   void togglePlayPause() {
     if (isPlaying.value) {
@@ -162,6 +163,7 @@ class AudioController extends GetxController {
     duration.value = Duration.zero;
     currentAyah.value = '';
     isPlayingSurah.value = false;
+    isPlaying.value = false; // Add this line
     currentAudioIndex.value = 0;
   }
 

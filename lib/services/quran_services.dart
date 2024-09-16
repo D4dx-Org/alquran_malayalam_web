@@ -69,7 +69,6 @@ class QuranService {
     }
   }
 
-
   Future<List<Map<String, dynamic>>> fetchSearchResult(
       String searchword) async {
     final response =
@@ -96,6 +95,24 @@ class QuranService {
       }).toList();
     } else {
       throw Exception('Failed to load Search Results');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchJuz(int juzNumber) async {
+    final response =
+        await http.get(Uri.parse("$baseUrl/juzsuraaya/$juzNumber"));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as List;
+      return data
+          .map(
+            (item) => {
+              "SuraId": item["SuraId"],
+              "ayafrom": item["ayafrom"],
+            },
+          )
+          .toList();
+    } else {
+      throw Exception('Failed to load Juz');
     }
   }
 }
