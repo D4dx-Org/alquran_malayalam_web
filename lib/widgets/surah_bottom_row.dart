@@ -91,15 +91,21 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                   // First Drop Down
                   Obx(
                     () => CustomDropdown(
-                      options: _quranController.surahNames,
-                      selectedValue: _quranController.selectedSurah,
+                      options: List.generate(
+                        _quranController.surahIds.length,
+                        (index) =>
+                            '${_quranController.surahIds[index]} - ${_quranController.surahNames[index]}',
+                      ),
+                      selectedValue:
+                          '${_quranController.selectedSurahId} - ${_quranController.selectedSurah}',
                       onChanged: (value) {
                         if (value != null) {
-                          _quranController.updateSelectedSurah(value);
-                          int newSurahNumber =
-                              _quranController.surahNames.indexOf(value) + 1;
+                          final parts = value.split(' - ');
+                          int newSurahNumber = int.parse(parts[0]);
+                          _quranController
+                              .updateSelectedSurahId(newSurahNumber);
                           _audioController.changeSurah(newSurahNumber);
-                          _quranController.resetToFirstAyah(); // Add this line
+                          _quranController.resetToFirstAyah();
                         }
                       },
                       scaleFactor: widget.scaleFactor,
@@ -117,7 +123,7 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                       onChanged: (value) async {
                         if (value != null) {
                           int ayahNumber = int.parse(value);
-                          // Show loading indicator
+                          // // Show loading indicator
                           Get.dialog(
                             const Center(child: CircularProgressIndicator()),
                             barrierDismissible: false,
