@@ -102,8 +102,8 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                         if (value != null) {
                           final parts = value.split(' - ');
                           int newSurahNumber = int.parse(parts[0]);
-                          _quranController
-                              .updateSelectedSurahId(newSurahNumber);
+                          _quranController.updateSelectedSurahId(
+                              newSurahNumber, 1);
                           _audioController.changeSurah(newSurahNumber);
                           _quranController.resetToFirstAyah();
                         }

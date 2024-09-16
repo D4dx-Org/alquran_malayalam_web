@@ -28,6 +28,14 @@ class HorizontalCardWidget extends StatelessWidget {
       {'id': 18, 'name': 'സൂറ: അൽകഹ്ഫ്'},
     ];
 
+    Map<int, String> surahLineIds = {
+      2: '1000',
+      36: '10668',
+      67: '13914',
+      55: '13142',
+      56: '13226',
+    };
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
@@ -47,21 +55,22 @@ class HorizontalCardWidget extends StatelessWidget {
                         cursor: SystemMouseCursors.click,
                         child: GestureDetector(
                           onTap: () {
+                            int ayahNumber = surah['id'] == 2 ? 255 : 1;
+
                             if (surah['name'] != null && surah['id'] != null) {
                               quranController.updateSelectedSurah(
-                                  surah['name'].toString());
-                              quranController
-                                  .updateSelectedSurahId(surah['id']);
-                              debugPrint(
-                                  'Navigating to SURAH_DETAILED with arguments:');
-                              debugPrint('surahId: ${surah['id']}');
-                              debugPrint('surahName: ${surah['name']}');
+                                  surah['name'].toString(), ayahNumber);
+                              quranController.updateSelectedSurahId(
+                                  surah['id'], ayahNumber);
+                              quranController.scrollToAyah(
+                                  ayahNumber, surahLineIds[surah['id']]!);
+
                               Get.toNamed(
                                 Routes.SURAH_DETAILED,
                                 arguments: {
                                   'surahId': surah['id'],
                                   'surahName': surah['name'],
-                                  'ayahNumber': 1,
+                                  'ayahNumber': ayahNumber,
                                 },
                               );
                             } else {

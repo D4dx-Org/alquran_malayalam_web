@@ -149,9 +149,12 @@ class _SurahListPageState extends State<SurahListPage> {
             ),
           ),
           onTap: () {
-            _quranController.updateSelectedSurah(surah['MSuraName']);
-            _quranController
-                .updateSelectedSurahId(int.parse(surah['SuraId'].toString()));
+            int ayahNumber = 1;
+            _quranController.updateSelectedSurah(
+                surah['MSuraName'], ayahNumber);
+            _quranController.updateSelectedSurahId(
+                int.parse(surah['SuraId'].toString()), ayahNumber);
+            _quranController.updateSelectedAyahNumber(ayahNumber);
             final surahId = int.parse(surah['SuraId'].toString());
             final surahName = surah['MSuraName'];
 
@@ -160,7 +163,7 @@ class _SurahListPageState extends State<SurahListPage> {
               arguments: {
                 'surahId': surahId,
                 'surahName': surahName,
-                'ayahNumber': 1,
+                'ayahNumber': ayahNumber,
                 'initialTab': 0,
               },
             );

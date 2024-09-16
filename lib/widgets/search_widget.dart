@@ -306,7 +306,7 @@ class _SearchWidgetState extends State<SearchWidget> {
       var malayalamSupported =
           _localeNames.any((locale) => locale.localeId == 'ml-IN');
       if (!malayalamSupported) {
-        print('Malayalam is not supported on this device');
+        // print('Malayalam is not supported on this device');
         // Handle the case when Malayalam is not supported
       }
     }
@@ -351,7 +351,7 @@ class _SearchWidgetState extends State<SearchWidget> {
           final quranController = Get.find<QuranController>();
           final surahName = quranController.getSurahName(surahNumber);
 
-          quranController.updateSelectedSurahId(surahNumber);
+          quranController.updateSelectedSurahId(surahNumber, ayahNumber);
           quranController.updateSelectedAyahNumber(ayahNumber);
 
           Get.toNamed(

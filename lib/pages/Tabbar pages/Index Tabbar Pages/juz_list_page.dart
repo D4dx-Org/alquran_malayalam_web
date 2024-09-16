@@ -253,9 +253,10 @@ class _JuzListPageState extends State<JuzListPage> {
           ),
         ),
         onTap: () {
-          _quranController.updateSelectedSurah(surah['MSuraName']);
-          _quranController
-              .updateSelectedSurahId(int.parse(surah['SuraId'].toString()));
+          int ayahNumber = 1;
+          _quranController.updateSelectedSurah(surah['MSuraName'], ayahNumber);
+          _quranController.updateSelectedSurahId(
+              int.parse(surah['SuraId'].toString()), ayahNumber);
           final surahId = int.parse(surah['SuraId'].toString());
           final surahName = surah['MSuraName'];
           Get.toNamed(
@@ -263,8 +264,8 @@ class _JuzListPageState extends State<JuzListPage> {
             arguments: {
               'surahId': surahId,
               'surahName': surahName,
-              'ayahNumber': 1, // Include the initial ayah number
-              'initialTab': 1, // Add this line to specify the initial tab
+              'ayahNumber': ayahNumber,
+              'initialTab': 1, 
             },
           );
         },

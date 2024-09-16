@@ -50,7 +50,7 @@ class QuranController extends GetxController {
     final currentIndex = _surahIds.indexOf(_selectedSurahId.value);
     if (currentIndex > 0) {
       final newSurahId = _surahIds[currentIndex - 1];
-      updateSelectedSurahId(newSurahId);
+      updateSelectedSurahId(newSurahId, 1);
       _fetchAyahLines(newSurahId);
       Get.find<ReadingController>().fetchSurah(newSurahId);
 
@@ -63,7 +63,7 @@ class QuranController extends GetxController {
     final currentIndex = _surahIds.indexOf(_selectedSurahId.value);
     if (currentIndex < _surahIds.length - 1) {
       final newSurahId = _surahIds[currentIndex + 1];
-      updateSelectedSurahId(newSurahId);
+      updateSelectedSurahId(newSurahId, 1);
       _fetchAyahLines(newSurahId);
       Get.find<ReadingController>().fetchSurah(newSurahId);
 
@@ -72,43 +72,45 @@ class QuranController extends GetxController {
     }
   }
 
-  void updateSelectedSurah(String surahName) {
+  void updateSelectedSurah(String surahName, int ayahNumber) {
     final index = _surahNames.indexOf(surahName);
     if (index != -1) {
       _selectedSurah.value = surahName;
       _selectedSurahId.value = _surahIds[index];
       _selectedSurahAyahCount.value = _surahAyahCounts[index];
-      _selectedAyahNumber.value = 1;
-      _selectedAyahRange.value = '${_surahIds[index]} : 1';
+      _selectedAyahNumber.value = ayahNumber;
+      _selectedAyahRange.value = '${_surahIds[index]} : $ayahNumber';
       _prefsController.setString('selectedSurah', surahName);
       _prefsController.setString(
           'selectedArabicSurah', _arabicSurahNames[index]);
       _prefsController.setInt('selectedSurahId', _surahIds[index]);
-      _prefsController.setInt('selectedAyahNumber', 1);
+      _prefsController.setInt('selectedAyahNumber', ayahNumber);
       _prefsController.setString(
-          'selectedAyahRange', '${_surahIds[index]} : 1');
+          'selectedAyahRange', '${_surahIds[index]} : $ayahNumber');
       _prefsController.setString('selectedSurahMalMean', _surahMalMeans[index]);
       _fetchAyahLines(_surahIds[index]);
       Get.find<ReadingController>().fetchSurah(_surahIds[index]);
+      scrollToAyah(ayahNumber, '1'); // Scroll to the specified Ayah
     }
   }
 
-  void updateSelectedSurahId(int surahId) {
+  void updateSelectedSurahId(int surahId, int ayahNumber) {
     final index = _surahIds.indexOf(surahId);
     if (index != -1) {
       _selectedSurah.value = _surahNames[index];
       _selectedSurahId.value = surahId;
       _selectedSurahAyahCount.value = _surahAyahCounts[index];
-      _selectedAyahNumber.value = 1;
-      _selectedAyahRange.value = '$surahId : 1';
+      _selectedAyahNumber.value = ayahNumber;
+      _selectedAyahRange.value = '$surahId : $ayahNumber';
       _prefsController.setString('selectedSurah', _surahNames[index]);
       _prefsController.setString(
           'selectedArabicSurah', _arabicSurahNames[index]);
       _prefsController.setInt('selectedSurahId', surahId);
-      _prefsController.setInt('selectedAyahNumber', 1);
-      _prefsController.setString('selectedAyahRange', '$surahId : 1');
+      _prefsController.setInt('selectedAyahNumber', ayahNumber);
+      _prefsController.setString('selectedAyahRange', '$surahId : $ayahNumber');
       _prefsController.setString('selectedSurahMalMean', _surahMalMeans[index]);
       _fetchAyahLines(surahId);
+      scrollToAyah(ayahNumber, '1'); // Scroll to the specified Ayah
     }
   }
 
@@ -211,7 +213,7 @@ class QuranController extends GetxController {
           _selectedSurahId.value, currentPage);
       _ayahLines.addAll(moreAyahLines);
     } catch (e) {
-      debugPrint('Error fetching more ayah lines: $e');
+      // debugPrint('Error fetching more ayah lines: $e');
     }
   }
 
@@ -252,7 +254,7 @@ class QuranController extends GetxController {
   Future<bool> ensureAyahIsLoaded(int surahId, int ayahNumber) async {
     bool newDataLoaded = false;
     if (surahId != _selectedSurahId.value) {
-      updateSelectedSurahId(surahId);
+      updateSelectedSurahId(surahId, ayahNumber);
       await _fetchAyahLines(surahId);
       newDataLoaded = true;
     }
