@@ -10,7 +10,6 @@ import 'package:alquran_web/widgets/audio_player_widget.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class ReadingPage extends StatefulWidget {
-
   const ReadingPage({super.key});
 
   @override
@@ -25,6 +24,7 @@ class _ReadingPageState extends State<ReadingPage> {
   final QuranController _quranController = Get.find<QuranController>();
 
   final AudioController _audioController = Get.find<AudioController>();
+  final List<GlobalKey> _ayahKeys = [];
 
   @override
   Widget build(BuildContext context) {
@@ -151,42 +151,61 @@ class _ReadingPageState extends State<ReadingPage> {
     return Center(
       child: Container(
         constraints: const BoxConstraints(maxWidth: 800),
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            Directionality(
-              textDirection: TextDirection.rtl,
-              child: Obx(
-                () => SelectableText.rich(
+        child: Directionality(
+          textDirection: TextDirection.rtl,
+          child: Obx(
+            () {
+              // Create a list of TextSpans for each Ayah
+              List<TextSpan> textSpans =
+                  _readingController.verses.expand((verse) {
+                // Create a GlobalKey for each Ayah if it doesn't exist
+                if (_ayahKeys.length < _readingController.verses.length) {
+                  _ayahKeys.add(GlobalKey());
+                }
+
+                String arabicNumber =
+                    _convertToArabicNumbers(verse.verseNumber.split(':').last);
+
+                return [
                   TextSpan(
+                    text: '${verse.arabicText} ',
                     style: _settingsController.quranFontStyle.value.copyWith(
                       height: 2.0,
                     ),
-                    children: _readingController.verses.expand((verse) {
-                      String arabicNumber = _convertToArabicNumbers(
-                          verse.verseNumber.split(':').last);
-                      return [
-                        TextSpan(text: '${verse.arabicText} '),
-                        TextSpan(
-                          text: '$arabicNumber ',
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              _audioController.playAyah(verse.verseNumber);
-                            },
-                          style:
-                              _settingsController.quranFontStyle.value.copyWith(
-                            color: const Color.fromARGB(255, 0, 0,
-                                0), // Make verse number visually distinct
-                          ),
-                        ),
-                      ];
-                    }).toList(),
                   ),
-                  textAlign: TextAlign.justify,
-                ),
-              ),
-            ),
-          ],
+                  TextSpan(
+                    text: '$arabicNumber ',
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        _audioController.playAyah(verse.verseNumber);
+                      },
+                    style: _settingsController.quranFontStyle.value.copyWith(
+                      color: const Color.fromARGB(
+                          255, 0, 0, 0), // Make verse number visually distinct
+                    ),
+                  ),
+                ];
+              }).toList();
+
+              // Return a Row with a Flexible RichText
+              return Row(
+                children: [
+                  Flexible(
+                    child: RichText(
+                      text: TextSpan(
+                        style:
+                            _settingsController.quranFontStyle.value.copyWith(
+                          height: 2.0,
+                        ),
+                        children: textSpans,
+                      ),
+                      textAlign: TextAlign.justify,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
