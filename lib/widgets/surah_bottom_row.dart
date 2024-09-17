@@ -1,3 +1,4 @@
+import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,6 +23,7 @@ class _SurahBottomRowState extends State<SurahBottomRow>
     with SingleTickerProviderStateMixin {
   final _quranController = Get.find<QuranController>();
   final _audioController = Get.find<AudioController>();
+  final ReadingController readingController = Get.find<ReadingController>();
 
   bool _showSearchBar = false;
   final FocusNode _searchFocusNode = FocusNode();
@@ -149,6 +151,9 @@ class _SurahBottomRowState extends State<SurahBottomRow>
 
                             if (lineId != null) {
                               // Scroll to the ayah
+                              readingController.scrollToVerse(
+                                  ayahNumber); // Scroll to Ayah 60
+
                               _quranController.scrollToAyah(
                                   ayahNumber, lineId.toString());
                               // Play the selected Ayah

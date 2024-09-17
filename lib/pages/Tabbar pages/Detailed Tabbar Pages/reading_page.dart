@@ -24,7 +24,7 @@ class _ReadingPageState extends State<ReadingPage> {
   final QuranController _quranController = Get.find<QuranController>();
 
   final AudioController _audioController = Get.find<AudioController>();
-  final List<GlobalKey> _ayahKeys = [];
+  // final List<GlobalKey> _ayahKeys = [];
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,8 @@ class _ReadingPageState extends State<ReadingPage> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 32.0),
                             child: ScrollablePositionedList.builder(
-                              itemCount: 2, // +1 for header
+                              itemCount: _readingController.verses.length +
+                                  1, // +1 for header
                               itemBuilder: (context, index) {
                                 if (index == 0) {
                                   return _buildHeader(); // Header at index 0
@@ -51,6 +52,7 @@ class _ReadingPageState extends State<ReadingPage> {
                                       index - 1); // Adjust index for verses
                                 }
                               },
+                              itemScrollController: _readingController.itemScrollController,
                             ),
                           ),
                         ),
@@ -77,6 +79,12 @@ class _ReadingPageState extends State<ReadingPage> {
         constraints: const BoxConstraints(maxWidth: 800),
         child: Column(
           children: [
+            // ElevatedButton(
+            //   onPressed: () {
+            //     _scrollToVerse(60); // Scroll to Ayah 50
+            //   },
+            //   child: const Text('Scroll to Ayah 50'),
+            // ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Center(
@@ -148,68 +156,45 @@ class _ReadingPageState extends State<ReadingPage> {
   }
 
   Widget _buildContinuousText(int index) {
+    final verse = _readingController.verses[index];
+    String arabicNumber =
+        _convertToArabicNumbers(verse.verseNumber.split(':').last);
+
     return Center(
       child: Container(
         constraints: const BoxConstraints(maxWidth: 800),
         child: Directionality(
           textDirection: TextDirection.rtl,
-          child: Obx(
-            () {
-              // Create a list of TextSpans for each Ayah
-              List<TextSpan> textSpans =
-                  _readingController.verses.expand((verse) {
-                // Create a GlobalKey for each Ayah if it doesn't exist
-                if (_ayahKeys.length < _readingController.verses.length) {
-                  _ayahKeys.add(GlobalKey());
-                }
-
-                String arabicNumber =
-                    _convertToArabicNumbers(verse.verseNumber.split(':').last);
-
-                return [
-                  TextSpan(
-                    text: '${verse.arabicText} ',
-                    style: _settingsController.quranFontStyle.value.copyWith(
-                      height: 2.0,
-                    ),
+          child: RichText(
+            text: TextSpan(
+              style: _settingsController.quranFontStyle.value
+                  .copyWith(height: 2.0),
+              children: [
+                TextSpan(
+                  text: '${verse.arabicText} ',
+                  style: _settingsController.quranFontStyle.value,
+                ),
+                TextSpan(
+                  text: '$arabicNumber ',
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      _audioController.playAyah(verse.verseNumber);
+                    },
+                  style: _settingsController.quranFontStyle.value.copyWith(
+                    color: const Color.fromARGB(
+                        255, 0, 0, 0), // Make verse number visually distinct
                   ),
-                  TextSpan(
-                    text: '$arabicNumber ',
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        _audioController.playAyah(verse.verseNumber);
-                      },
-                    style: _settingsController.quranFontStyle.value.copyWith(
-                      color: const Color.fromARGB(
-                          255, 0, 0, 0), // Make verse number visually distinct
-                    ),
-                  ),
-                ];
-              }).toList();
-
-              // Return a Row with a Flexible RichText
-              return Row(
-                children: [
-                  Flexible(
-                    child: RichText(
-                      text: TextSpan(
-                        style:
-                            _settingsController.quranFontStyle.value.copyWith(
-                          height: 2.0,
-                        ),
-                        children: textSpans,
-                      ),
-                      textAlign: TextAlign.justify,
-                    ),
-                  ),
-                ],
-              );
-            },
+                ),
+              ],
+            ),
+            textAlign: TextAlign.justify,
           ),
         ),
       ),
     );
   }
+
+  
 
   String _convertToArabicNumbers(String number) {
     const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];

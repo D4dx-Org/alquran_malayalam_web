@@ -1,13 +1,17 @@
 import 'package:alquran_web/services/surah_unicode_data.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:alquran_web/services/quran_com_services.dart';
 import 'package:alquran_web/models/verse_model.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ReadingController extends GetxController {
   final QuranComService _quranComService = QuranComService();
   final SharedPreferences sharedPreferences;
-  
+    final ItemScrollController itemScrollController = ItemScrollController();
+
+
 
   final RxList<QuranVerse> verses = <QuranVerse>[].obs;
   Map<String, String> surahNameMapping = {};
@@ -21,8 +25,15 @@ class ReadingController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
     _loadLastReadSurah();
+  }
+
+  void scrollToVerse(int index) {
+    itemScrollController.scrollTo(
+      index: index,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
   }
 
   void _loadLastReadSurah() {
@@ -38,19 +49,32 @@ class ReadingController extends GetxController {
       surahName.value = surahDetails['name'];
       surahEnglishName.value = surahDetails['englishName'];
 
+      // Clear previous verses
+      verses.clear();
+
       // Fetch verses
-      final fetchedVerses = await _quranComService.fetchAyahs(surahId);
-      verses.assignAll(fetchedVerses);
+      await loadVerses(surahId);
 
       currentSurahId.value = surahId;
 
       // Save the current surah id
       sharedPreferences.setInt('lastReadSurahId', surahId);
-
-      // Print the ayahs
-      // printAyahs();
     } catch (e) {
-      // You might want to show an error message to the user here
+      // Handle error (e.g., show a message to the user)
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> loadVerses(int surahId) async {
+    isLoading.value = true;
+    try {
+      final fetchedVerses = await _quranComService.fetchAyahs(surahId);
+      for (var verse in fetchedVerses) {
+        verses.add(verse); // Load each ayah separately
+      }
+    } catch (e) {
+      // Handle error (e.g., show a message to the user)
     } finally {
       isLoading.value = false;
     }
@@ -80,4 +104,7 @@ class ReadingController extends GetxController {
     String unicodeChar = SurahUnicodeData.getSurahNameUnicode(surahId);
     return unicodeChar + String.fromCharCode(0xE000);
   }
+
+   
+
 }
