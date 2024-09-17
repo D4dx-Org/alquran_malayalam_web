@@ -7,14 +7,24 @@ import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/controllers/audio_controller.dart';
 import 'package:alquran_web/widgets/audio_player_widget.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-class ReadingPage extends StatelessWidget {
+class ReadingPage extends StatefulWidget {
+
+  const ReadingPage({super.key});
+
+  @override
+  State<ReadingPage> createState() => _ReadingPageState();
+}
+
+class _ReadingPageState extends State<ReadingPage> {
   final ReadingController _readingController = Get.find<ReadingController>();
-  final SettingsController _settingsController = Get.find<SettingsController>();
-  final QuranController _quranController = Get.find<QuranController>();
-  final AudioController _audioController = Get.find<AudioController>();
 
-  ReadingPage({super.key});
+  final SettingsController _settingsController = Get.find<SettingsController>();
+
+  final QuranController _quranController = Get.find<QuranController>();
+
+  final AudioController _audioController = Get.find<AudioController>();
 
   @override
   Widget build(BuildContext context) {
@@ -31,14 +41,16 @@ class ReadingPage extends StatelessWidget {
                           child: Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 32.0),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  _buildHeader(),
-                                  _buildContinuousText(),
-                                ],
-                              ),
+                            child: ScrollablePositionedList.builder(
+                              itemCount: 2, // +1 for header
+                              itemBuilder: (context, index) {
+                                if (index == 0) {
+                                  return _buildHeader(); // Header at index 0
+                                } else {
+                                  return _buildContinuousText(
+                                      index - 1); // Adjust index for verses
+                                }
+                              },
                             ),
                           ),
                         ),
@@ -135,7 +147,7 @@ class ReadingPage extends StatelessWidget {
     );
   }
 
-  Widget _buildContinuousText() {
+  Widget _buildContinuousText(int index) {
     return Center(
       child: Container(
         constraints: const BoxConstraints(maxWidth: 800),
@@ -185,35 +197,5 @@ class ReadingPage extends StatelessWidget {
     String arabicNumber =
         number.split('').map((digit) => arabicNumbers[int.parse(digit)]).join();
     return '\uFD3F$arabicNumber\uFD3E';
-  }
-}
-
-class HoverableVerse extends StatefulWidget {
-  final Widget child;
-  final VoidCallback onTap;
-
-  const HoverableVerse({super.key, required this.child, required this.onTap});
-
-  @override
-  // ignore: library_private_types_in_public_api
-  _HoverableVerseState createState() => _HoverableVerseState();
-}
-
-class _HoverableVerseState extends State<HoverableVerse> {
-  bool _isHovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: Container(
-          color: _isHovered ? Colors.grey.withOpacity(0.2) : Colors.transparent,
-          child: widget.child,
-        ),
-      ),
-    );
   }
 }

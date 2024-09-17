@@ -130,10 +130,10 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                           }
 
                           // Show loading indicator
-                          Get.dialog(
-                            const Center(child: CircularProgressIndicator()),
-                            barrierDismissible: false,
-                          );
+                          // Get.dialog(
+                          //   const Center(child: CircularProgressIndicator()),
+                          //   barrierDismissible: false,
+                          // );
 
                           try {
                             // Ensure the ayah is loaded
