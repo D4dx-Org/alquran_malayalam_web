@@ -297,50 +297,36 @@ class QuranController extends GetxController {
     try {
       // Ensure the ayah is loaded
       await ensureAyahIsLoaded(_selectedSurahId.value, ayahNumber);
-
       // Add a small delay to allow for widget initialization
       await Future.delayed(const Duration(milliseconds: 300));
-
-      // Find the index of the ayah
-      int index = _ayahLines.indexWhere((ayah) =>
-          int.parse(ayah['AyaNo']) == ayahNumber && ayah['LineId'] == lineId);
-
-      if (index == -1) {
-        // If exact match not found, find the nearest ayah
-        index = _ayahLines
-            .indexWhere((ayah) => int.parse(ayah['AyaNo']) >= ayahNumber);
-      }
-
-      if (index == -1) {
-        // If still not found, scroll to the end
-        index = _ayahLines.length - 1;
-      }
-
-      // Attempt to scroll
-      if (itemScrollController.isAttached) {
-        await itemScrollController.scrollTo(
-          index: index,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOutCubic,
-        );
-      } else {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (itemScrollController.isAttached) {
-            itemScrollController.scrollTo(
-              index: index,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOutCubic,
-            );
-          } else {}
-        });
-      }
-
-      // Update the selected ayah number and range
-      _selectedAyahNumber.value = ayahNumber;
-      _selectedAyahRange.value = '${_selectedSurahId.value} : $ayahNumber';
-
-      // Update the UI
-      update();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (itemScrollController.isAttached) {
+          // Find the index of the ayah
+          int index = _ayahLines.indexWhere((ayah) =>
+              int.parse(ayah['AyaNo']) == ayahNumber &&
+              ayah['LineId'] == lineId);
+          if (index == -1) {
+            // If exact match not found, find the nearest ayah
+            index = _ayahLines
+                .indexWhere((ayah) => int.parse(ayah['AyaNo']) >= ayahNumber);
+          }
+          if (index == -1) {
+            // If still not found, scroll to the end
+            index = _ayahLines.length - 1;
+          }
+          // Attempt to scroll
+          itemScrollController.scrollTo(
+            index: index,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOutCubic,
+          );
+          // Update the selected ayah number and range
+          _selectedAyahNumber.value = ayahNumber;
+          _selectedAyahRange.value = '${_selectedSurahId.value} : $ayahNumber';
+          // Update the UI
+          update();
+        }
+      });
     } catch (e) {
       print('Error in scrollToAyah: $e');
       // You might want to show a user-friendly error message here

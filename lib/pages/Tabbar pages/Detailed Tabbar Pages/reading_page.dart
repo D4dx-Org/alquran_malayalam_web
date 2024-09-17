@@ -28,49 +28,52 @@ class _ReadingPageState extends State<ReadingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SelectionArea(
-      child: Scaffold(
-        body: Stack(
-          children: [
-            Obx(
-              () => _readingController.isLoading.value
-                  ? const Center(child: CircularProgressIndicator())
-                  : Column(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 32.0),
-                            child: ScrollablePositionedList.builder(
-                              itemCount: _readingController.verses.length +
-                                  1, // +1 for header
-                              itemBuilder: (context, index) {
-                                if (index == 0) {
-                                  return _buildHeader(); // Header at index 0
-                                } else {
-                                  return _buildContinuousText(
-                                      index - 1); // Adjust index for verses
-                                }
-                              },
-                              itemScrollController: _readingController.itemScrollController,
+    return GetBuilder<ReadingController>(builder: (_) {
+      return SelectionArea(
+        child: Scaffold(
+          body: Stack(
+            children: [
+              Obx(
+                () => _readingController.isLoading.value
+                    ? const Center(child: CircularProgressIndicator())
+                    : Column(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 32.0),
+                              child: ScrollablePositionedList.builder(
+                                itemCount: _readingController.verses.length +
+                                    1, // +1 for header
+                                itemBuilder: (context, index) {
+                                  if (index == 0) {
+                                    return _buildHeader(); // Header at index 0
+                                  } else {
+                                    return _buildContinuousText(
+                                        index - 1); // Adjust index for verses
+                                  }
+                                },
+                                itemScrollController:
+                                    _readingController.itemScrollController,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-            ),
-            Obx(() => _audioController.isPlaying.value
-                ? Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: AudioPlayerWidget(),
-                  )
-                : const SizedBox.shrink()),
-          ],
+                        ],
+                      ),
+              ),
+              Obx(() => _audioController.isPlaying.value
+                  ? Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: AudioPlayerWidget(),
+                    )
+                  : const SizedBox.shrink()),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildHeader() {
@@ -193,8 +196,6 @@ class _ReadingPageState extends State<ReadingPage> {
       ),
     );
   }
-
-  
 
   String _convertToArabicNumbers(String number) {
     const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];

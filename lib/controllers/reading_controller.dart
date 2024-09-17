@@ -9,9 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ReadingController extends GetxController {
   final QuranComService _quranComService = QuranComService();
   final SharedPreferences sharedPreferences;
-    final ItemScrollController itemScrollController = ItemScrollController();
-
-
+  final ItemScrollController itemScrollController = ItemScrollController();
 
   final RxList<QuranVerse> verses = <QuranVerse>[].obs;
   Map<String, String> surahNameMapping = {};
@@ -59,6 +57,9 @@ class ReadingController extends GetxController {
 
       // Save the current surah id
       sharedPreferences.setInt('lastReadSurahId', surahId);
+
+      // Notify the UI that the surah has been updated
+      update();
     } catch (e) {
       // Handle error (e.g., show a message to the user)
     } finally {
@@ -104,7 +105,4 @@ class ReadingController extends GetxController {
     String unicodeChar = SurahUnicodeData.getSurahNameUnicode(surahId);
     return unicodeChar + String.fromCharCode(0xE000);
   }
-
-   
-
 }
