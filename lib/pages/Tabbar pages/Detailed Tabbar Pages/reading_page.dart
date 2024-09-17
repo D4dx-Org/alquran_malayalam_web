@@ -60,37 +60,30 @@ class ReadingPage extends StatelessWidget {
   }
 
   Widget _buildHeader() {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Center(
-            child: Text(
-              _quranController
-                  .getSurahNameUnicode(_quranController.selectedSurahId),
-              style: const TextStyle(
-                fontFamily: 'SuraNames',
-                fontSize: 60,
-              ),
-            ),
-          ),
-        ),
-        Text(
-          _quranController.selectedSurah,
-          style:
-              GoogleFonts.notoSans(fontSize: 18, fontStyle: FontStyle.italic),
-        ),
-        const SizedBox(height: 10),
-      ],
-    );
-  }
-
-  Widget _buildContinuousText() {
     return Center(
       child: Container(
         constraints: const BoxConstraints(maxWidth: 800),
         child: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: Text(
+                  _quranController
+                      .getSurahNameUnicode(_quranController.selectedSurahId),
+                  style: const TextStyle(
+                    fontFamily: 'SuraNames',
+                    fontSize: 60,
+                  ),
+                ),
+              ),
+            ),
+            Text(
+              _quranController.selectedSurah,
+              style: GoogleFonts.notoSans(
+                  fontSize: 18, fontStyle: FontStyle.italic),
+            ),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -136,6 +129,18 @@ class ReadingPage extends StatelessWidget {
                   );
                 },
               ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContinuousText() {
+    return Center(
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 800),
+        child: Column(
+          children: [
             const SizedBox(height: 10),
             Directionality(
               textDirection: TextDirection.rtl,
