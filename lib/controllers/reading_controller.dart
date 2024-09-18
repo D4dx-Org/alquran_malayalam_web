@@ -1,3 +1,4 @@
+import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/services/surah_unicode_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,9 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ReadingController extends GetxController {
   final QuranComService _quranComService = QuranComService();
   final SharedPreferences sharedPreferences;
-    final ItemScrollController itemScrollController = ItemScrollController();
-
-
+  final ItemScrollController itemScrollController = ItemScrollController();
+  final _quranController = Get.find<QuranController>();
 
   final RxList<QuranVerse> verses = <QuranVerse>[].obs;
   Map<String, String> surahNameMapping = {};
@@ -34,6 +34,13 @@ class ReadingController extends GetxController {
       duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOut,
     );
+
+    // Update the selected Ayah number in QuranController
+    if (index < verses.length) {
+      final ayahNumber = index + 1; // Assuming index starts from 0
+      final quranController = QuranController.instance;
+      quranController.updateSelectedAyahNumber(ayahNumber);
+    }
   }
 
   void _loadLastReadSurah() {
@@ -59,6 +66,9 @@ class ReadingController extends GetxController {
 
       // Save the current surah id
       sharedPreferences.setInt('lastReadSurahId', surahId);
+
+      // Notify the UI that the surah has been updated
+      update();
     } catch (e) {
       // Handle error (e.g., show a message to the user)
     } finally {
@@ -104,7 +114,4 @@ class ReadingController extends GetxController {
     String unicodeChar = SurahUnicodeData.getSurahNameUnicode(surahId);
     return unicodeChar + String.fromCharCode(0xE000);
   }
-
-   
-
 }
