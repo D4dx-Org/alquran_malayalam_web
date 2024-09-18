@@ -52,7 +52,8 @@ class _ReadingPageState extends State<ReadingPage> {
                                       index - 1); // Adjust index for verses
                                 }
                               },
-                              itemScrollController: _readingController.itemScrollController,
+                              itemScrollController:
+                                  _readingController.itemScrollController,
                             ),
                           ),
                         ),
@@ -193,8 +194,6 @@ class _ReadingPageState extends State<ReadingPage> {
       ),
     );
   }
-
-  
 
   String _convertToArabicNumbers(String number) {
     const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
