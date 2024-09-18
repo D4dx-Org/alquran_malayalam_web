@@ -110,6 +110,8 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                           _quranController.resetToFirstAyah();
                           readingController.fetchSurah(
                               newSurahNumber); // Call the fetchSurah method here
+                          readingController.fetchSurah(
+                              newSurahNumber); // Call the fetchSurah method here
                         }
                       },
                       scaleFactor: widget.scaleFactor,
@@ -163,6 +165,12 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                                   ayahNumber, lineId.toString());
                               readingController.scrollToVerse(ayahNumber);
                               // Play the selected Ayah
+                              if (_audioController.isPlaying.value) {
+                                await _audioController.playSpecificAyah(
+                                  _quranController.selectedSurahId,
+                                  ayahNumber,
+                                );
+                              }
                               if (_audioController.isPlaying.value) {
                                 await _audioController.playSpecificAyah(
                                   _quranController.selectedSurahId,

@@ -69,6 +69,9 @@ class ReadingController extends GetxController {
 
       // Notify the UI that the surah has been updated
       update();
+
+      // Notify the UI that the surah has been updated
+      update();
     } catch (e) {
       // Handle error (e.g., show a message to the user)
     } finally {
