@@ -151,31 +151,14 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                             int? lineId = startingLineIds[ayahNumber];
 
                             if (lineId != null) {
-                              // if (widget.tabController.index == 0) {
-                              //   _quranController.scrollToAyah(
-                              //       ayahNumber, lineId.toString());
-                              // } else {
-                              //   readingController.scrollToVerse(ayahNumber);
-                              // }
                               // Scroll to the ayah
 
                               _quranController.scrollToAyah(
                                   ayahNumber, lineId.toString());
                               readingController.scrollToVerse(ayahNumber);
-                              readingController.scrollToVerse(ayahNumber);
                               // Play the selected Ayah
-                              if (_audioController.isPlaying.value) {
-                                await _audioController.playSpecificAyah(
-                                  _quranController.selectedSurahId,
-                                  ayahNumber,
-                                );
-                              }
-                              if (_audioController.isPlaying.value) {
-                                await _audioController.playSpecificAyah(
-                                  _quranController.selectedSurahId,
-                                  ayahNumber,
-                                );
-                              }
+                              await _audioController.playSpecificAyah(
+                                  _quranController.selectedSurahId, ayahNumber);
                             } else {
                               throw Exception(
                                   'LineId not found for ayah $ayahNumber');
