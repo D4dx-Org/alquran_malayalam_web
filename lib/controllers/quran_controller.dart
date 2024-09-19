@@ -298,7 +298,7 @@ class QuranController extends GetxController {
       // Ensure the ayah is loaded
       await ensureAyahIsLoaded(_selectedSurahId.value, ayahNumber);
       // Add a small delay to allow for widget initialization
-      await Future.delayed(const Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 50));
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (itemScrollController.isAttached) {
           // Find the index of the ayah
@@ -312,13 +312,14 @@ class QuranController extends GetxController {
           }
           if (index == -1) {
             // If still not found, scroll to the end
-            index = _ayahLines.length - 1;
+            index = _ayahLines.length;
           }
           // Attempt to scroll
           itemScrollController.scrollTo(
             index: index,
-            duration: const Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 50),
             curve: Curves.easeInOutCubic,
+            alignment: 0,
           );
           // Update the selected ayah number and range
           _selectedAyahNumber.value = ayahNumber;
@@ -355,7 +356,7 @@ class QuranController extends GetxController {
     if (ayahIndex != -1) {
       itemScrollController.scrollTo(
         index: ayahIndex,
-        duration: const Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 50),
         curve: Curves.easeInOut,
       );
     }

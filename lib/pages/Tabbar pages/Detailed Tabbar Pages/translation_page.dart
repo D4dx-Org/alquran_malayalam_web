@@ -86,7 +86,7 @@ class _TranslationPageState extends State<TranslationPage> {
         ayah['AyaNo'] == ayahNumber.toString() && ayah['LineId'] == lineId);
     if (index != -1) {
       _quranController.itemScrollController.scrollTo(
-        index: index + 1, // +1 to account for the header
+        index: index, // +1 to account for the header
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOutCubic,
       );

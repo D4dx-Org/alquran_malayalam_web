@@ -152,7 +152,12 @@ class _SurahBottomRowState extends State<SurahBottomRow>
 
                             if (lineId != null) {
                               // Scroll to the ayah
-
+                              if (widget.tabController.index == 0) {
+                                _quranController.scrollToAyah(
+                                    ayahNumber, lineId.toString());
+                              } else {
+                                readingController.scrollToVerse(ayahNumber);
+                              }
                               _quranController.scrollToAyah(
                                   ayahNumber, lineId.toString());
                               readingController.scrollToVerse(ayahNumber);

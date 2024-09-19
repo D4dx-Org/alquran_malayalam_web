@@ -37,7 +37,7 @@ class ReadingController extends GetxController {
 
     // Update the selected Ayah number in QuranController
     if (index < verses.length) {
-      final ayahNumber = index + 1; // Assuming index starts from 0
+      final ayahNumber = index; // Assuming index starts from 0
       final quranController = QuranController.instance;
       quranController.updateSelectedAyahNumber(ayahNumber);
     }
