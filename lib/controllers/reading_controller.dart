@@ -26,6 +26,9 @@ class ReadingController extends GetxController {
   void onInit() {
     super.onInit();
     _loadLastReadSurah();
+    fetchSurah(_quranController.selectedSurahId);
+    // scrollToVerse(_quranController
+    //     .selectedAyahNumber); // Automatically fetch the selected Surah
   }
 
   void scrollToVerse(int index) {
@@ -45,7 +48,7 @@ class ReadingController extends GetxController {
 
   void _loadLastReadSurah() {
     final lastReadSurahId = sharedPreferences.getInt('lastReadSurahId') ?? 1;
-    fetchSurah(lastReadSurahId);
+    fetchSurah(_quranController.selectedSurahId);
   }
 
   Future<void> fetchSurah(int surahId) async {
