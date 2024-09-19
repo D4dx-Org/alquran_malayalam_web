@@ -45,7 +45,7 @@ class ReadingController extends GetxController {
 
   void loadLastReadSurah() {
     final lastReadSurahId = sharedPreferences.getInt('lastReadSurahId') ?? 1;
-    fetchSurah(lastReadSurahId);
+    fetchSurah(_quranController.selectedSurahId);
   }
 
   Future<void> fetchSurah(int surahId) async {

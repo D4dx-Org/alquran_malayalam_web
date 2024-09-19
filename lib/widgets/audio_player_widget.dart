@@ -38,9 +38,7 @@ class AudioPlayerWidget extends StatelessWidget {
                   onPressed: () {
                     showDialog(
                       context: context,
-                      builder: (_) => AudioPlayerSettingsPopup(
-                   
-                      ),
+                      builder: (_) => const AudioPlayerSettingsPopup(),
                     );
                   },
                 ),
