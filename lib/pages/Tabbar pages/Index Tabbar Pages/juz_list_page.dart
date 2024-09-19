@@ -314,11 +314,12 @@ class _JuzListPageState extends State<JuzListPage> {
         ),
         onTap: () {
           int ayahNumber = 5;
+          final surahId = int.parse(surah['SuraId'].toString());
+          final surahName = surah['MSuraName'];
           _quranController.updateSelectedSurah(surah['MSuraName'], ayahNumber);
           _quranController.updateSelectedSurahId(
               int.parse(surah['SuraId'].toString()), ayahNumber);
-          final surahId = int.parse(surah['SuraId'].toString());
-          final surahName = surah['MSuraName'];
+          _quranController.updateSelectedAyahNumber(ayahNumber);
           Get.toNamed(
             Routes.SURAH_DETAILED,
             arguments: {

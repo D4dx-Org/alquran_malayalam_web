@@ -24,8 +24,8 @@ class ReadingController extends GetxController {
 
   @override
   void onInit() {
+    loadLastReadSurah();
     super.onInit();
-    _loadLastReadSurah();
   }
 
   void scrollToVerse(int index) {
@@ -37,13 +37,13 @@ class ReadingController extends GetxController {
 
     // Update the selected Ayah number in QuranController
     if (index < verses.length) {
-      final ayahNumber = index; // Assuming index starts from 0
       final quranController = QuranController.instance;
-      quranController.updateSelectedAyahNumber(ayahNumber);
+      quranController
+          .updateSelectedAyahNumber(_quranController.selectedAyahNumber);
     }
   }
 
-  void _loadLastReadSurah() {
+  void loadLastReadSurah() {
     final lastReadSurahId = sharedPreferences.getInt('lastReadSurahId') ?? 1;
     fetchSurah(lastReadSurahId);
   }
@@ -59,16 +59,14 @@ class ReadingController extends GetxController {
       // Clear previous verses
       verses.clear();
 
-      // Fetch verses
-      await loadVerses(surahId);
+      // Fetch verses using the fetchAyahs method
+      await loadVerses(
+          surahId); // Assuming surahId corresponds to the page number
 
       currentSurahId.value = surahId;
 
       // Save the current surah id
       sharedPreferences.setInt('lastReadSurahId', surahId);
-
-      // Notify the UI that the surah has been updated
-      update();
 
       // Notify the UI that the surah has been updated
       update();
@@ -79,10 +77,10 @@ class ReadingController extends GetxController {
     }
   }
 
-  Future<void> loadVerses(int surahId) async {
+  Future<void> loadVerses(int pageNumber) async {
     isLoading.value = true;
     try {
-      final fetchedVerses = await _quranComService.fetchAyahs(surahId);
+      final fetchedVerses = await _quranComService.fetchAyahs(pageNumber);
       for (var verse in fetchedVerses) {
         verses.add(verse); // Load each ayah separately
       }

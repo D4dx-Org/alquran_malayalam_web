@@ -27,6 +27,13 @@ class _ReadingPageState extends State<ReadingPage> {
   // final List<GlobalKey> _ayahKeys = [];
 
   @override
+  void initState() {
+    super.initState();
+    // Call the method to load the last read Surah when the page is loaded
+    // _readingController.loadLastReadSurah();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SelectionArea(
       child: Scaffold(
@@ -80,12 +87,7 @@ class _ReadingPageState extends State<ReadingPage> {
         constraints: const BoxConstraints(maxWidth: 800),
         child: Column(
           children: [
-            // ElevatedButton(
-            //   onPressed: () {
-            //     _scrollToVerse(60); // Scroll to Ayah 50
-            //   },
-            //   child: const Text('Scroll to Ayah 50'),
-            // ),
+
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Center(

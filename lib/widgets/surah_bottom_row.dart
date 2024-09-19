@@ -23,7 +23,7 @@ class _SurahBottomRowState extends State<SurahBottomRow>
     with SingleTickerProviderStateMixin {
   final _quranController = Get.find<QuranController>();
   final _audioController = Get.find<AudioController>();
-  final ReadingController readingController = Get.find<ReadingController>();
+  // final ReadingController readingController = Get.find<ReadingController>();
 
   bool _showSearchBar = false;
   final FocusNode _searchFocusNode = FocusNode();
@@ -108,7 +108,7 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                               newSurahNumber, 1);
                           _audioController.changeSurah(newSurahNumber);
                           _quranController.resetToFirstAyah();
-                          readingController.fetchSurah(newSurahNumber);
+                          // readingController.fetchSurah(newSurahNumber);
                         }
                       },
                       scaleFactor: widget.scaleFactor,
@@ -156,11 +156,11 @@ class _SurahBottomRowState extends State<SurahBottomRow>
                                 _quranController.scrollToAyah(
                                     ayahNumber, lineId.toString());
                               } else {
-                                readingController.scrollToVerse(ayahNumber);
+                                // readingController.scrollToVerse(ayahNumber);
                               }
                               _quranController.scrollToAyah(
                                   ayahNumber, lineId.toString());
-                              readingController.scrollToVerse(ayahNumber);
+                              // readingController.scrollToVerse(ayahNumber);
                               // Play the selected Ayah
                               await _audioController.playSpecificAyah(
                                   _quranController.selectedSurahId, ayahNumber);

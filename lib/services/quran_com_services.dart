@@ -29,9 +29,9 @@ class QuranComService {
     }
   }
 
-  Future<List<QuranVerse>> fetchAyahs(int surahId) async {
+  Future<List<QuranVerse>> fetchAyahs(int pageNumber) async {
     final response = await http.get(
-        Uri.parse("$baseUrl/quran/verses/uthmani?chapter_number=$surahId"));
+        Uri.parse("$baseUrl/quran/verses/uthmani?page_number=$pageNumber"));
 
     if (response.statusCode == 200) {
       final ayahsData = jsonDecode(utf8.decode(response.bodyBytes));
@@ -47,7 +47,7 @@ class QuranComService {
       return ayahs;
     } else {
       throw Exception(
-          'Failed to load Ayahs for Surah $surahId: ${response.statusCode}');
+          'Failed to load Ayahs for Surah $pageNumber: ${response.statusCode}');
     }
   }
 
