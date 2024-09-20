@@ -121,7 +121,7 @@ class AudioPlayerWidget extends StatelessWidget {
           audioController.setPlaybackSpeed(newValue);
         }
       },
-      items: [1.0, 1.5, 2.0].map<DropdownMenuItem<double>>((double value) {
+      items: [1.0, 1.5].map<DropdownMenuItem<double>>((double value) {
         return DropdownMenuItem<double>(
           value: value,
           child: Text('${value}x'),

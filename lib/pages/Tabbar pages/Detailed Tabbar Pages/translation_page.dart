@@ -338,7 +338,7 @@ class _TranslationPageState extends State<TranslationPage> {
 
   Widget _buildArabicWord(String arabicWord, String translation) {
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(25),
       margin: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
         border: Border.all(
@@ -409,7 +409,7 @@ class _HoverableAyahState extends State<HoverableAyah> {
       onExit: (_) => setState(() => _isHovered = false),
       child: GestureDetector(
         onTapDown: (_) => setState(() => _isHovered = true),
-        onTapUp: (_) => setState(() => _isHovered = true),
+        onTapUp: (_) => setState(() => _isHovered = false),
         onTapCancel: () => setState(() => _isHovered = false),
         child: Container(
           color: _isHovered ? Colors.grey[200] : Colors.transparent,

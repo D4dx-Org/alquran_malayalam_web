@@ -76,10 +76,10 @@ class SearchResultPopup extends StatelessWidget {
                       subtitle: Text(result['MalTran']),
                       onTap: () {
                         int ayahNumber = result['AyahNo'];
-                        quranController
-                            .updateSelectedSurah(result['MSuraName'],ayahNumber);
+                        quranController.updateSelectedSurah(
+                            result['MSuraName'], ayahNumber);
                         quranController.updateSelectedSurahId(
-                            int.parse(result['SuraNo'].toString()),ayahNumber);
+                            int.parse(result['SuraNo'].toString()), ayahNumber);
                         final surahId = int.parse(result['SuraNo'].toString());
                         final surahName = result['MSuraName'];
                         Get.toNamed(
@@ -87,7 +87,8 @@ class SearchResultPopup extends StatelessWidget {
                           arguments: {
                             'surahId': surahId,
                             'surahName': surahName,
-                            'ayahNumber': ayahNumber, // Include the initial ayah number
+                            'ayahNumber':
+                                ayahNumber, // Include the initial ayah number
                           },
                         );
                       },

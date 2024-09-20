@@ -17,37 +17,40 @@ class ReadingPage extends StatelessWidget {
     readingController.fetchVerses(readingController.currentPage.value);
 
     return Scaffold(
-      body: Obx(() {
-        return readingController.isLoading.value
-            ? const Center(child: CircularProgressIndicator())
-            : Directionality(
-                textDirection: TextDirection.rtl,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Center(
-                    child: Container(
-                      constraints: const BoxConstraints(maxWidth: 800),
-                      child: Column(
-                        children: [
-                          // Build the header
-                          if (readingController.currentPage.value == 0)
-                            _buildHeader(),
-                          // Display the verses text
-                          Text(
-                            readingController.versesText.value,
-                            style: settingsController.quranFontStyle.value
-                                .copyWith(
-                              height: 2, // Adjust this value for line spacing
+      body: SingleChildScrollView(
+        child: Obx(() {
+          return readingController.isLoading.value
+              ? const Center(child: CircularProgressIndicator())
+              : Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Center(
+                      child: Container(
+                        constraints: const BoxConstraints(maxWidth: 600),
+                        child: Column(
+                          children: [
+                            // Build the header
+                            if (readingController.currentPage.value == 0)
+                              _buildHeader(),
+                            // Display the verses text
+                            Text(
+                              readingController.versesText.value,
+                              style: settingsController.quranFontStyle.value
+                                  .copyWith(
+                                height:
+                                    2.5, // Adjust this value for line spacing
+                              ),
+                              textAlign: TextAlign.justify,
                             ),
-                            textAlign: TextAlign.justify,
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              );
-      }),
+                );
+        }),
+      ),
     );
   }
 

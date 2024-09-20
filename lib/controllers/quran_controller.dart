@@ -16,6 +16,7 @@ class QuranController extends GetxController {
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
+  final ReadingController readingController = Get.put(ReadingController());
 
   QuranController({required this.sharedPreferences});
 
@@ -46,13 +47,22 @@ class QuranController extends GetxController {
   List<Map<String, dynamic>> get ayahLines => _ayahLines;
   List<String> get surahMalMeans => _surahMalMeans;
 
+@override
+  void onInit() async {
+    super.onInit();
+    _prefsController = Get.find<SharedPreferencesController>();
+
+    await fetchSurahs();
+    _loadSelectedSurah();
+  }
+
   void navigateToPreviousSurah() {
     final currentIndex = _surahIds.indexOf(_selectedSurahId.value);
     if (currentIndex > 0) {
       final newSurahId = _surahIds[currentIndex - 1];
       updateSelectedSurahId(newSurahId, 1);
       _fetchAyahLines(newSurahId);
-
+      readingController.previousPage();
       // Add this line to change the audio
       Get.find<AudioController>().changeSurah(newSurahId);
     }
@@ -64,6 +74,7 @@ class QuranController extends GetxController {
       final newSurahId = _surahIds[currentIndex + 1];
       updateSelectedSurahId(newSurahId, 1);
       _fetchAyahLines(newSurahId);
+      readingController.nextPage();
 
       // Add this line to change the audio
       Get.find<AudioController>().changeSurah(newSurahId);
@@ -164,14 +175,7 @@ class QuranController extends GetxController {
     for (int i = 0; i < _surahNames.length; i++) {}
   }
 
-  @override
-  void onInit() async {
-    super.onInit();
-    _prefsController = Get.find<SharedPreferencesController>();
-
-    await fetchSurahs();
-    _loadSelectedSurah();
-  }
+  
 
   Future<void> fetchSurahs() async {
     try {
