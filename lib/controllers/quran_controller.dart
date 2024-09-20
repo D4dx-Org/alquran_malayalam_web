@@ -52,7 +52,6 @@ class QuranController extends GetxController {
       final newSurahId = _surahIds[currentIndex - 1];
       updateSelectedSurahId(newSurahId, 1);
       _fetchAyahLines(newSurahId);
-      Get.find<ReadingController>().fetchSurah(newSurahId);
 
       // Add this line to change the audio
       Get.find<AudioController>().changeSurah(newSurahId);
@@ -65,7 +64,6 @@ class QuranController extends GetxController {
       final newSurahId = _surahIds[currentIndex + 1];
       updateSelectedSurahId(newSurahId, 1);
       _fetchAyahLines(newSurahId);
-      Get.find<ReadingController>().fetchSurah(newSurahId);
 
       // Add this line to change the audio
       Get.find<AudioController>().changeSurah(newSurahId);
@@ -89,7 +87,6 @@ class QuranController extends GetxController {
           'selectedAyahRange', '${_surahIds[index]} : $ayahNumber');
       _prefsController.setString('selectedSurahMalMean', _surahMalMeans[index]);
       _fetchAyahLines(_surahIds[index]);
-      Get.find<ReadingController>().fetchSurah(_surahIds[index]);
       scrollToAyah(ayahNumber, '1'); // Scroll to the specified Ayah
     }
   }

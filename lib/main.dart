@@ -24,8 +24,7 @@ void main() async {
   // Lazy load other controllers
   Get.lazyPut(() => BookmarkController(sharedPreferences: sharedPreferences),
       fenix: true);
-  Get.lazyPut(() => ReadingController(sharedPreferences: sharedPreferences),
-      fenix: true);
+  Get.lazyPut(() => ReadingController(), fenix: true);
   Get.lazyPut(() => AudioController(), fenix: true);
   Get.lazyPut(() => QuranSearchController(), fenix: true);
 
