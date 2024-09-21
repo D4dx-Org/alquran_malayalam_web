@@ -1,38 +1,39 @@
+import 'package:alquran_web/widgets/index_appbar.dart';
+import 'package:alquran_web/widgets/navigation_drawer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PrivacyPage extends StatelessWidget {
   const PrivacyPage({super.key});
 
+  double getScaleFactor(double screenWidth) {
+    if (screenWidth < 600) return 0.05;
+    if (screenWidth < 800) return 0.08;
+    if (screenWidth < 1440) return 0.1;
+    return 0.15 + (screenWidth - 1440) / 10000;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDarkMode ? Colors.white : const Color.fromRGBO(67, 67, 67, 1);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final scaleFactor = getScaleFactor(screenWidth);
+
+    final horizontalPadding = screenWidth > 1440
+        ? (screenWidth - 1440) * 0.3 + 50
+        : screenWidth > 800
+            ? 50.0
+            : screenWidth * scaleFactor;
+
+    const textColor = Color.fromRGBO(67, 67, 67, 1);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Privacy Policy",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
-            color: textColor,
-          ),
-        ),
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
+      appBar: const IndexAppbar(),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               "D4media Privacy Policy Statement",
               style: TextStyle(
                 fontSize: 24,
@@ -131,7 +132,7 @@ class PrivacyPage extends StatelessWidget {
             ),
             _buildContactInfo(context, textColor),
             const SizedBox(height: 24),
-            Text(
+            const Text(
               "Last updated on 10-02-2024",
               style: TextStyle(
                 fontSize: 14,
@@ -139,7 +140,7 @@ class PrivacyPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            Text(
+            const Text(
               "© 2022 D4Media",
               style: TextStyle(
                 fontSize: 14,
@@ -150,6 +151,7 @@ class PrivacyPage extends StatelessWidget {
           ],
         ),
       ),
+      drawer: const NavigationDrawerWidget(),
     );
   }
 
