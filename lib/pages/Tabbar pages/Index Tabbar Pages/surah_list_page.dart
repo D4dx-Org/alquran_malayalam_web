@@ -13,10 +13,10 @@ class SurahListPage extends StatefulWidget {
   const SurahListPage({super.key});
 
   @override
-  _SurahListPageState createState() => _SurahListPageState();
+  SurahListPageState createState() => SurahListPageState();
 }
 
-class _SurahListPageState extends State<SurahListPage> {
+class SurahListPageState extends State<SurahListPage> {
   int _currentIndex = 0;
   List<Map<String, dynamic>> surahs = [];
   final _quranService = QuranService();

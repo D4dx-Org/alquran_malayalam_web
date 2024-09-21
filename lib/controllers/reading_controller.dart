@@ -1,6 +1,7 @@
 // import 'package:get/get.dart';
 import 'package:alquran_web/models/verse_model.dart';
 import 'package:alquran_web/services/quran_com_services.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 class ReadingController extends GetxController {  
   final QuranComService _quranComService = QuranComService();  
@@ -15,7 +16,7 @@ class ReadingController extends GetxController {
       final fetchedVerses = await _quranComService.fetchAyahs(pageNumber);  
       versesText.value = _buildContinuousText(fetchedVerses);  
     } catch (e) {  
-      print('Error fetching verses: $e');  
+      debugPrint('Error fetching verses: $e');  
     } finally {  
       isLoading.value = false;  
     }  

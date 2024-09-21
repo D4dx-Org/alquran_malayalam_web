@@ -1,4 +1,3 @@
-import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,10 +14,10 @@ class SurahBottomRow extends StatefulWidget {
       {required this.tabController, super.key});
 
   @override
-  _SurahBottomRowState createState() => _SurahBottomRowState();
+  SurahBottomRowState createState() => SurahBottomRowState();
 }
 
-class _SurahBottomRowState extends State<SurahBottomRow>
+class SurahBottomRowState extends State<SurahBottomRow>
     with SingleTickerProviderStateMixin {
   final _quranController = Get.find<QuranController>();
   final _audioController = Get.find<AudioController>();
