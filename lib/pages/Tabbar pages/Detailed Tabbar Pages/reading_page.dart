@@ -10,46 +10,64 @@ class ReadingPage extends StatelessWidget {
   final ReadingController readingController = Get.put(ReadingController());
   final SettingsController settingsController = Get.find<SettingsController>();
   final _quranController = Get.find<QuranController>();
+  double getScaleFactor(double screenWidth) {
+    if (screenWidth < 600) return 0.05;
+    if (screenWidth < 800) return 0.08;
+    if (screenWidth < 1440) return 0.1;
+    return 0.15 +
+        (screenWidth - 1440) / 10000; // Dynamic scaling for larger screens
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Fetch verses on initial load
+    final screenWidth = MediaQuery.of(context).size.width;
+    final scaleFactor = getScaleFactor(screenWidth);
+
+    final horizontalPadding = screenWidth > 1440
+        ? (screenWidth - 1440) * 0.3 + 50
+        : screenWidth > 800
+            ? 50.0
+            : screenWidth * scaleFactor;
+
     readingController.fetchVerses(readingController.currentPage.value);
 
     return Scaffold(
       body: SingleChildScrollView(
-        child: Obx(() {
-          return readingController.isLoading.value
-              ? const Center(child: CircularProgressIndicator())
-              : Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Center(
-                      child: Container(
-                        constraints: const BoxConstraints(maxWidth: 600),
-                        child: Column(
-                          children: [
-                            // Build the header
-                            if (readingController.currentPage.value == 0)
-                              _buildHeader(),
-                            // Display the verses text
-                            Text(
-                              readingController.versesText.value,
-                              style: settingsController.quranFontStyle.value
-                                  .copyWith(
-                                height:
-                                    2.5, // Adjust this value for line spacing
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+          child: Obx(() {
+            return readingController.isLoading.value
+                ? const Center(child: CircularProgressIndicator())
+                : Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Center(
+                        child: Container(
+                          constraints: const BoxConstraints(maxWidth: 600),
+                          child: Column(
+                            children: [
+                              // Build the header
+                              if (readingController.currentPage.value == 0)
+                                _buildHeader(),
+                              // Display the verses text
+                              Text(
+                                readingController.versesText.value,
+                                style: settingsController.quranFontStyle.value
+                                    .copyWith(
+                                  height:
+                                      2.5, // Adjust this value for line spacing
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                              textAlign: TextAlign.justify,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-        }),
+                  );
+          }),
+        ),
       ),
     );
   }
