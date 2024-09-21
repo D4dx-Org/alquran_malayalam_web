@@ -260,74 +260,81 @@ class _TranslationPageState extends State<TranslationPage> {
     String lineId = ayah['LineId'] ?? '';
     String verseKey = "${_quranController.selectedSurahId}:$ayahNumber";
 
-    return HoverableAyah(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Obx(() => AyahActionBar(
-                  ayahNumber: ayahNumber,
-                  lineId: lineId,
-                  onPlayPressed: () {
-                    _audioController.playAyah(verseKey);
-                  },
-                  onBookmarkPressed: () {
-                    _bookmarkController.toggleBookmark(
-                      _quranController.selectedSurahId,
-                      ayahNumber,
-                      lineId,
-                    );
-                  },
-                  isBookmarked: _bookmarkController.isAyahBookmarked(
-                    _quranController.selectedSurahId,
-                    ayahNumber,
-                    lineId,
-                  ),
-                  lineWords: ayah['LineWords'],
-                  translation: ayah['MalTran'],
-                )),
-          ),
-          Column(
+    return Column(
+      children: [
+        HoverableAyah(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Directionality(
-                textDirection: TextDirection.rtl,
-                child: Wrap(
-                  alignment: WrapAlignment.start,
-                  runAlignment: WrapAlignment.end,
-                  direction: Axis.horizontal,
-                  children: [
-                    ...(ayah['LineWords'] as List<Map<String, dynamic>>).map(
-                      (word) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                        child:
-                            _buildArabicWord(word['ArabWord'], word['MalWord']),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Obx(
-                  () => SelectableText(
-                    ayah['MalTran'],
-                    style: TextStyle(
-                      fontSize: _settingsController.translationFontSize.value,
+                child: Obx(() => AyahActionBar(
+                      ayahNumber: ayahNumber,
+                      lineId: lineId,
+                      onPlayPressed: () {
+                        _audioController.playAyah(verseKey);
+                      },
+                      onBookmarkPressed: () {
+                        _bookmarkController.toggleBookmark(
+                          _quranController.selectedSurahId,
+                          ayahNumber,
+                          lineId,
+                        );
+                      },
+                      isBookmarked: _bookmarkController.isAyahBookmarked(
+                        _quranController.selectedSurahId,
+                        ayahNumber,
+                        lineId,
+                      ),
+                      lineWords: ayah['LineWords'],
+                      translation: ayah['MalTran'],
+                    )),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: Wrap(
+                      alignment: WrapAlignment.start,
+                      runAlignment: WrapAlignment.end,
+                      direction: Axis.horizontal,
+                      children: [
+                        ...(ayah['LineWords'] as List<Map<String, dynamic>>)
+                            .map(
+                          (word) => Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 4.0),
+                            child: _buildArabicWord(
+                                word['ArabWord'], word['MalWord']),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Obx(
+                      () => SelectableText(
+                        ayah['MalTran'],
+                        style: TextStyle(
+                          fontSize:
+                              _settingsController.translationFontSize.value,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          const Divider(
-            color: Color.fromRGBO(194, 194, 194, 1),
-            thickness: 2,
-            height: 32,
-          ),
-        ],
-      ),
+        ),
+        const Divider(
+          color: Color.fromRGBO(194, 194, 194, 1),
+          thickness: 2,
+          height: 32,
+        ),
+      ],
     );
   }
 
