@@ -1,9 +1,9 @@
 import 'package:alquran_web/widgets/detailed_appbar.dart';
 import 'package:alquran_web/widgets/navigation_drawer_widget.dart';
 import 'package:flutter/material.dart';
-import '../Tabbar pages/Articles Tabbar Pages/muguvara.dart';
-import '../Tabbar pages/Articles Tabbar Pages/publishersdata.dart';
-import '../Tabbar pages/Articles Tabbar Pages/translator.dart';
+import '../Tabbar pages/Articles Tabbar Pages/introduction_page.dart';
+import '../Tabbar pages/Articles Tabbar Pages/publishers_data_page.dart';
+import '../Tabbar pages/Articles Tabbar Pages/translator_page.dart';
 
 class AboutUsPage extends StatefulWidget {
   const AboutUsPage({super.key});
@@ -38,9 +38,9 @@ class _AboutUsPageState extends State<AboutUsPage>
       body: TabBarView(
         controller: _tabController,
         children: const [
-          Tab1(),
-          Tab2(),
-          Tab3(),
+          TranslatorPage(),
+          IntroductionPage(),
+          PublishersDataPage(),
         ],
       ),
       drawer: const NavigationDrawerWidget(),
