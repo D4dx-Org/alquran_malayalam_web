@@ -8,23 +8,39 @@ class AudioPlayerWidget extends StatelessWidget {
 
   AudioPlayerWidget({super.key});
 
+  double getScaleFactor(double screenWidth) {
+    if (screenWidth < 600) return 0.05;
+    if (screenWidth < 800) return 0.08;
+    if (screenWidth < 1440) return 0.1;
+    return 0.15 + (screenWidth - 1440) / 10000;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final scaleFactor = getScaleFactor(screenWidth);
+
+    final horizontalPadding = screenWidth > 1440
+        ? (screenWidth - 1440) * 0.3 + 50
+        : screenWidth > 800
+            ? 50.0
+            : screenWidth * scaleFactor;
+
     return Obx(() {
       if (!audioController.isVisible.value) {
         return const SizedBox.shrink(); // Hide the widget when not visible
       }
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 1,
-              blurRadius: 3,
-              offset: const Offset(0, 1),
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 6,
+              blurRadius: 4,
+              offset: const Offset(0, -1),
             ),
           ],
         ),

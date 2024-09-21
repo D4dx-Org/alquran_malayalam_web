@@ -125,8 +125,8 @@ class _TranslationPageState extends State<TranslationPage> {
     final screenWidth = MediaQuery.of(context).size.width;
     final scaleFactor = getScaleFactor(screenWidth);
 
-    final horizontalPadding = screenWidth > 1640
-        ? (screenWidth - 1640) * 0.3 + 50 // Dynamic padding for larger screens
+    final horizontalPadding = screenWidth > 1440
+        ? (screenWidth - 1440) * 0.3 + 50
         : screenWidth > 800
             ? 50.0
             : screenWidth * scaleFactor;
@@ -142,17 +142,12 @@ class _TranslationPageState extends State<TranslationPage> {
                   () => ScrollablePositionedList.builder(
                     itemScrollController: _quranController.itemScrollController,
                     itemPositionsListener: itemPositionsListener,
-                    itemCount: _quranController.ayahLines.length + 3,
+                    itemCount: _quranController.ayahLines.length + 2,
                     itemBuilder: (context, index) {
                       if (index == 0) {
                         return _buildHeader();
                       } else if (index ==
                           _quranController.ayahLines.length + 1) {
-                        return _isEndOfSurah()
-                            ? _buildEndOfSurahMessage()
-                            : const SizedBox.shrink();
-                      } else if (index ==
-                          _quranController.ayahLines.length + 2) {
                         return _isLoading
                             ? const Center(child: CircularProgressIndicator())
                             : const SizedBox.shrink();
@@ -368,22 +363,6 @@ class _TranslationPageState extends State<TranslationPage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildEndOfSurahMessage() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 16.0),
-      child: Center(
-        child: Text(
-          "End of Surah",
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.normal,
-            color: Colors.black,
-          ),
-        ),
       ),
     );
   }

@@ -99,51 +99,57 @@ class _DetailedAppbarState extends State<DetailedAppbar> {
                       onTap: () {
                         Get.offAllNamed('/home');
                       },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'images/AppBar_Icon.png',
-                            height: logoSize,
-                            width: logoSize,
-                            color: Colors.white,
-                            fit: BoxFit.contain,
-                          ),
-                          SizedBox(
-                              width: 8 * (screenWidth / 1440).clamp(0.7, 1.0)),
-                          Flexible(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Text(
-                                    "അല്‍-ഖുര്‍ആന്‍",
-                                    style: GoogleFonts.anekMalayalam(
-                                      fontSize: 35 *
-                                          (screenWidth / 1440).clamp(0.7, 1.0),
-                                      fontWeight: FontWeight.w800,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Text(
-                                    "വാക്കര്‍ത്ഥത്തോടുകൂടിയ പരിഭാഷ",
-                                    style: GoogleFonts.anekMalayalam(
-                                      color: Colors.white,
-                                      fontSize: 18 *
-                                          (screenWidth / 1440).clamp(0.7, 1.0),
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'images/AppBar_Icon.png',
+                              height: logoSize,
+                              width: logoSize,
+                              color: Colors.white,
+                              fit: BoxFit.contain,
                             ),
-                          ),
-                        ],
+                            SizedBox(
+                                width:
+                                    8 * (screenWidth / 1440).clamp(0.7, 1.0)),
+                            Flexible(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      "അല്‍-ഖുര്‍ആന്‍",
+                                      style: GoogleFonts.anekMalayalam(
+                                        fontSize: 35 *
+                                            (screenWidth / 1440)
+                                                .clamp(0.7, 1.0),
+                                        fontWeight: FontWeight.w800,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      "വാക്കര്‍ത്ഥത്തോടുകൂടിയ പരിഭാഷ",
+                                      style: GoogleFonts.anekMalayalam(
+                                        color: Colors.white,
+                                        fontSize: 18 *
+                                            (screenWidth / 1440)
+                                                .clamp(0.7, 1.0),
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );

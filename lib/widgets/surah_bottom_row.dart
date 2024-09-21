@@ -46,184 +46,203 @@ class _SurahBottomRowState extends State<SurahBottomRow>
     }
   }
 
+  double getScaleFactor(double screenWidth) {
+    if (screenWidth < 600) return 0.05;
+    if (screenWidth < 800) return 0.08;
+    if (screenWidth < 1440) return 0.1;
+    return 0.15 + (screenWidth - 1440) / 10000;
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final scaleFactor = getScaleFactor(screenWidth);
+    final horizontalPadding = screenWidth > 1440
+        ? (screenWidth - 1440) * 0.3 + 50
+        : screenWidth > 800
+            ? 50.0
+            : screenWidth * scaleFactor;
+
     final isLargeScreen = screenWidth > 800;
 
-    return Container(
-      color: const Color.fromRGBO(115, 78, 9, 1),
-      height: 50,
-      child: Row(
-        children: [
-          Expanded(
-            child: Wrap(
-              spacing: 5.0,
-              children: [
-                // First Drop Down
-                Obx(
-                  () => CustomDropdown(
-                    options: List.generate(
-                      _quranController.surahIds.length,
-                      (index) =>
-                          '${_quranController.surahIds[index]} - ${_quranController.surahNames[index]}',
-                    ),
-                    selectedValue:
-                        '${_quranController.selectedSurahId} - ${_quranController.selectedSurah}',
-                    onChanged: (value) {
-                      if (value != null) {
-                        final parts = value.split(' - ');
-                        int newSurahNumber = int.parse(parts[0]);
-                        _quranController.updateSelectedSurahId(
-                            newSurahNumber, 1);
-                        _audioController.changeSurah(newSurahNumber);
-                        _quranController.resetToFirstAyah();
-                      }
-                    },
-                    scaleFactor: widget.scaleFactor,
-                  ),
-                ),
-                // Second Drop Down
-                Obx(
-                  () => CustomDropdown(
-                    options: List.generate(
-                      _quranController.selectedSurahAyahCount,
-                      (index) => '${index + 1}',
-                    ),
-                    selectedValue:
-                        _quranController.selectedAyahNumber.toString(),
-                    onChanged: (value) async {
-                      if (value != null) {
-                        int ayahNumber = int.parse(value);
-                        if (_audioController.isPlaying.value) {
-                          _audioController.stopSurahPlayback();
-                        }
-                        try {
-                          await _quranController.ensureAyahIsLoaded(
-                            _quranController.selectedSurahId,
-                            ayahNumber,
-                          );
-                          Map<int, int> startingLineIds =
-                              _quranController.getAyahStartingLineIds();
-                          int? lineId = startingLineIds[ayahNumber];
-                          if (lineId != null) {
-                            _quranController.scrollToAyah(
-                                ayahNumber, lineId.toString());
-                            await _audioController.playSpecificAyah(
-                                _quranController.selectedSurahId, ayahNumber);
-                          } else {
-                            throw Exception(
-                                'LineId not found for ayah $ayahNumber');
-                          }
-                        } catch (e) {
-                          debugPrint('Error navigating to ayah: $e');
-                          Get.snackbar('Error',
-                              'Failed to navigate to the selected ayah',
-                              snackPosition: SnackPosition.BOTTOM);
-                        }
-                      }
-                    },
-                    scaleFactor: widget.scaleFactor,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (_showSearchBar)
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: Container(
+        color: const Color.fromRGBO(115, 78, 9, 1),
+        height: 50,
+        child: Row(
+          children: [
             Expanded(
-              child: isLargeScreen
-                  ? Row(
-                      children: [
-                        const Spacer(),
-                        SizedBox(
-                          width: 400,
-                          child: SearchWidget(
-                            width: 400,
-                            onSearch: (query) {},
-                            focusNode: _searchFocusNode,
-                          ),
-                        ),
-                      ],
-                    )
-                  : SearchWidget(
-                      width: screenWidth,
-                      onSearch: (query) {},
-                      focusNode: _searchFocusNode,
+              child: Wrap(
+                spacing: 5.0,
+                children: [
+                  // First Drop Down
+                  Obx(
+                    () => CustomDropdown(
+                      options: List.generate(
+                        _quranController.surahIds.length,
+                        (index) =>
+                            '${_quranController.surahIds[index]} - ${_quranController.surahNames[index]}',
+                      ),
+                      selectedValue:
+                          '${_quranController.selectedSurahId} - ${_quranController.selectedSurah}',
+                      onChanged: (value) {
+                        if (value != null) {
+                          final parts = value.split(' - ');
+                          int newSurahNumber = int.parse(parts[0]);
+                          _quranController.updateSelectedSurahId(
+                              newSurahNumber, 1);
+                          _audioController.changeSurah(newSurahNumber);
+                          _quranController.resetToFirstAyah();
+                        }
+                      },
+                      scaleFactor: widget.scaleFactor,
                     ),
+                  ),
+                  // Second Drop Down
+                  Obx(
+                    () => CustomDropdown(
+                      options: List.generate(
+                        _quranController.selectedSurahAyahCount,
+                        (index) => '${index + 1}',
+                      ),
+                      selectedValue:
+                          _quranController.selectedAyahNumber.toString(),
+                      onChanged: (value) async {
+                        if (value != null) {
+                          int ayahNumber = int.parse(value);
+                          if (_audioController.isPlaying.value) {
+                            _audioController.stopSurahPlayback();
+                          }
+                          try {
+                            await _quranController.ensureAyahIsLoaded(
+                              _quranController.selectedSurahId,
+                              ayahNumber,
+                            );
+                            Map<int, int> startingLineIds =
+                                _quranController.getAyahStartingLineIds();
+                            int? lineId = startingLineIds[ayahNumber];
+                            if (lineId != null) {
+                              _quranController.scrollToAyah(
+                                  ayahNumber, lineId.toString());
+                              await _audioController.playSpecificAyah(
+                                  _quranController.selectedSurahId, ayahNumber);
+                            } else {
+                              throw Exception(
+                                  'LineId not found for ayah $ayahNumber');
+                            }
+                          } catch (e) {
+                            debugPrint('Error navigating to ayah: $e');
+                            Get.snackbar('Error',
+                                'Failed to navigate to the selected ayah',
+                                snackPosition: SnackPosition.BOTTOM);
+                          }
+                        }
+                      },
+                      scaleFactor: widget.scaleFactor,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if (!_showSearchBar || isLargeScreen)
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _showSearchBar = true;
-                      _searchFocusNode.requestFocus();
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+            if (_showSearchBar)
+              Expanded(
+                child: isLargeScreen
+                    ? Row(
+                        children: [
+                          const Spacer(),
+                          SizedBox(
+                            width: 400,
+                            child: SearchWidget(
+                              width: 400,
+                              onSearch: (query) {},
+                              focusNode: _searchFocusNode,
+                            ),
+                          ),
+                        ],
+                      )
+                    : SearchWidget(
+                        width: screenWidth,
+                        onSearch: (query) {},
+                        focusNode: _searchFocusNode,
+                      ),
+              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (!_showSearchBar || isLargeScreen)
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _showSearchBar = true;
+                        _searchFocusNode.requestFocus();
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.all(8),
+                      backgroundColor: const Color.fromRGBO(115, 78, 9, 1),
+                      foregroundColor: const Color.fromRGBO(162, 132, 94, 1),
+                      side: const BorderSide(
+                        color: Color.fromRGBO(162, 132, 94, 1),
+                        width: 2,
+                      ),
+                      minimumSize: const Size(50, 40),
                     ),
-                    padding: const EdgeInsets.all(8),
-                    backgroundColor: const Color.fromRGBO(115, 78, 9, 1),
-                    foregroundColor: const Color.fromRGBO(162, 132, 94, 1),
-                    side: const BorderSide(
-                      color: Color.fromRGBO(162, 132, 94, 1),
-                      width: 2,
-                    ),
-                    minimumSize: const Size(50, 40),
+                    child: const Icon(Icons.search_outlined),
                   ),
-                  child: const Icon(Icons.search_outlined),
-                ),
-              if (!_showSearchBar || isLargeScreen) ...[
-                const SizedBox(width: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    _quranController.navigateToPreviousSurah();
-                    _quranController.resetToFirstAyah();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                if (!_showSearchBar || isLargeScreen) ...[
+                  const SizedBox(width: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      _quranController.navigateToPreviousSurah();
+                      _quranController.resetToFirstAyah();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.all(8),
+                      backgroundColor: const Color.fromRGBO(115, 78, 9, 1),
+                      foregroundColor: const Color.fromRGBO(162, 132, 94, 1),
+                      side: const BorderSide(
+                        color: Color.fromRGBO(162, 132, 94, 1),
+                        width: 2,
+                      ),
+                      minimumSize: const Size(50, 40),
                     ),
-                    padding: const EdgeInsets.all(8),
-                    backgroundColor: const Color.fromRGBO(115, 78, 9, 1),
-                    foregroundColor: const Color.fromRGBO(162, 132, 94, 1),
-                    side: const BorderSide(
-                      color: Color.fromRGBO(162, 132, 94, 1),
-                      width: 2,
-                    ),
-                    minimumSize: const Size(50, 40),
+                    child:
+                        const Icon(Icons.arrow_back_ios_new_rounded, size: 16),
                   ),
-                  child: const Icon(Icons.arrow_back_ios_new_rounded, size: 16),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    _quranController.navigateToNextSurah();
-                    _quranController.resetToFirstAyah();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      _quranController.navigateToNextSurah();
+                      _quranController.resetToFirstAyah();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.all(8),
+                      backgroundColor: const Color.fromRGBO(115, 78, 9, 1),
+                      foregroundColor: const Color.fromRGBO(162, 132, 94, 1),
+                      side: const BorderSide(
+                        color: Color.fromRGBO(162, 132, 94, 1),
+                        width: 2,
+                      ),
+                      minimumSize: const Size(50, 40),
                     ),
-                    padding: const EdgeInsets.all(8),
-                    backgroundColor: const Color.fromRGBO(115, 78, 9, 1),
-                    foregroundColor: const Color.fromRGBO(162, 132, 94, 1),
-                    side: const BorderSide(
-                      color: Color.fromRGBO(162, 132, 94, 1),
-                      width: 2,
-                    ),
-                    minimumSize: const Size(50, 40),
+                    child:
+                        const Icon(Icons.arrow_forward_ios_rounded, size: 16),
                   ),
-                  child: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
-                ),
+                ],
               ],
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
