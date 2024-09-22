@@ -41,7 +41,8 @@ class AyahActionBar extends StatelessWidget {
         'Surah ${quranController.selectedSurah}, Ayah $ayahNumber\n\n'
         'Arabic: $arabicWords\n\n'
         'Word Meanings: $wordMeanings\n\n'
-        'Translation: $translation';
+        'Translation: $translation\n\n'
+        'Check it out here: https://alquranmalayalam.net/newsite/#/surah_detailed/quran/${quranController.selectedSurahId}/$ayahNumber';
 
     showDialog(
       context: context,
@@ -66,7 +67,7 @@ class AyahActionBar extends StatelessWidget {
                   Clipboard.setData(ClipboardData(text: shareText));
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content:  Text('Copied to clipboard')),
+                    const SnackBar(content: Text('Copied to clipboard')),
                   );
                 },
               ),
