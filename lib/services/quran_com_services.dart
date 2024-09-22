@@ -29,9 +29,31 @@ class QuranComService {
     }
   }
 
-  Future<List<QuranVerse>> fetchAyahs(int pageNumber) async {
+  // Future<List<QuranVerse>> fetchAyahs(int pageNumber) async {
+  //   final response = await http.get(
+  //       Uri.parse("$baseUrl/quran/verses/uthmani?page_number=$pageNumber"));
+
+  //   if (response.statusCode == 200) {
+  //     final ayahsData = jsonDecode(utf8.decode(response.bodyBytes));
+  //     List<QuranVerse> ayahs = [];
+
+  //     for (var verse in ayahsData['verses']) {
+  //       ayahs.add(QuranVerse(
+  //         verseNumber: verse['verse_key'].toString(),
+  //         arabicText: verse['text_uthmani'].toString(),
+  //       ));
+  //     }
+
+  //     return ayahs;
+  //   } else {
+  //     throw Exception(
+  //         'Failed to load Ayahs for Surah $pageNumber: ${response.statusCode}');
+  //   }
+  // }
+
+  Future<List<QuranVerse>> fetchAyahs(int pageNumber,int surahId) async {
     final response = await http.get(
-        Uri.parse("$baseUrl/quran/verses/uthmani?page_number=$pageNumber"));
+        Uri.parse("$baseUrl/quran/verses/uthmani?page_number=$pageNumber&chapter_number=$surahId"));
 
     if (response.statusCode == 200) {
       final ayahsData = jsonDecode(utf8.decode(response.bodyBytes));
@@ -50,6 +72,7 @@ class QuranComService {
           'Failed to load Ayahs for Surah $pageNumber: ${response.statusCode}');
     }
   }
+
 
   Future<String?> fetchAyahAudio(String verseKey,
       {int recitationId = 7}) async {

@@ -47,7 +47,7 @@ class QuranController extends GetxController {
   List<Map<String, dynamic>> get ayahLines => _ayahLines;
   List<String> get surahMalMeans => _surahMalMeans;
 
-@override
+  @override
   void onInit() async {
     super.onInit();
     _prefsController = Get.find<SharedPreferencesController>();
@@ -62,7 +62,8 @@ class QuranController extends GetxController {
       final newSurahId = _surahIds[currentIndex - 1];
       updateSelectedSurahId(newSurahId, 1);
       _fetchAyahLines(newSurahId);
-      readingController.previousPage();
+      readingController.previousSurah();
+      // readingController.previousPage();
       // Add this line to change the audio
       Get.find<AudioController>().changeSurah(newSurahId);
     }
@@ -74,7 +75,8 @@ class QuranController extends GetxController {
       final newSurahId = _surahIds[currentIndex + 1];
       updateSelectedSurahId(newSurahId, 1);
       _fetchAyahLines(newSurahId);
-      readingController.nextPage();
+      readingController.nextSurah();
+      // readingController.nextPage();
 
       // Add this line to change the audio
       Get.find<AudioController>().changeSurah(newSurahId);
@@ -174,8 +176,6 @@ class QuranController extends GetxController {
   void printAllSurahMalMeans() {
     for (int i = 0; i < _surahNames.length; i++) {}
   }
-
-  
 
   Future<void> fetchSurahs() async {
     try {

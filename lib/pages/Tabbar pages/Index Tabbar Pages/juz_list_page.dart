@@ -1,7 +1,7 @@
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/routes/app_pages.dart';
 import 'package:alquran_web/services/quran_services.dart';
-import 'package:alquran_web/services/juz_utils.dart';
+import 'package:alquran_web/services/json_utils.dart';
 import 'package:alquran_web/services/surah_unicode_data.dart';
 import 'package:alquran_web/widgets/star_widget.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ class JuzListPage extends StatefulWidget {
 class _JuzListPageState extends State<JuzListPage> {
   late Future<Map<int, List<Map<String, dynamic>>>> _juzMappedData;
   final QuranService _quranService = QuranService();
-  final JuzJsonParser _juzJsonParser = JuzJsonParser();
+  final JsonParser _juzJsonParser = JsonParser();
   final _quranController = Get.find<QuranController>();
 
   double getScaleFactor(double screenWidth) {

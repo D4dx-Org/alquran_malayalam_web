@@ -48,7 +48,7 @@ class ReadingPage extends StatelessWidget {
                           child: Column(
                             children: [
                               // Build the header
-                              if (readingController.currentPage.value == 0)
+                              if (readingController.currentPage.value == 1)
                                 _buildHeader(),
                               // Display the verses text
                               Text(
@@ -60,6 +60,12 @@ class ReadingPage extends StatelessWidget {
                                 ),
                                 textAlign: TextAlign.center,
                               ),
+                              const Divider(
+                                color: Colors.grey,
+                                thickness: 2,
+                                endIndent: 20,
+                                indent: 20,
+                              )
                             ],
                           ),
                         ),
