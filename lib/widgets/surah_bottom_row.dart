@@ -193,7 +193,7 @@ class SurahBottomRowState extends State<SurahBottomRow>
                     child: const Icon(Icons.search_outlined),
                   ),
                 if (!_showSearchBar || isLargeScreen) ...[
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () {
                       _quranController.navigateToPreviousSurah();
@@ -215,7 +215,7 @@ class SurahBottomRowState extends State<SurahBottomRow>
                     child:
                         const Icon(Icons.arrow_back_ios_new_rounded, size: 16),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () {
                       _quranController.navigateToNextSurah();
@@ -278,17 +278,14 @@ class CustomDropdown extends StatelessWidget {
           height: 30 * scaleFactor,
           child: DropdownButton<String>(
             value: selectedValue,
-            icon: Padding(
-              padding: EdgeInsets.only(left: 8.0 * scaleFactor),
-              child: Icon(
-                Icons.arrow_drop_down_circle_outlined,
-                color: const Color.fromRGBO(130, 91, 17, 1),
-                size: 20 * scaleFactor,
-              ),
+            icon: Icon(
+              Icons.arrow_drop_down_circle_outlined,
+              color: const Color.fromRGBO(130, 91, 17, 1),
+              size: 20 * scaleFactor,
             ),
             style: GoogleFonts.notoSansMalayalam(
               color: const Color.fromRGBO(217, 217, 217, 1),
-              fontSize: 14 * scaleFactor,
+              fontSize: 16 * scaleFactor,
             ),
             dropdownColor: const Color.fromRGBO(130, 90, 17, 1),
             items: options.map<DropdownMenuItem<String>>((String value) {

@@ -130,7 +130,8 @@ class AudioController extends GetxController {
           '${currentSurahNumber.value}:${currentAudioIndex.value + 1}';
       currentAudioIndex.value++;
     } else {
-      stopSurahPlayback();
+      // If the current surah has finished playing, play the next surah
+      await playNextSurah();
     }
   }
 
@@ -213,6 +214,16 @@ class AudioController extends GetxController {
 
   void changeRecitation(int newRecitationId) {
     currentRecitationId.value = newRecitationId; // Update the recitation ID
+  }
+
+  Future<void> playNextSurah() async {
+    int nextSurahNumber = currentSurahNumber.value + 1;
+    // Check if the next surah number is valid (1 to 114)
+    if (nextSurahNumber <= 114) {
+      await playSurah(nextSurahNumber);
+    } else {
+      Get.snackbar('End of Quran', 'You have reached the end of the Quran.');
+    }
   }
 
   @override

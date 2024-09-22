@@ -295,21 +295,24 @@ class _TranslationPageState extends State<TranslationPage> {
                 children: [
                   Directionality(
                     textDirection: TextDirection.rtl,
-                    child: Wrap(
-                      alignment: WrapAlignment.start,
-                      runAlignment: WrapAlignment.end,
-                      direction: Axis.horizontal,
-                      children: [
-                        ...(ayah['LineWords'] as List<Map<String, dynamic>>)
-                            .map(
-                          (word) => Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 4.0),
-                            child: _buildArabicWord(
-                                word['ArabWord'], word['MalWord']),
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Wrap(
+                        alignment: WrapAlignment.start,
+                        runAlignment: WrapAlignment.end,
+                        direction: Axis.horizontal,
+                        children: [
+                          ...(ayah['LineWords'] as List<Map<String, dynamic>>)
+                              .map(
+                            (word) => Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 4.0),
+                              child: _buildArabicWord(
+                                  word['ArabWord'], word['MalWord']),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   Padding(
@@ -398,7 +401,11 @@ class _HoverableAyahState extends State<HoverableAyah> {
         onTapUp: (_) => setState(() => _isHovered = false),
         onTapCancel: () => setState(() => _isHovered = false),
         child: Container(
-          color: _isHovered ? Colors.grey[200] : Colors.transparent,
+          decoration: BoxDecoration(
+            color: _isHovered ? Colors.grey[200] : Colors.transparent,
+            borderRadius:
+                BorderRadius.circular(12), // Adjust the radius as needed
+          ),
           child: widget.child,
         ),
       ),
