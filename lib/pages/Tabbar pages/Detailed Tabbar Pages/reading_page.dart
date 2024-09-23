@@ -5,14 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ReadingPage extends StatefulWidget {
-  ReadingPage({super.key});
+  const ReadingPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _ReadingPageState createState() => _ReadingPageState();
+  ReadingPageState createState() => ReadingPageState();
 }
 
-class _ReadingPageState extends State<ReadingPage> {
+class ReadingPageState extends State<ReadingPage> {
   final ReadingController readingController = Get.put(ReadingController());
   final SettingsController settingsController = Get.find<SettingsController>();
   final _quranController = Get.find<QuranController>();
@@ -24,6 +23,8 @@ class _ReadingPageState extends State<ReadingPage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    // Initial fetch for the first page
+    readingController.fetchVerses(readingController.currentPage.value);
   }
 
   @override
@@ -34,10 +35,17 @@ class _ReadingPageState extends State<ReadingPage> {
   }
 
   void _onScroll() {
-    if (!_isLoading &&
-        _scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent) {
-      _loadNextPage();
+    if (!_isLoading) {
+      // Load next page when scrolling down
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent) {
+        _loadNextPage();
+      }
+      // Load previous page when scrolling up
+      else if (_scrollController.position.pixels <=
+          _scrollController.position.minScrollExtent) {
+        _loadPreviousPage();
+      }
     }
   }
 
@@ -51,6 +59,20 @@ class _ReadingPageState extends State<ReadingPage> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  Future<void> _loadPreviousPage() async {
+    if (readingController.currentPage.value > 1) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      await readingController.previousPage();
+
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   double getScaleFactor(double screenWidth) {
@@ -71,8 +93,6 @@ class _ReadingPageState extends State<ReadingPage> {
         : screenWidth > 800
             ? 50.0
             : screenWidth * scaleFactor;
-
-    readingController.fetchVerses(readingController.currentPage.value);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -107,6 +127,7 @@ class _ReadingPageState extends State<ReadingPage> {
                                 endIndent: 20,
                                 indent: 20,
                               ),
+                              SizedBox(height: 50),
                               if (_isLoading)
                                 const Padding(
                                   padding: EdgeInsets.all(16.0),
