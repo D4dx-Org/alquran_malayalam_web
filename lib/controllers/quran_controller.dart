@@ -62,8 +62,8 @@ class QuranController extends GetxController {
       final newSurahId = _surahIds[currentIndex - 1];
       updateSelectedSurahId(newSurahId, 1);
       _fetchAyahLines(newSurahId);
-      readingController.previousSurah();
-      // readingController.previousPage();
+      // readingController.previousSurah();
+      readingController.previousPage();
       // Add this line to change the audio
       Get.find<AudioController>().changeSurah(newSurahId);
     }
@@ -75,8 +75,8 @@ class QuranController extends GetxController {
       final newSurahId = _surahIds[currentIndex + 1];
       updateSelectedSurahId(newSurahId, 1);
       _fetchAyahLines(newSurahId);
-      readingController.nextSurah();
-      // readingController.nextPage();
+      // readingController.nextSurah();
+      readingController.nextPage();
 
       // Add this line to change the audio
       Get.find<AudioController>().changeSurah(newSurahId);
