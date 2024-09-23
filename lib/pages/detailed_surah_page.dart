@@ -61,7 +61,6 @@ class _DetailedSurahPageState extends State<DetailedSurahPage>
             ),
           Expanded(
             child: TabBarView(
-              physics: const NeverScrollableScrollPhysics(),
               controller: tabController,
               children: [
                 const TranslationPage(),

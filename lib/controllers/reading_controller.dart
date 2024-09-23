@@ -148,12 +148,12 @@ import 'package:get/get.dart';
 class ReadingController extends GetxController {
   final QuranComService _quranComService = QuranComService();
   final JsonParser _jsonParser = JsonParser();
-  var versesText = ''.obs; // Store the entire text as a single string
+  var versesText = ''.obs; 
+    var versesList = <String>[].obs; 
   var currentPage = 1.obs;
   var currentSurahId = 1.obs;
-
-  late Map<int, List<int>> pageToSurahMap;
   var isLoading = false.obs;
+  late Map<int, List<int>> pageToSurahMap;
 
   @override
   void onInit() {

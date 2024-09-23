@@ -4,12 +4,55 @@ import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ReadingPage extends StatelessWidget {
+class ReadingPage extends StatefulWidget {
   ReadingPage({super.key});
 
+  @override
+  // ignore: library_private_types_in_public_api
+  _ReadingPageState createState() => _ReadingPageState();
+}
+
+class _ReadingPageState extends State<ReadingPage> {
   final ReadingController readingController = Get.put(ReadingController());
   final SettingsController settingsController = Get.find<SettingsController>();
   final _quranController = Get.find<QuranController>();
+
+  final _scrollController = ScrollController();
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_isLoading &&
+        _scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent) {
+      _loadNextPage();
+    }
+  }
+
+  Future<void> _loadNextPage() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    await readingController.nextPage();
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   double getScaleFactor(double screenWidth) {
     if (screenWidth < 600) return 0.05;
     if (screenWidth < 800) return 0.08;
@@ -33,6 +76,7 @@ class ReadingPage extends StatelessWidget {
 
     return Scaffold(
       body: SingleChildScrollView(
+        controller: _scrollController,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
           child: Obx(() {
@@ -47,10 +91,7 @@ class ReadingPage extends StatelessWidget {
                           constraints: const BoxConstraints(maxWidth: 600),
                           child: Column(
                             children: [
-                              // Build the header
-                              if (readingController.currentPage.value == 1)
-                                _buildHeader(),
-                              // Display the verses text
+                              _buildHeader(),
                               Text(
                                 readingController.versesText.value,
                                 style: settingsController.quranFontStyle.value
@@ -65,7 +106,13 @@ class ReadingPage extends StatelessWidget {
                                 thickness: 2,
                                 endIndent: 20,
                                 indent: 20,
-                              )
+                              ),
+                              if (_isLoading)
+                                const Padding(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Center(
+                                      child: CircularProgressIndicator()),
+                                ),
                             ],
                           ),
                         ),
