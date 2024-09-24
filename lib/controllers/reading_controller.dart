@@ -29,16 +29,29 @@ class ReadingController extends GetxController {
     isLoading.value = true;
 
     try {
-      currentSurahId.value = _getSurahIdFromPageNumber(pageNumber);
-      final fetchedVerses = await _quranComService.fetchAyahs(pageNumber);
-      versesText.value = _buildContinuousText(fetchedVerses);
+      final surahIds =
+          _getSurahIdsFromPageNumber(pageNumber); // Get all Surah IDs
+      String combinedVersesText = '';
+
+      for (int surahId in surahIds) {
+        final fetchedVerses =
+            await _quranComService.fetchAyahs(pageNumber, surahId);
+        combinedVersesText +=
+            _buildContinuousText(fetchedVerses) + '\n'; // Combine verses
+      }
+
+      versesText.value = combinedVersesText.trim(); // Set combined verses text
     } catch (e) {
       debugPrint('Error fetching verses: $e');
     } finally {
       isLoading.value = false;
-      debugPrint(
-          'Fetching verses for Surah ID: ${currentSurahId.value}, Page: ${currentPage.value}');
+      debugPrint('Fetching verses for Page: ${currentPage.value}');
     }
+  }
+
+  List<int> _getSurahIdsFromPageNumber(int pageNumber) {
+    final surahNumbers = pageToSurahMap[pageNumber];
+    return surahNumbers ?? []; // Return all Surah IDs for the page
   }
 
   int _getSurahIdFromPageNumber(int pageNumber) {
@@ -112,6 +125,19 @@ class ReadingController extends GetxController {
       }
     }
     return 1; // Default to page 1 if the Surah ID is not found
+  }
+
+  int _getTotalVersesInSurah(int surahId) {
+    // This method should return the total number of verses in the specified Surah.
+    // You may need to implement this based on your data source or API.
+    // For example, you could maintain a map of Surah IDs to their verse counts.
+    // Here is a placeholder implementation:
+    const versesCount = {
+      1: 7, // Surah Al-Fatiha
+      2: 286, // Surah Al-Baqarah
+      // Add other Surah verse counts here...
+    };
+    return versesCount[surahId] ?? 0; // Return 0 if Surah ID is not found
   }
 
   String _buildContinuousText(List<QuranVerse> verses) {
