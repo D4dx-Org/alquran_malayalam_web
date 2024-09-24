@@ -112,22 +112,15 @@ class ReadingPageState extends State<ReadingPage> {
                           child: Column(
                             children: [
                               _buildHeader(),
-                              Text(
-                                readingController.versesText.value,
-                                style: settingsController.quranFontStyle.value
-                                    .copyWith(
-                                  height:
-                                      2.5, // Adjust this value for line spacing
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
+                              // Display verses using GlobalKeys
+                              ..._buildVerses(),
                               const Divider(
                                 color: Colors.grey,
                                 thickness: 2,
                                 endIndent: 20,
                                 indent: 20,
                               ),
-                              SizedBox(height: 50),
+                              const SizedBox(height: 50),
                               if (_isLoading)
                                 const Padding(
                                   padding: EdgeInsets.all(16.0),
@@ -144,6 +137,32 @@ class ReadingPageState extends State<ReadingPage> {
         ),
       ),
     );
+  }
+
+  List<Widget> _buildVerses() {
+    final verses = readingController.versesText.value
+        .split(' \uFD3E '); // Split the verses based on the delimiter
+    List<Widget> verseWidgets = [];
+
+    for (int i = 0; i < verses.length; i++) {
+      if (i < readingController.verseKeys.length) {
+        verseWidgets.add(
+          KeyedSubtree(
+            key: readingController
+                .verseKeys[i], // Use the GlobalKey for each verse
+            child: Text(
+              verses[i],
+              style: settingsController.quranFontStyle.value.copyWith(
+                height: 2.5, // Adjust this value for line spacing
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+      }
+    }
+
+    return verseWidgets;
   }
 
   Widget _buildHeader() {
