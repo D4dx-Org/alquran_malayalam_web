@@ -12,7 +12,7 @@ class ReadingController extends GetxController {
   var currentSurahId = 1.obs;
   var isLoading = false.obs;
   late Map<int, List<int>> pageToSurahMap;
-  List<ValueKey<String>> verseKeys = [];
+  List<ValueKey<int>> verseKeys = [];
   var hoveredVerseIndex = (-1).obs;
 
   @override
@@ -117,13 +117,13 @@ class ReadingController extends GetxController {
   String _buildContinuousText(List<QuranVerse> verses) {
     verseKeys = []; // Reset the keys list
     return verses.map((verse) {
-      final key = ValueKey(verse.verseNumber); // Use verse number as the key
+      final verseNumberInt =
+          int.parse(verse.verseNumber.split(':').last); // Convert to int
+      final key = ValueKey<int>(verseNumberInt); // Use verse number as the key
       verseKeys.add(key); // Add the key to the list
       return '${verse.arabicText} \uFD3F${_convertToArabicNumbers(verse.verseNumber.split(':').last)}\uFD3E ';
     }).join();
   }
-
-
 
   String _convertToArabicNumbers(String number) {
     const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];

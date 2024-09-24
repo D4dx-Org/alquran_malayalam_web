@@ -85,6 +85,8 @@ class ReadingPageState extends State<ReadingPage> {
 
   @override
   Widget build(BuildContext context) {
+    _printAllGlobalKeys();
+
     final screenWidth = MediaQuery.of(context).size.width;
     final scaleFactor = getScaleFactor(screenWidth);
 
@@ -111,7 +113,7 @@ class ReadingPageState extends State<ReadingPage> {
                           constraints: const BoxConstraints(maxWidth: 600),
                           child: Column(
                             children: [
-                              _buildHeader(),
+                              // _buildHeader(),
                               // Display verses using GlobalKeys
                               ..._buildVerses(),
                               const Divider(
@@ -139,13 +141,26 @@ class ReadingPageState extends State<ReadingPage> {
     );
   }
 
+  void _printAllGlobalKeys() {
+    for (var key in readingController.verseKeys) {
+      print('Global Key: ${key.value}'); // Print the key value
+    }
+  }
+
   List<Widget> _buildVerses() {
     final verses = readingController.versesText.value
         .split(' \uFD3E '); // Split the verses based on the delimiter
     List<Widget> verseWidgets = [];
+    bool headerInserted = false; // Flag to check if header is inserted
 
     for (int i = 0; i < verses.length; i++) {
       if (i < readingController.verseKeys.length) {
+        // Check if the current verse's key is the one we want to insert the header before
+        if (readingController.verseKeys[i].value == 1 && !headerInserted) {
+          verseWidgets.add(_buildHeader()); // Insert the header
+          headerInserted = true; // Set the flag to true
+        }
+
         verseWidgets.add(
           KeyedSubtree(
             key: readingController
