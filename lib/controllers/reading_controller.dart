@@ -1,3 +1,4 @@
+import 'package:alquran_web/pages/Tabbar%20pages/Detailed%20Tabbar%20Pages/reading_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:alquran_web/models/verse_model.dart';
@@ -8,7 +9,7 @@ class ReadingController extends GetxController {
   final QuranComService _quranComService = QuranComService();
   final JsonParser _jsonParser = JsonParser();
   var versesText = ''.obs;
-  var currentPage = 1.obs;
+  var currentPage = 604.obs;
   var currentSurahId = 1.obs;
   var isLoading = false.obs;
   late Map<int, List<int>> pageToSurahMap;
@@ -25,24 +26,24 @@ class ReadingController extends GetxController {
     pageToSurahMap = await _jsonParser.parsePageToChapterJsonData();
   }
 
-  Future<void> fetchVerses(int pageNumber) async {
+  Future<bool> fetchVerses(int pageNumber) async {
     isLoading.value = true;
 
     try {
-      final surahIds =
-          _getSurahIdsFromPageNumber(pageNumber); // Get all Surah IDs
+      final surahIds = _getSurahIdsFromPageNumber(pageNumber);
       String combinedVersesText = '';
 
       for (int surahId in surahIds) {
         final fetchedVerses =
             await _quranComService.fetchAyahs(pageNumber, surahId);
-        combinedVersesText +=
-            _buildContinuousText(fetchedVerses) + '\n'; // Combine verses
+        combinedVersesText += '${_buildContinuousText(fetchedVerses)}\n';
       }
 
-      versesText.value = combinedVersesText.trim(); // Set combined verses text
+      versesText.value = combinedVersesText.trim();
+      return true; // Indicate that all verses have been fetched
     } catch (e) {
       debugPrint('Error fetching verses: $e');
+      return false; // Indicate that there was an error
     } finally {
       isLoading.value = false;
       debugPrint('Fetching verses for Page: ${currentPage.value}');
@@ -125,19 +126,6 @@ class ReadingController extends GetxController {
       }
     }
     return 1; // Default to page 1 if the Surah ID is not found
-  }
-
-  int _getTotalVersesInSurah(int surahId) {
-    // This method should return the total number of verses in the specified Surah.
-    // You may need to implement this based on your data source or API.
-    // For example, you could maintain a map of Surah IDs to their verse counts.
-    // Here is a placeholder implementation:
-    const versesCount = {
-      1: 7, // Surah Al-Fatiha
-      2: 286, // Surah Al-Baqarah
-      // Add other Surah verse counts here...
-    };
-    return versesCount[surahId] ?? 0; // Return 0 if Surah ID is not found
   }
 
   String _buildContinuousText(List<QuranVerse> verses) {

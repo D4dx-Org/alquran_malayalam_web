@@ -157,7 +157,7 @@ class ReadingPageState extends State<ReadingPage> {
       if (i < readingController.verseKeys.length) {
         // Check if the current verse's key is the one we want to insert the header before
         if (readingController.verseKeys[i].value == 1 && !headerInserted) {
-          verseWidgets.add(_buildHeader()); // Insert the header
+          verseWidgets.add(buildHeader()); // Insert the header
           headerInserted = true; // Set the flag to true
         }
 
@@ -180,7 +180,7 @@ class ReadingPageState extends State<ReadingPage> {
     return verseWidgets;
   }
 
-  Widget _buildHeader() {
+  Widget buildHeader() {
     return Column(
       children: [
         Padding(
