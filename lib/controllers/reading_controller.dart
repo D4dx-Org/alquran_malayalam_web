@@ -1,4 +1,3 @@
-import 'package:alquran_web/pages/Tabbar%20pages/Detailed%20Tabbar%20Pages/reading_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:alquran_web/models/verse_model.dart';
@@ -34,9 +33,17 @@ class ReadingController extends GetxController {
       String combinedVersesText = '';
 
       for (int surahId in surahIds) {
+        // Fetch all the verses of the surah for the given page number
         final fetchedVerses =
             await _quranComService.fetchAyahs(pageNumber, surahId);
-        combinedVersesText += '${_buildContinuousText(fetchedVerses)}\n';
+
+        if (fetchedVerses.isNotEmpty) {
+          // Build the verse text surah-wise
+          final surahTitle = Text("hai");
+          combinedVersesText += '$surahTitle\n';
+          combinedVersesText +=
+              '${_buildContinuousText(fetchedVerses)}\n'; // Add verses for each surah
+        }
       }
 
       versesText.value = combinedVersesText.trim();
@@ -64,15 +71,35 @@ class ReadingController extends GetxController {
   }
 
   Future<void> nextPage() async {
+    if (currentPage.value >= 604) {
+      debugPrint('Already at the last page: ${currentPage.value}');
+      // Optionally, show a Snackbar or Toast
+      Get.snackbar(
+        'End of Quran',
+        'You have reached the last page.',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: Duration(seconds: 2),
+      );
+      return;
+    }
     currentPage.value++;
     await fetchVerses(currentPage.value);
   }
 
   Future<void> previousPage() async {
-    if (currentPage.value > 1) {
-      currentPage.value--;
-      await fetchVerses(currentPage.value);
+    if (currentPage.value <= 1) {
+      debugPrint('Already at the first page.');
+      // Optionally, show a Snackbar or Toast
+      Get.snackbar(
+        'Start of Quran',
+        'You are already at the first page.',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: Duration(seconds: 2),
+      );
+      return;
     }
+    currentPage.value--;
+    await fetchVerses(currentPage.value);
   }
 
   Future<void> nextSurah() async {
