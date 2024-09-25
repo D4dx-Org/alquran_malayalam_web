@@ -1,3 +1,4 @@
+import 'package:alquran_web/services/surah_unicode_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:alquran_web/models/verse_model.dart';
@@ -7,8 +8,9 @@ import 'package:alquran_web/services/json_utils.dart';
 class ReadingController extends GetxController {
   final QuranComService _quranComService = QuranComService();
   final JsonParser _jsonParser = JsonParser();
+
   var versesText = ''.obs;
-  var currentPage = 604.obs;
+  var currentPage = 603.obs;
   var currentSurahId = 1.obs;
   var isLoading = false.obs;
   late Map<int, List<int>> pageToSurahMap;
@@ -172,5 +174,13 @@ class ReadingController extends GetxController {
         .split('')
         .map((digit) => arabicNumbers[int.parse(digit)])
         .join();
+  }
+
+  String getSurahNameUnicode(int surahId) {
+    if (surahId < 1 || surahId > 114) {
+      return '';
+    }
+    String unicodeChar = SurahUnicodeData.getSurahNameUnicode(surahId);
+    return unicodeChar + String.fromCharCode(0xE000);
   }
 }

@@ -19,7 +19,7 @@ void main() async {
   Get.put(QuranController(sharedPreferences: sharedPreferences),
       permanent: true);
   Get.put(SettingsController(sharedPreferences: sharedPreferences),
-      permanent: true);
+      permanent: true); 
 
   // Lazy load other controllers
   Get.lazyPut(() => BookmarkController(sharedPreferences: sharedPreferences),

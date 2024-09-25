@@ -12,7 +12,7 @@ class ReadingPage extends StatefulWidget {
 }
 
 class ReadingPageState extends State<ReadingPage> {
-  final ReadingController readingController = Get.put(ReadingController());
+  final ReadingController readingController = Get.find<ReadingController>();
   final SettingsController settingsController = Get.find<SettingsController>();
   final _quranController = Get.find<QuranController>();
 
@@ -97,47 +97,34 @@ class ReadingPageState extends State<ReadingPage> {
             : screenWidth * scaleFactor;
 
     return Scaffold(
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-          child: Obx(() {
-            return readingController.isLoading.value
-                ? const Center(child: CircularProgressIndicator())
-                : Directionality(
-                    textDirection: TextDirection.rtl,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Center(
-                        child: Container(
-                          constraints: const BoxConstraints(maxWidth: 600),
-                          child: Column(
-                            children: [
-                              // _buildHeader(),
-                              // Display verses using GlobalKeys
-                              ..._buildVerses(),
-                              const Divider(
-                                color: Colors.grey,
-                                thickness: 2,
-                                endIndent: 20,
-                                indent: 20,
-                              ),
-                              const SizedBox(height: 50),
-                              if (_isLoading)
-                                const Padding(
-                                  padding: EdgeInsets.all(16.0),
-                                  child: Center(
-                                      child: CircularProgressIndicator()),
-                                ),
-                            ],
+      body: Obx(() {
+        return readingController.isLoading.value
+            ? const Center(child: CircularProgressIndicator())
+            : Directionality(
+                textDirection: TextDirection.rtl,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Center(
+                      child: Container(
+                        constraints: const BoxConstraints(maxWidth: 600),
+                        child: ScrollConfiguration(
+                          behavior: NoScrollbarScrollBehavior(),
+                          child: ListView.builder(
+                            controller: _scrollController,
+                            itemCount: _getItemCount(),
+                            itemBuilder: (context, index) {
+                              return _buildListItem(index);
+                            },
                           ),
                         ),
                       ),
                     ),
-                  );
-          }),
-        ),
-      ),
+                  ),
+                ),
+              );
+      }),
     );
   }
 
@@ -147,37 +134,95 @@ class ReadingPageState extends State<ReadingPage> {
     }
   }
 
-  List<Widget> _buildVerses() {
+  int _getItemCount() {
     final verses = readingController.versesText.value
         .split(' \uFD3E '); // Split the verses based on the delimiter
-    List<Widget> verseWidgets = [];
-    bool headerInserted = false; // Flag to check if header is inserted
 
-    for (int i = 0; i < verses.length; i++) {
-      if (i < readingController.verseKeys.length) {
-        // Check if the current verse's key is the one we want to insert the header before
-        if (readingController.verseKeys[i].value == 1 && !headerInserted) {
-          verseWidgets.add(buildHeader()); // Insert the header
-          headerInserted = true; // Set the flag to true
-        }
-
-        verseWidgets.add(
-          KeyedSubtree(
-            key: readingController
-                .verseKeys[i], // Use the GlobalKey for each verse
-            child: Text(
-              verses[i],
-              style: settingsController.quranFontStyle.value.copyWith(
-                height: 2.5, // Adjust this value for line spacing
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        );
+    // Determine if header needs to be inserted and at what index
+    int headerIndex = -1;
+    for (int i = 0; i < readingController.verseKeys.length; i++) {
+      if (readingController.verseKeys[i].value == 1) {
+        headerIndex = i;
+        break;
       }
     }
 
-    return verseWidgets;
+    // Additional items at the end (Divider and SizedBox)
+    int footerItemCount = 2; // Divider and SizedBox
+    if (_isLoading) {
+      footerItemCount += 1; // For loading indicator
+    }
+
+    return verses.length +
+        (headerIndex != -1 ? 1 : 0) +
+        footerItemCount; // Total item count
+  }
+
+  Widget _buildListItem(int index) {
+    final verses = readingController.versesText.value.split(' \uFD3E ');
+    int headerIndex = -1;
+    for (int i = 0; i < readingController.verseKeys.length; i++) {
+      if (readingController.verseKeys[i].value == 1) {
+        headerIndex = i;
+        break;
+      }
+    }
+
+    int totalItemsBeforeFooter =
+        verses.length + (headerIndex != -1 ? 1 : 0); // Verses and header
+// Divider and SizedBox
+    if (_isLoading) {
+// For loading indicator
+    }
+
+    if (index == headerIndex && headerIndex != -1) {
+      // Return header
+      return buildHeader();
+    } else if (index >= totalItemsBeforeFooter) {
+      // Footer items
+      int footerIndex = index - totalItemsBeforeFooter;
+      if (footerIndex == 0) {
+        // Divider
+        return const Divider(
+          color: Colors.grey,
+          thickness: 2,
+          endIndent: 20,
+          indent: 20,
+        );
+      } else if (footerIndex == 1) {
+        // SizedBox(height: 50)
+        return const SizedBox(height: 50);
+      } else if (_isLoading && footerIndex == 2) {
+        // Loading indicator
+        return const Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Center(child: CircularProgressIndicator()),
+        );
+      } else {
+        return const SizedBox.shrink();
+      }
+    } else {
+      // Verse
+      int verseIndex = index;
+      if (headerIndex != -1 && index > headerIndex) {
+        verseIndex = index - 1; // Adjust for the header
+      }
+      if (verseIndex < verses.length) {
+        return KeyedSubtree(
+          key: readingController.verseKeys[verseIndex],
+          child: Text(
+            verses[verseIndex],
+            style: settingsController.quranFontStyle.value.copyWith(
+              height: 2.5, // Adjust this value for line spacing
+            ),
+            textAlign: TextAlign.center,
+          ),
+        );
+      } else {
+        // Should not reach here
+        return const SizedBox.shrink();
+      }
+    }
   }
 
   Widget buildHeader() {
@@ -266,5 +311,14 @@ class ReadingPageState extends State<ReadingPage> {
         const SizedBox(height: 10),
       ],
     );
+  }
+}
+
+// Custom ScrollBehavior that hides the scrollbar
+class NoScrollbarScrollBehavior extends ScrollBehavior {
+  @override
+  Widget buildScrollbar(
+      BuildContext context, Widget child, ScrollableDetails details) {
+    return child; // Return the child without wrapping it in a Scrollbar
   }
 }
