@@ -113,45 +113,38 @@ class ReadingPageState extends State<ReadingPage> {
                     child: Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: horizontalPadding),
-                      child: Center(
-                        child: Container(
-                          constraints: const BoxConstraints(maxWidth: 800),
-                          child: ScrollConfiguration(
-                            behavior: NoScrollbarScrollBehavior(),
-                            child: ListView.builder(
-                              controller: _scrollController,
-                              itemCount:
-                                  readingController.versesContent.length +
-                                      2, // +2 for footer items
-                              itemBuilder: (context, index) {
-                                if (index <
-                                    readingController.versesContent.length) {
-                                  final ContentPiece piece =
-                                      readingController.versesContent[index];
-                                  return _buildContentPiece(piece);
-                                } else {
-                                  // Footer items
-                                  if (index ==
-                                      readingController.versesContent.length) {
-                                    // Divider
-                                    return const Divider(
-                                      color: Colors.grey,
-                                      thickness: 2,
-                                      endIndent: 20,
-                                      indent: 20,
-                                    );
-                                  } else if (index ==
-                                      readingController.versesContent.length +
-                                          1) {
-                                    // SizedBox(height: 50)
-                                    return const SizedBox(height: 50);
-                                  } else {
-                                    return const SizedBox.shrink();
-                                  }
-                                }
-                              },
-                            ),
-                          ),
+                      child: ScrollConfiguration(
+                        behavior: NoScrollbarScrollBehavior(),
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          itemCount: readingController.versesContent.length +
+                              2, // +2 for footer items
+                          itemBuilder: (context, index) {
+                            if (index <
+                                readingController.versesContent.length) {
+                              final ContentPiece piece =
+                                  readingController.versesContent[index];
+                              return _buildContentPiece(piece);
+                            } else {
+                              // Footer items
+                              if (index ==
+                                  readingController.versesContent.length) {
+                                // Divider
+                                return const Divider(
+                                  color: Colors.grey,
+                                  thickness: 2,
+                                  endIndent: 20,
+                                  indent: 20,
+                                );
+                              } else if (index ==
+                                  readingController.versesContent.length + 1) {
+                                // SizedBox(height: 50)
+                                return const SizedBox(height: 50);
+                              } else {
+                                return const SizedBox.shrink();
+                              }
+                            }
+                          },
                         ),
                       ),
                     ),
@@ -162,9 +155,21 @@ class ReadingPageState extends State<ReadingPage> {
     );
   }
 
-  /// Builds each ContentPiece widget based on its type.
   Widget _buildContentPiece(ContentPiece piece) {
-    if (piece.isBismilla) {
+    if (piece.isSurahName) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        child: Center(
+          child: Text(
+            piece.text,
+            style: const TextStyle(
+              fontFamily: 'SuraNames',
+              fontSize: 60,
+            ),
+          ),
+        ),
+      );
+    } else if (piece.isBismilla) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: Center(

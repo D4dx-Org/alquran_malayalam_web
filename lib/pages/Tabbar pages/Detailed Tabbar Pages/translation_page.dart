@@ -237,15 +237,17 @@ class _TranslationPageState extends State<TranslationPage> {
               double imageSize = _settingsController.quranFontSize.value *
                   8; // Adjust the multiplier as needed
 
-              return ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: imageSize,
-                  maxHeight: imageSize /
-                      2, // Assuming a 2:1 aspect ratio, adjust as needed
-                ),
-                child: Image.asset(
-                  'images/Bismi.png',
-                  fit: BoxFit.contain,
+              return Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: imageSize,
+                    maxHeight: imageSize /
+                        2, // Assuming a 2:1 aspect ratio, adjust as needed
+                  ),
+                  child: Text(
+                    '\uFDFD',
+                    style: TextStyle(fontFamily: 'Amiri_Script', fontSize: 25),
+                  ),
                 ),
               );
             },

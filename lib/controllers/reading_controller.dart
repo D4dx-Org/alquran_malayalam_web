@@ -15,7 +15,7 @@ class ReadingController extends GetxController {
   // Updated from versesText (String) to versesContent (List of ContentPiece)
   var versesContent = <ContentPiece>[].obs;
 
-  var currentPage = 604.obs;
+  var currentPage = 1.obs;
   var currentSurahId = 1.obs;
   var isLoading = false.obs;
 
@@ -52,11 +52,22 @@ class ReadingController extends GetxController {
           // Check if the surah starts on this page
           final firstVerseNumberInSurah =
               int.parse(fetchedVerses.first.verseNumber.split(':').last);
-          if (firstVerseNumberInSurah == 1 && surahId != 1 && surahId != 9) {
-            // Add Basmala as a separate ContentPiece
+
+          if (firstVerseNumberInSurah == 1) {
+            // Add Surah name as a separate ContentPiece
             combinedVersesContent.add(
-              ContentPiece(text: '\uFDFD', isBismilla: true),
+              ContentPiece(
+                text: getSurahNameUnicode(surahId),
+                isSurahName: true,
+              ),
             );
+
+            // Add Basmala as a separate ContentPiece, excluding Surah 1 and 9
+            if (surahId != 1 && surahId != 9) {
+              combinedVersesContent.add(
+                ContentPiece(text: '\uFDFD', isBismilla: true),
+              );
+            }
           }
 
           // Add verses as a separate ContentPiece
