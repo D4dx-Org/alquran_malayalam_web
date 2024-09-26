@@ -15,7 +15,7 @@ class ReadingController extends GetxController {
   // Updated from versesText (String) to versesContent (List of ContentPiece)
   var versesContent = <ContentPiece>[].obs;
 
-  var currentPage = 235.obs;
+  var currentPage = 604.obs;
   var currentSurahId = 1.obs;
   var isLoading = false.obs;
 
@@ -36,8 +36,6 @@ class ReadingController extends GetxController {
     pageToSurahMap = await _jsonParser.parsePageToChapterJsonData();
   }
 
-  /// Fetches verses for the given [pageNumber].
-  /// Populates the [versesContent] with [ContentPiece] objects.
   Future<bool> fetchVerses(int pageNumber) async {
     isLoading.value = true;
 
@@ -51,9 +49,11 @@ class ReadingController extends GetxController {
             await _quranComService.fetchAyahs(pageNumber, surahId);
 
         if (fetchedVerses.isNotEmpty) {
-          // Add Basmala as a separate ContentPiece, excluding Surah 1 and 9
-          if (surahId != 1 && surahId != 9) {
-            // Adjust based on your logic
+          // Check if the surah starts on this page
+          final firstVerseNumberInSurah =
+              int.parse(fetchedVerses.first.verseNumber.split(':').last);
+          if (firstVerseNumberInSurah == 1 && surahId != 1 && surahId != 9) {
+            // Add Basmala as a separate ContentPiece
             combinedVersesContent.add(
               ContentPiece(text: '\uFDFD', isBismilla: true),
             );
