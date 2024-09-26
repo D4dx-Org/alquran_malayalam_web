@@ -1,6 +1,8 @@
-import 'package:alquran_web/controllers/quran_controller.dart';
+// lib/pages/reading_page.dart
+
 import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
+import 'package:alquran_web/models/content_peice.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,9 +16,7 @@ class ReadingPage extends StatefulWidget {
 class ReadingPageState extends State<ReadingPage> {
   final ReadingController readingController = Get.find<ReadingController>();
   final SettingsController settingsController = Get.find<SettingsController>();
-  final _quranController = Get.find<QuranController>();
-
-  final _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
 
   @override
@@ -34,21 +34,25 @@ class ReadingPageState extends State<ReadingPage> {
     super.dispose();
   }
 
+  /// Handles scroll events to load next or previous pages.
   void _onScroll() {
     if (!_isLoading) {
       // Load next page when scrolling down
       if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent) {
+        // Threshold
         _loadNextPage();
       }
       // Load previous page when scrolling up
       else if (_scrollController.position.pixels <=
           _scrollController.position.minScrollExtent) {
+        // Threshold
         _loadPreviousPage();
       }
     }
   }
 
+  /// Loads the next page of verses.
   Future<void> _loadNextPage() async {
     setState(() {
       _isLoading = true;
@@ -61,6 +65,7 @@ class ReadingPageState extends State<ReadingPage> {
     });
   }
 
+  /// Loads the previous page of verses.
   Future<void> _loadPreviousPage() async {
     if (readingController.currentPage.value > 1) {
       setState(() {
@@ -75,6 +80,7 @@ class ReadingPageState extends State<ReadingPage> {
     }
   }
 
+  /// Determines the scale factor based on screen width for responsive design.
   double getScaleFactor(double screenWidth) {
     if (screenWidth < 600) return 0.05;
     if (screenWidth < 800) return 0.08;
@@ -85,8 +91,6 @@ class ReadingPageState extends State<ReadingPage> {
 
   @override
   Widget build(BuildContext context) {
-    _printAllGlobalKeys();
-
     final screenWidth = MediaQuery.of(context).size.width;
     final scaleFactor = getScaleFactor(screenWidth);
 
@@ -98,7 +102,8 @@ class ReadingPageState extends State<ReadingPage> {
 
     return Scaffold(
       body: Obx(() {
-        return readingController.isLoading.value
+        return readingController.isLoading.value &&
+                readingController.versesContent.isEmpty
             ? const Center(child: CircularProgressIndicator())
             : Directionality(
                 textDirection: TextDirection.rtl,
@@ -108,14 +113,39 @@ class ReadingPageState extends State<ReadingPage> {
                     padding: const EdgeInsets.all(16.0),
                     child: Center(
                       child: Container(
-                        constraints: const BoxConstraints(maxWidth: 600),
+                        constraints: const BoxConstraints(maxWidth: 800),
                         child: ScrollConfiguration(
                           behavior: NoScrollbarScrollBehavior(),
                           child: ListView.builder(
                             controller: _scrollController,
-                            itemCount: _getItemCount(),
+                            itemCount: readingController.versesContent.length +
+                                2, // +2 for footer items
                             itemBuilder: (context, index) {
-                              return _buildListItem(index);
+                              if (index <
+                                  readingController.versesContent.length) {
+                                final ContentPiece piece =
+                                    readingController.versesContent[index];
+                                return _buildContentPiece(piece);
+                              } else {
+                                // Footer items
+                                if (index ==
+                                    readingController.versesContent.length) {
+                                  // Divider
+                                  return const Divider(
+                                    color: Colors.grey,
+                                    thickness: 2,
+                                    endIndent: 20,
+                                    indent: 20,
+                                  );
+                                } else if (index ==
+                                    readingController.versesContent.length +
+                                        1) {
+                                  // SizedBox(height: 50)
+                                  return const SizedBox(height: 50);
+                                } else {
+                                  return const SizedBox.shrink();
+                                }
+                              }
                             },
                           ),
                         ),
@@ -128,193 +158,36 @@ class ReadingPageState extends State<ReadingPage> {
     );
   }
 
-  void _printAllGlobalKeys() {
-    for (var key in readingController.verseKeys) {
-      print('Global Key: ${key.value}'); // Print the key value
-    }
-  }
-
-  int _getItemCount() {
-    final verses = readingController.versesText.value
-        .split(' \uFD3E '); // Split the verses based on the delimiter
-
-    // Determine if header needs to be inserted and at what index
-    int headerIndex = -1;
-    for (int i = 0; i < readingController.verseKeys.length; i++) {
-      if (readingController.verseKeys[i].value == 1) {
-        headerIndex = i;
-        break;
-      }
-    }
-
-    // Additional items at the end (Divider and SizedBox)
-    int footerItemCount = 2; // Divider and SizedBox
-    if (_isLoading) {
-      footerItemCount += 1; // For loading indicator
-    }
-
-    return verses.length +
-        (headerIndex != -1 ? 1 : 0) +
-        footerItemCount; // Total item count
-  }
-
-  Widget _buildListItem(int index) {
-    final verses = readingController.versesText.value.split(' \uFD3E ');
-    int headerIndex = -1;
-    for (int i = 0; i < readingController.verseKeys.length; i++) {
-      if (readingController.verseKeys[i].value == 1) {
-        headerIndex = i;
-        break;
-      }
-    }
-
-    int totalItemsBeforeFooter =
-        verses.length + (headerIndex != -1 ? 1 : 0); // Verses and header
-// Divider and SizedBox
-    if (_isLoading) {
-// For loading indicator
-    }
-
-    if (index == headerIndex && headerIndex != -1) {
-      // Return header
-      return buildHeader();
-    } else if (index >= totalItemsBeforeFooter) {
-      // Footer items
-      int footerIndex = index - totalItemsBeforeFooter;
-      if (footerIndex == 0) {
-        // Divider
-        return const Divider(
-          color: Colors.grey,
-          thickness: 2,
-          endIndent: 20,
-          indent: 20,
-        );
-      } else if (footerIndex == 1) {
-        // SizedBox(height: 50)
-        return const SizedBox(height: 50);
-      } else if (_isLoading && footerIndex == 2) {
-        // Loading indicator
-        return const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Center(child: CircularProgressIndicator()),
-        );
-      } else {
-        return const SizedBox.shrink();
-      }
-    } else {
-      // Verse
-      int verseIndex = index;
-      if (headerIndex != -1 && index > headerIndex) {
-        verseIndex = index - 1; // Adjust for the header
-      }
-      if (verseIndex < verses.length) {
-        return KeyedSubtree(
-          key: readingController.verseKeys[verseIndex],
+  /// Builds each ContentPiece widget based on its type.
+  Widget _buildContentPiece(ContentPiece piece) {
+    if (piece.isBismilla) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        child: Center(
+          
           child: Text(
-            verses[verseIndex],
-            style: settingsController.quranFontStyle.value.copyWith(
-              height: 2.5, // Adjust this value for line spacing
-            ),
+            piece.text,
+            style: settingsController.quranFontStyle.value,
             textAlign: TextAlign.center,
           ),
-        );
-      } else {
-        // Should not reach here
-        return const SizedBox.shrink();
-      }
+        ),
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Text(
+          piece.text,
+          style: settingsController.quranFontStyle.value.copyWith(
+            height: 2.5, // Adjust this value for line spacing
+          ),
+          textAlign: TextAlign.right, // Arabic is RTL
+        ),
+      );
     }
-  }
-
-  Widget buildHeader() {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Center(
-            child: Text(
-              _quranController
-                  .getSurahNameUnicode(_quranController.selectedSurahId),
-              style: const TextStyle(
-                fontFamily: 'SuraNames',
-                fontSize: 60,
-              ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              if (constraints.maxWidth < 600) {
-                // For smaller screens, use a column layout
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      _quranController.selectedSurah,
-                      style: const TextStyle(fontSize: 18),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '(${_quranController.getSurahMalMean(_quranController.selectedSurahId)})',
-                      style: const TextStyle(
-                          fontSize: 16, fontStyle: FontStyle.italic),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                );
-              } else {
-                // For larger screens, keep the row layout
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      _quranController.selectedSurah,
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      '(${_quranController.getSurahMalMean(_quranController.selectedSurahId)})',
-                      style: const TextStyle(
-                          fontSize: 16, fontStyle: FontStyle.italic),
-                    ),
-                  ],
-                );
-              }
-            },
-          ),
-        ),
-        const SizedBox(height: 20),
-        // Only show Bismillah image if it's not Surah Al-Fatihah
-        if (_quranController.selectedSurahId != 1 &&
-            _quranController.selectedSurahId != 9)
-          Obx(
-            () {
-              // Calculate image size based on Quran font size
-              double imageSize = settingsController.quranFontSize.value *
-                  8; // Adjust the multiplier as needed
-
-              return ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: imageSize,
-                  maxHeight: imageSize /
-                      2, // Assuming a 2:1 aspect ratio, adjust as needed
-                ),
-                child: Image.asset(
-                  'images/Bismi.png',
-                  fit: BoxFit.contain,
-                ),
-              );
-            },
-          ),
-        const SizedBox(height: 10),
-      ],
-    );
   }
 }
 
-// Custom ScrollBehavior that hides the scrollbar
+/// Custom ScrollBehavior that hides the scrollbar
 class NoScrollbarScrollBehavior extends ScrollBehavior {
   @override
   Widget buildScrollbar(

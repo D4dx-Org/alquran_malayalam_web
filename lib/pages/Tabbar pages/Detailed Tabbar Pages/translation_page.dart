@@ -362,7 +362,7 @@ class _TranslationPageState extends State<TranslationPage> {
               textAlign: TextAlign.center,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 10),
           Obx(
             () => SelectableText(
               translation,
