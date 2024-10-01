@@ -4,6 +4,7 @@ import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:alquran_web/models/content_peice.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 
 class ReadingPage extends StatefulWidget {
@@ -18,13 +19,12 @@ class ReadingPageState extends State<ReadingPage> {
   final SettingsController settingsController = Get.find<SettingsController>();
   final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
-
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
     // Initial fetch for the first page
-    readingController.fetchVerses(readingController.currentPage.value);
+    readingController.fetchVerses(direction: 'replace');
   }
 
   @override
@@ -39,14 +39,12 @@ class ReadingPageState extends State<ReadingPage> {
     if (!_isLoading) {
       // Load next page when scrolling down
       if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent) {
-        // Threshold
+          _scrollController.position.maxScrollExtent - 200) {
         _loadNextPage();
       }
       // Load previous page when scrolling up
       else if (_scrollController.position.pixels <=
-          _scrollController.position.minScrollExtent) {
-        // Threshold
+          _scrollController.position.minScrollExtent + 200) {
         _loadPreviousPage();
       }
     }
@@ -54,30 +52,45 @@ class ReadingPageState extends State<ReadingPage> {
 
   /// Loads the next page of verses.
   Future<void> _loadNextPage() async {
+    if (_isLoading) return;
     setState(() {
       _isLoading = true;
     });
 
-    await readingController.nextPage();
+    await readingController.fetchVerses(direction: 'next');
 
     setState(() {
       _isLoading = false;
     });
   }
 
-  /// Loads the previous page of verses.
   Future<void> _loadPreviousPage() async {
-    if (readingController.currentPage.value > 1) {
-      setState(() {
-        _isLoading = true;
-      });
+    if (_isLoading) return;
 
-      await readingController.previousPage();
-
-      setState(() {
-        _isLoading = false;
-      });
+    if (readingController.minPageLoaded <= 1) {
+      // debugPrint('Already at the first page.');
+      return;
     }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    // Save the current scroll offset
+    double oldScrollHeight = _scrollController.position.extentAfter;
+
+    await readingController.fetchVerses(direction: 'previous');
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    // After the content is prepended, adjust the scroll position
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      double newScrollHeight = _scrollController.position.extentAfter;
+      double scrollOffset = newScrollHeight - oldScrollHeight;
+      _scrollController.jumpTo(_scrollController.offset + scrollOffset);
+    });
   }
 
   /// Determines the scale factor based on screen width for responsive design.
@@ -103,7 +116,7 @@ class ReadingPageState extends State<ReadingPage> {
     return Scaffold(
       body: Center(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 600),
+          constraints: const BoxConstraints(maxWidth: 500),
           child: Obx(() {
             return readingController.isLoading.value &&
                     readingController.versesContent.isEmpty
@@ -115,35 +128,44 @@ class ReadingPageState extends State<ReadingPage> {
                           EdgeInsets.symmetric(horizontal: horizontalPadding),
                       child: ScrollConfiguration(
                         behavior: NoScrollbarScrollBehavior(),
+                        // child: ListView.builder(
+                        //   controller: _scrollController,
+                        //   itemCount: readingController.versesContent.length +
+                        //       2, // +2 for footer items
+                        //   itemBuilder: (context, index) {
+                        //     if (index <
+                        //         readingController.versesContent.length) {
+                        //       final ContentPiece piece =
+                        //           readingController.versesContent[index];
+                        //       return _buildContentPiece(piece);
+                        //     } else {
+                        //       // Footer items
+                        //       if (index ==
+                        //           readingController.versesContent.length) {
+                        //         // Divider
+                        //         return const Divider(
+                        //           color: Colors.grey,
+                        //           thickness: 2,
+                        //           endIndent: 20,
+                        //           indent: 20,
+                        //         );
+                        //       } else if (index ==
+                        //           readingController.versesContent.length + 1) {
+                        //         // SizedBox(height: 50)
+                        //         return const SizedBox(height: 50);
+                        //       } else {
+                        //         return const SizedBox.shrink();
+                        //       }
+                        //     }
+                        //   },
+                        // ),
                         child: ListView.builder(
                           controller: _scrollController,
-                          itemCount: readingController.versesContent.length +
-                              2, // +2 for footer items
+                          itemCount: readingController.versesContent.length,
                           itemBuilder: (context, index) {
-                            if (index <
-                                readingController.versesContent.length) {
-                              final ContentPiece piece =
-                                  readingController.versesContent[index];
-                              return _buildContentPiece(piece);
-                            } else {
-                              // Footer items
-                              if (index ==
-                                  readingController.versesContent.length) {
-                                // Divider
-                                return const Divider(
-                                  color: Colors.grey,
-                                  thickness: 2,
-                                  endIndent: 20,
-                                  indent: 20,
-                                );
-                              } else if (index ==
-                                  readingController.versesContent.length + 1) {
-                                // SizedBox(height: 50)
-                                return const SizedBox(height: 50);
-                              } else {
-                                return const SizedBox.shrink();
-                              }
-                            }
+                            final ContentPiece piece =
+                                readingController.versesContent[index];
+                            return _buildContentPiece(piece);
                           },
                         ),
                       ),
@@ -180,6 +202,13 @@ class ReadingPageState extends State<ReadingPage> {
           ),
         ),
       );
+    } else if (piece.isDivider) {
+      return const Divider(
+        color: Colors.grey,
+        thickness: 2,
+        endIndent: 20,
+        indent: 20,
+      );
     } else {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -189,7 +218,7 @@ class ReadingPageState extends State<ReadingPage> {
             style: settingsController.quranFontStyle.value.copyWith(
               height: 2.5, // Adjust this value for line spacing
             ),
-            textAlign: TextAlign.center, // Arabic is RTL
+            textAlign: TextAlign.justify, // Arabic is RTL
           ),
         ),
       );
