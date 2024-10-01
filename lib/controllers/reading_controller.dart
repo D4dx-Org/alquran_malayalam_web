@@ -202,4 +202,6 @@ class ReadingController extends GetxController {
     String unicodeChar = SurahUnicodeData.getSurahNameUnicode(surahId);
     return unicodeChar + String.fromCharCode(0xE000);
   }
+
+  
 }

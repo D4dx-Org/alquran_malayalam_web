@@ -104,6 +104,7 @@ class ReadingPageState extends State<ReadingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final scaleFactor = getScaleFactor(screenWidth);
 
@@ -116,7 +117,7 @@ class ReadingPageState extends State<ReadingPage> {
     return Scaffold(
       body: Center(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 500),
+          constraints: const BoxConstraints(maxWidth: 700),
           child: Obx(() {
             return readingController.isLoading.value &&
                     readingController.versesContent.isEmpty
@@ -128,41 +129,18 @@ class ReadingPageState extends State<ReadingPage> {
                           EdgeInsets.symmetric(horizontal: horizontalPadding),
                       child: ScrollConfiguration(
                         behavior: NoScrollbarScrollBehavior(),
-                        // child: ListView.builder(
-                        //   controller: _scrollController,
-                        //   itemCount: readingController.versesContent.length +
-                        //       2, // +2 for footer items
-                        //   itemBuilder: (context, index) {
-                        //     if (index <
-                        //         readingController.versesContent.length) {
-                        //       final ContentPiece piece =
-                        //           readingController.versesContent[index];
-                        //       return _buildContentPiece(piece);
-                        //     } else {
-                        //       // Footer items
-                        //       if (index ==
-                        //           readingController.versesContent.length) {
-                        //         // Divider
-                        //         return const Divider(
-                        //           color: Colors.grey,
-                        //           thickness: 2,
-                        //           endIndent: 20,
-                        //           indent: 20,
-                        //         );
-                        //       } else if (index ==
-                        //           readingController.versesContent.length + 1) {
-                        //         // SizedBox(height: 50)
-                        //         return const SizedBox(height: 50);
-                        //       } else {
-                        //         return const SizedBox.shrink();
-                        //       }
-                        //     }
-                        //   },
-                        // ),
                         child: ListView.builder(
                           controller: _scrollController,
-                          itemCount: readingController.versesContent.length,
+                          itemCount: readingController.versesContent.length +
+                              1, // Add 1 to account for the extra SizedBox
                           itemBuilder: (context, index) {
+                            if (index ==
+                                readingController.versesContent.length) {
+                              return SizedBox(
+                                height: screenHeight *
+                                    0.2, // Adjust the height as needed
+                              );
+                            }
                             final ContentPiece piece =
                                 readingController.versesContent[index];
                             return _buildContentPiece(piece);
@@ -212,14 +190,21 @@ class ReadingPageState extends State<ReadingPage> {
     } else {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Obx(
-          () => Text(
-            piece.text,
-            style: settingsController.quranFontStyle.value.copyWith(
-              height: 2.5, // Adjust this value for line spacing
+        child: Column(
+          children: [
+            Obx(
+              () => Text(
+                piece.text,
+                style: settingsController.quranFontStyle.value.copyWith(
+                  height: 2.5, 
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
-            textAlign: TextAlign.justify, // Arabic is RTL
-          ),
+            SizedBox(
+              height: 50,
+            )
+          ],
         ),
       );
     }
