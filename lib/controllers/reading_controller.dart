@@ -19,10 +19,8 @@ class ReadingController extends GetxController {
   var isLoading = false.obs;
 
   late Map<int, List<int>> pageToSurahMap;
-  List<ValueKey<int>> verseKeys = [];
+  List<ValueKey<String>> verseKeys = [];
   var hoveredVerseIndex = (-1).obs;
-
-  // Variables to track loaded pages
   Set<int> loadedPages = {};
   int minPageLoaded = 1;
   int maxPageLoaded = 1;
@@ -104,7 +102,7 @@ class ReadingController extends GetxController {
           // Add verses as a separate ContentPiece
           combinedVersesContent.add(
             ContentPiece(
-              text: _buildContinuousText(fetchedVerses),
+              text: _buildContinuousText(fetchedVerses, surahId),
               isBismilla: false,
             ),
           );
@@ -177,13 +175,13 @@ class ReadingController extends GetxController {
     await fetchVerses(direction: 'previous');
   }
 
-  String _buildContinuousText(List<QuranVerse> verses) {
-    verseKeys = [];
+  String _buildContinuousText(List<QuranVerse> verses, int surahId) {
+    verseKeys.clear();
     return verses.map((verse) {
-      final verseNumberInt = int.parse(verse.verseNumber.split(':').last);
-      final key = ValueKey<int>(verseNumberInt);
+      final ayahNumber = verse.verseNumber.split(':').last;
+      final key = ValueKey<String>("$surahId:$ayahNumber");
       verseKeys.add(key);
-      return '${verse.arabicText} \uFD3F${_convertToArabicNumbers(verse.verseNumber.split(':').last)}\uFD3E ';
+      return '${verse.arabicText} \uFD3F${_convertToArabicNumbers(ayahNumber)}\uFD3E';
     }).join();
   }
 
@@ -202,6 +200,4 @@ class ReadingController extends GetxController {
     String unicodeChar = SurahUnicodeData.getSurahNameUnicode(surahId);
     return unicodeChar + String.fromCharCode(0xE000);
   }
-
-  
 }

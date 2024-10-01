@@ -1,5 +1,7 @@
 // lib/pages/reading_page.dart
 
+import 'dart:async';
+
 import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:alquran_web/models/content_peice.dart';
@@ -19,6 +21,8 @@ class ReadingPageState extends State<ReadingPage> {
   final SettingsController settingsController = Get.find<SettingsController>();
   final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
+  Timer? _debounce;
+
   @override
   void initState() {
     super.initState();
@@ -31,23 +35,29 @@ class ReadingPageState extends State<ReadingPage> {
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
   /// Handles scroll events to load next or previous pages.
   void _onScroll() {
-    if (!_isLoading) {
-      // Load next page when scrolling down
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 200) {
-        _loadNextPage();
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 200), () {
+      if (!_isLoading) {
+        if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 200) {
+          _loadNextPage();
+        } else if (_scrollController.position.pixels <=
+            _scrollController.position.minScrollExtent + 200) {
+          _loadPreviousPage();
+        }
       }
-      // Load previous page when scrolling up
-      else if (_scrollController.position.pixels <=
-          _scrollController.position.minScrollExtent + 200) {
-        _loadPreviousPage();
+
+      if (readingController.verseKeys.isNotEmpty) {
+        print(
+            "Current Verse Keys: ${readingController.verseKeys.map((key) => key.value).join(', ')}");
       }
-    }
+    });
   }
 
   /// Loads the next page of verses.
@@ -196,7 +206,7 @@ class ReadingPageState extends State<ReadingPage> {
               () => Text(
                 piece.text,
                 style: settingsController.quranFontStyle.value.copyWith(
-                  height: 2.5, 
+                  height: 2.5,
                 ),
                 textAlign: TextAlign.center,
               ),
