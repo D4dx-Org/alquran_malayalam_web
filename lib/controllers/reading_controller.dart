@@ -14,7 +14,7 @@ class ReadingController extends GetxController {
 
   var versesContent = <ContentPiece>[].obs;
 
-  var currentPage = 1.obs;
+  var currentPage = 604.obs;
   var currentSurahId = 1.obs;
   var isLoading = false.obs;
 
@@ -107,13 +107,15 @@ class ReadingController extends GetxController {
             ),
           );
         }
-        combinedVersesContent.add(
-          ContentPiece(
-            text: '',
-            isDivider: true,
-          ),
-        );
       }
+
+      // Add the divider at the end of the content for the page
+      combinedVersesContent.add(
+        ContentPiece(
+          text: '',
+          isDivider: true,
+        ),
+      );
 
       // Update versesContent based on the scrolling direction
       if (direction == 'next') {

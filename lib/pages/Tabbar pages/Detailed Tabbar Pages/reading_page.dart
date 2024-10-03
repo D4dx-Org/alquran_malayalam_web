@@ -78,7 +78,7 @@ class ReadingPageState extends State<ReadingPage> {
     if (_isLoading) return;
 
     if (readingController.minPageLoaded <= 1) {
-      // debugPrint('Already at the first page.');
+      debugPrint('Already at the first page.');
       return;
     }
 
@@ -127,7 +127,7 @@ class ReadingPageState extends State<ReadingPage> {
     return Scaffold(
       body: Center(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 700),
+          constraints: const BoxConstraints(maxWidth: 1000),
           child: Obx(() {
             return readingController.isLoading.value &&
                     readingController.versesContent.isEmpty
