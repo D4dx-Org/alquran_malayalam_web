@@ -14,7 +14,7 @@ class ReadingController extends GetxController {
 
   var versesContent = <ContentPiece>[].obs;
 
-  var currentPage = 604.obs;
+  var currentPage = 3.obs;
   var currentSurahId = 1.obs;
   var isLoading = false.obs;
 
