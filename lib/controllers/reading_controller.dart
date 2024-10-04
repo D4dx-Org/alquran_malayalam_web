@@ -3,6 +3,7 @@
 import 'package:alquran_web/models/content_peice.dart';
 import 'package:alquran_web/services/surah_unicode_data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:alquran_web/models/verse_model.dart';
 import 'package:alquran_web/services/quran_com_services.dart';
@@ -14,7 +15,7 @@ class ReadingController extends GetxController {
 
   var versesContent = <ContentPiece>[].obs;
 
-  var currentPage = 1.obs;
+  var currentPage = 600.obs;
   var currentSurahId = 1.obs;
   var isLoading = false.obs;
 
@@ -88,6 +89,7 @@ class ReadingController extends GetxController {
               ContentPiece(
                 text: getSurahNameUnicode(surahId),
                 isSurahName: true,
+                surahId: surahId,
               ),
             );
 
@@ -201,5 +203,54 @@ class ReadingController extends GetxController {
     }
     String unicodeChar = SurahUnicodeData.getSurahNameUnicode(surahId);
     return unicodeChar + String.fromCharCode(0xE000);
+  }
+
+  Future<void> navigateToSurah(
+      int surahId, ScrollController scrollController) async {
+    int index = versesContent.indexWhere(
+      (piece) => piece.isSurahName && piece.surahId == surahId,
+    );
+
+    if (index != -1) {
+      _scrollToIndex(index, scrollController);
+      return;
+    }
+
+    final pagesToLoad = _findPagesForSurah(surahId);
+
+    for (var page in pagesToLoad) {
+      if (page > maxPageLoaded) {
+        await fetchVerses(direction: 'next');
+      } else if (page < minPageLoaded) {
+        await fetchVerses(direction: 'previous');
+      }
+
+      index = versesContent.indexWhere(
+        (piece) => piece.isSurahName && piece.surahId == surahId,
+      );
+
+      if (index != -1) {
+        _scrollToIndex(index, scrollController);
+        return;
+      }
+    }
+  }
+
+  List<int> _findPagesForSurah(int surahId) {
+    return pageToSurahMap.entries
+        .where((entry) => entry.value.contains(surahId))
+        .map((entry) => entry.key)
+        .toList();
+  }
+
+  void _scrollToIndex(int index, ScrollController scrollController) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      final offset = index * 100.0;
+      scrollController.animateTo(
+        offset,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    });
   }
 }

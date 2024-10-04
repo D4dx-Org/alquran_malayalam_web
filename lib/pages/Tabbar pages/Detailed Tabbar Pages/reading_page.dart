@@ -112,6 +112,10 @@ class ReadingPageState extends State<ReadingPage> {
         (screenWidth - 1440) / 10000; // Dynamic scaling for larger screens
   }
 
+  void _navigateToSpecificSurah(int surahId) {
+    readingController.navigateToSurah(surahId, _scrollController);
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -125,6 +129,17 @@ class ReadingPageState extends State<ReadingPage> {
             : screenWidth * scaleFactor;
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Quran Reading'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.bookmark),
+            onPressed: () {
+              _navigateToSpecificSurah(114); // Navigate to Surah with ID 5
+            },
+          ),
+        ],
+      ),
       body: Center(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 1000),
