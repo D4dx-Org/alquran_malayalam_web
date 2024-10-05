@@ -12,13 +12,10 @@ import 'package:alquran_web/services/json_utils.dart';
 class ReadingController extends GetxController {
   final QuranComService _quranComService = QuranComService();
   final JsonParser _jsonParser = JsonParser();
-
+  final ScrollController scrollController = ScrollController();
   var versesContent = <ContentPiece>[].obs;
-
-  var currentPage = 600.obs;
-  var currentSurahId = 1.obs;
+  var currentPage = 1.obs;
   var isLoading = false.obs;
-
   late Map<int, List<int>> pageToSurahMap;
   List<ValueKey<String>> verseKeys = [];
   var hoveredVerseIndex = (-1).obs;
@@ -232,7 +229,9 @@ class ReadingController extends GetxController {
     }
   }
 
-
+  void navigateToSpecificSurah(int surahId) {
+    navigateToSurah(surahId, scrollController);
+  }
 
   List<int> _findPagesForSurah(int surahId) {
     // Return the list of pages containing the given Surah ID from the mapping

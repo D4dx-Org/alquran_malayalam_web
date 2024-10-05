@@ -1,3 +1,4 @@
+import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,6 +22,8 @@ class SurahBottomRowState extends State<SurahBottomRow>
     with SingleTickerProviderStateMixin {
   final _quranController = Get.find<QuranController>();
   final _audioController = Get.find<AudioController>();
+  final readingController = Get.find<ReadingController>();
+
   bool _showSearchBar = false;
   final FocusNode _searchFocusNode = FocusNode();
 
@@ -51,8 +54,6 @@ class SurahBottomRowState extends State<SurahBottomRow>
     if (screenWidth < 1440) return 0.1;
     return 0.15 + (screenWidth - 1440) / 10000;
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -90,16 +91,19 @@ class SurahBottomRowState extends State<SurahBottomRow>
                       onChanged: (value) {
                         if (value != null) {
                           final parts = value.split(' - ');
-                          int newSurahNumber = int.parse(parts[0]);
-                          _quranController.updateSelectedSurahId(
-                              newSurahNumber, 1);
-                          _audioController.changeSurah(newSurahNumber);
-                          _quranController.resetToFirstAyah();
+                          int newSurahId = int.parse(parts[0]);
+
+                          // Update selectedSurahId and trigger navigation
+                          _quranController.updateSelectedSurahId(newSurahId, 1);
+
+                          // Navigate to the selected Surah in the ReadingPage
+                          readingController.navigateToSpecificSurah(newSurahId);
                         }
                       },
                       scaleFactor: widget.scaleFactor,
                     ),
                   ),
+
                   // Second Drop Down
                   Obx(
                     () => CustomDropdown(

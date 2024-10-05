@@ -19,22 +19,21 @@ class ReadingPage extends StatefulWidget {
 class ReadingPageState extends State<ReadingPage> {
   final ReadingController readingController = Get.find<ReadingController>();
   final SettingsController settingsController = Get.find<SettingsController>();
-  final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
   Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
+    readingController.scrollController.addListener(_onScroll);
     // Initial fetch for the first page
     readingController.fetchVerses(direction: 'replace');
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
+    readingController.scrollController.removeListener(_onScroll);
+    readingController.scrollController.dispose();
     _debounce?.cancel();
     super.dispose();
   }
@@ -44,11 +43,11 @@ class ReadingPageState extends State<ReadingPage> {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 200), () {
       if (!_isLoading) {
-        if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent - 200) {
+        if (readingController.scrollController.position.pixels >=
+            readingController.scrollController.position.maxScrollExtent - 200) {
           _loadNextPage();
-        } else if (_scrollController.position.pixels <=
-            _scrollController.position.minScrollExtent + 200) {
+        } else if (readingController.scrollController.position.pixels <=
+            readingController.scrollController.position.minScrollExtent + 200) {
           _loadPreviousPage();
         }
       }
@@ -87,7 +86,8 @@ class ReadingPageState extends State<ReadingPage> {
     });
 
     // Save the current scroll offset
-    double oldScrollHeight = _scrollController.position.extentAfter;
+    double oldScrollHeight =
+        readingController.scrollController.position.extentAfter;
 
     await readingController.fetchVerses(direction: 'previous');
 
@@ -97,9 +97,11 @@ class ReadingPageState extends State<ReadingPage> {
 
     // After the content is prepended, adjust the scroll position
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      double newScrollHeight = _scrollController.position.extentAfter;
+      double newScrollHeight =
+          readingController.scrollController.position.extentAfter;
       double scrollOffset = newScrollHeight - oldScrollHeight;
-      _scrollController.jumpTo(_scrollController.offset + scrollOffset);
+      readingController.scrollController
+          .jumpTo(readingController.scrollController.offset + scrollOffset);
     });
   }
 
@@ -110,10 +112,6 @@ class ReadingPageState extends State<ReadingPage> {
     if (screenWidth < 1440) return 0.1;
     return 0.15 +
         (screenWidth - 1440) / 10000; // Dynamic scaling for larger screens
-  }
-
-  void _navigateToSpecificSurah(int surahId) {
-    readingController.navigateToSurah(surahId, _scrollController);
   }
 
   @override
@@ -129,17 +127,6 @@ class ReadingPageState extends State<ReadingPage> {
             : screenWidth * scaleFactor;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Quran Reading'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.bookmark),
-            onPressed: () {
-              _navigateToSpecificSurah(114); // Navigate to Surah with ID 5
-            },
-          ),
-        ],
-      ),
       body: Center(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 1000),
@@ -155,7 +142,7 @@ class ReadingPageState extends State<ReadingPage> {
                       child: ScrollConfiguration(
                         behavior: NoScrollbarScrollBehavior(),
                         child: ListView.builder(
-                          controller: _scrollController,
+                          controller: readingController.scrollController,
                           itemCount: readingController.versesContent.length +
                               1, // Add 1 to account for the extra SizedBox
                           itemBuilder: (context, index) {
