@@ -1,3 +1,4 @@
+import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/routes/app_pages.dart';
 import 'package:alquran_web/services/quran_services.dart';
 import 'package:alquran_web/services/surah_unicode_data.dart';
@@ -21,6 +22,7 @@ class SurahListPageState extends State<SurahListPage> {
   List<Map<String, dynamic>> surahs = [];
   final _quranService = QuranService();
   final _quranController = Get.find<QuranController>();
+  final readingController = Get.find<ReadingController>();
 
   @override
   void initState() {
@@ -154,9 +156,11 @@ class SurahListPageState extends State<SurahListPage> {
                 surah['MSuraName'], ayahNumber);
             _quranController.updateSelectedSurahId(
                 int.parse(surah['SuraId'].toString()), ayahNumber);
+
             _quranController.updateSelectedAyahNumber(ayahNumber);
             final surahId = int.parse(surah['SuraId'].toString());
             final surahName = surah['MSuraName'];
+            readingController.navigateToSpecificSurah(surahId);
 
             Get.toNamed(
               Routes.SURAH_DETAILED,

@@ -27,6 +27,8 @@ class ReadingController extends GetxController {
   void onInit() {
     super.onInit();
     _loadPageToSurahMapping();
+    pageToSurahMap = {};
+
     // Fetch initial verses
     fetchVerses(direction: 'replace');
   }
@@ -137,7 +139,6 @@ class ReadingController extends GetxController {
       return false; // Indicate that there was an error
     } finally {
       isLoading.value = false;
-      debugPrint('Fetching verses for Page: $pageNumber');
     }
   }
 

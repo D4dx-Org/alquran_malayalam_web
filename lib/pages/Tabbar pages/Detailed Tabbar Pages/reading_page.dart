@@ -26,7 +26,6 @@ class ReadingPageState extends State<ReadingPage> {
   void initState() {
     super.initState();
     readingController.scrollController.addListener(_onScroll);
-    // Initial fetch for the first page
     readingController.fetchVerses(direction: 'replace');
   }
 
@@ -41,36 +40,40 @@ class ReadingPageState extends State<ReadingPage> {
   /// Handles scroll events to load next or previous pages.
   void _onScroll() {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 200), () {
-      if (!_isLoading) {
-        if (readingController.scrollController.position.pixels >=
-            readingController.scrollController.position.maxScrollExtent - 200) {
-          _loadNextPage();
-        } else if (readingController.scrollController.position.pixels <=
-            readingController.scrollController.position.minScrollExtent + 200) {
-          _loadPreviousPage();
+    _debounce = Timer(
+      const Duration(milliseconds: 200),
+      () {
+        if (!_isLoading) {
+          if (readingController.scrollController.position.pixels >=
+              readingController.scrollController.position.maxScrollExtent -
+                  200) {
+            _loadNextPage();
+          } else if (readingController.scrollController.position.pixels <=
+              readingController.scrollController.position.minScrollExtent +
+                  200) {
+            _loadPreviousPage();
+          }
         }
-      }
-
-      if (readingController.verseKeys.isNotEmpty) {
-        print(
-            "Current Verse Keys: ${readingController.verseKeys.map((key) => key.value).join(', ')}");
-      }
-    });
+      },
+    );
   }
 
   /// Loads the next page of verses.
   Future<void> _loadNextPage() async {
     if (_isLoading) return;
-    setState(() {
-      _isLoading = true;
-    });
+    setState(
+      () {
+        _isLoading = true;
+      },
+    );
 
     await readingController.fetchVerses(direction: 'next');
 
-    setState(() {
-      _isLoading = false;
-    });
+    setState(
+      () {
+        _isLoading = false;
+      },
+    );
   }
 
   Future<void> _loadPreviousPage() async {
