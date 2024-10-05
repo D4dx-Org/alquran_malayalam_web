@@ -8,27 +8,32 @@ import 'package:get/get.dart';
 import 'package:alquran_web/models/verse_model.dart';
 import 'package:alquran_web/services/quran_com_services.dart';
 import 'package:alquran_web/services/json_utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ReadingController extends GetxController {
   final QuranComService _quranComService = QuranComService();
   final JsonParser _jsonParser = JsonParser();
-  final ScrollController scrollController = ScrollController();
+  ScrollController scrollController = ScrollController();
   var versesContent = <ContentPiece>[].obs;
+  late SharedPreferences _sharedPreferences;
+
+  List<ValueKey<String>> verseKeys = [];
+  Set<int> loadedPages = {};
+  late Map<int, List<int>> pageToSurahMap;
   var currentPage = 1.obs;
   var isLoading = false.obs;
-  late Map<int, List<int>> pageToSurahMap;
-  List<ValueKey<String>> verseKeys = [];
   var hoveredVerseIndex = (-1).obs;
-  Set<int> loadedPages = {};
   int minPageLoaded = 1;
   int maxPageLoaded = 1;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
     _loadPageToSurahMapping();
     pageToSurahMap = {};
-
+    _sharedPreferences = await SharedPreferences.getInstance();
+    // Load saved preferences for current page
+    _loadSavedPreferences();
     // Fetch initial verses
     fetchVerses(direction: 'replace');
   }
@@ -132,6 +137,7 @@ class ReadingController extends GetxController {
       }
 
       loadedPages.add(pageNumber);
+      _saveCurrentPage(pageNumber); // Save current page
 
       return true; // Indicate that all verses have been fetched
     } catch (e) {
@@ -160,6 +166,7 @@ class ReadingController extends GetxController {
     }
     currentPage.value++;
     await fetchVerses(direction: 'next');
+    _saveCurrentPage(currentPage.value); // Save the new page
   }
 
   Future<void> previousPage() async {
@@ -175,6 +182,7 @@ class ReadingController extends GetxController {
     }
     currentPage.value--;
     await fetchVerses(direction: 'previous');
+    _saveCurrentPage(currentPage.value); // Save the new page
   }
 
   String _buildContinuousText(List<QuranVerse> verses, int surahId) {
@@ -232,6 +240,8 @@ class ReadingController extends GetxController {
 
   void navigateToSpecificSurah(int surahId) {
     navigateToSurah(surahId, scrollController);
+    _saveLastReadVerse(
+        surahId, 1); // Save the surah and verse number (change as needed)
   }
 
   List<int> _findPagesForSurah(int surahId) {
@@ -251,5 +261,24 @@ class ReadingController extends GetxController {
         curve: Curves.easeInOut,
       );
     });
+  }
+
+  void _loadSavedPreferences() {
+    // Load the last saved page number from shared preferences if available
+    final savedPage = _sharedPreferences.getInt('currentPage');
+    if (savedPage != null && savedPage >= 1 && savedPage <= 604) {
+      currentPage.value = savedPage;
+      minPageLoaded = savedPage;
+      maxPageLoaded = savedPage;
+    }
+  }
+
+  void _saveCurrentPage(int pageNumber) {
+    _sharedPreferences.setInt('currentPage', pageNumber);
+  }
+
+  void _saveLastReadVerse(int surahId, int verseNumber) {
+    _sharedPreferences.setInt('lastReadSurahId', surahId);
+    _sharedPreferences.setInt('lastReadVerseNumber', verseNumber);
   }
 }

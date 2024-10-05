@@ -1,5 +1,3 @@
-// lib/pages/reading_page.dart
-
 import 'dart:async';
 
 import 'package:alquran_web/controllers/reading_controller.dart';
@@ -21,24 +19,37 @@ class ReadingPageState extends State<ReadingPage> {
   final SettingsController settingsController = Get.find<SettingsController>();
   bool _isLoading = false;
   Timer? _debounce;
+  bool _scrollControllerDisposed = false;
 
   @override
   void initState() {
     super.initState();
-    readingController.scrollController.addListener(_onScroll);
+    _initializeScrollController();
     readingController.fetchVerses(direction: 'replace');
+  }
+
+  void _initializeScrollController() {
+    readingController.scrollController = ScrollController();
+    readingController.scrollController.addListener(_onScroll);
+    _scrollControllerDisposed = false;
   }
 
   @override
   void dispose() {
     readingController.scrollController.removeListener(_onScroll);
     readingController.scrollController.dispose();
+    _scrollControllerDisposed = true;
     _debounce?.cancel();
     super.dispose();
   }
 
   /// Handles scroll events to load next or previous pages.
   void _onScroll() {
+    // Reinitialize the scroll controller if disposed
+    if (_scrollControllerDisposed) {
+      _initializeScrollController();
+    }
+
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(
       const Duration(milliseconds: 200),
@@ -100,6 +111,10 @@ class ReadingPageState extends State<ReadingPage> {
 
     // After the content is prepended, adjust the scroll position
     SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (_scrollControllerDisposed) {
+        _initializeScrollController();
+      }
+
       double newScrollHeight =
           readingController.scrollController.position.extentAfter;
       double scrollOffset = newScrollHeight - oldScrollHeight;
