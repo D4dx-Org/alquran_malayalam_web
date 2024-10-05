@@ -52,6 +52,8 @@ class SurahBottomRowState extends State<SurahBottomRow>
     return 0.15 + (screenWidth - 1440) / 10000;
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;

@@ -207,36 +207,35 @@ class ReadingController extends GetxController {
 
   Future<void> navigateToSurah(
       int surahId, ScrollController scrollController) async {
+    // Find the pages associated with the surah from the JSON mapping
+    List<int> pagesToLoad = _findPagesForSurah(surahId);
+
+    if (pagesToLoad.isEmpty) {
+      debugPrint('No pages found for Surah $surahId');
+      return;
+    }
+
+    // Directly load the first page containing the surah
+    int targetPage = pagesToLoad.first;
+
+    // Fetch verses for the specific target page containing the Surah
+    currentPage.value = targetPage;
+    await fetchVerses(direction: 'replace');
+
+    // Find the index of the Surah name in the content
     int index = versesContent.indexWhere(
       (piece) => piece.isSurahName && piece.surahId == surahId,
     );
 
     if (index != -1) {
       _scrollToIndex(index, scrollController);
-      return;
-    }
-
-    final pagesToLoad = _findPagesForSurah(surahId);
-
-    for (var page in pagesToLoad) {
-      if (page > maxPageLoaded) {
-        await fetchVerses(direction: 'next');
-      } else if (page < minPageLoaded) {
-        await fetchVerses(direction: 'previous');
-      }
-
-      index = versesContent.indexWhere(
-        (piece) => piece.isSurahName && piece.surahId == surahId,
-      );
-
-      if (index != -1) {
-        _scrollToIndex(index, scrollController);
-        return;
-      }
     }
   }
 
+
+
   List<int> _findPagesForSurah(int surahId) {
+    // Return the list of pages containing the given Surah ID from the mapping
     return pageToSurahMap.entries
         .where((entry) => entry.value.contains(surahId))
         .map((entry) => entry.key)

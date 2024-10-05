@@ -13,8 +13,6 @@ class JsonParser {
       if (value is List<dynamic>) {
         surahNumbers = value.map((item) => int.parse(item.toString())).toList();
       } else {
-        // Handle the case where value is not a list
-        // For example, you could throw an exception
         throw Exception('Value is not a list: $value');
       }
 
