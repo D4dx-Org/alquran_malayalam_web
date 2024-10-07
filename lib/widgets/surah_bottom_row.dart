@@ -116,22 +116,36 @@ class SurahBottomRowState extends State<SurahBottomRow>
                       onChanged: (value) async {
                         if (value != null) {
                           int ayahNumber = int.parse(value);
+
+                          // Check if the audio is currently playing
+                          bool wasPlaying = _audioController.isPlaying.value;
+
                           if (_audioController.isPlaying.value) {
+                            // Stop the current Surah audio before switching to another Ayah
                             _audioController.stopSurahPlayback();
                           }
+
                           try {
+                            // Ensure the selected ayah is loaded in the UI
                             await _quranController.ensureAyahIsLoaded(
                               _quranController.selectedSurahId,
                               ayahNumber,
                             );
+
+                            // Scroll to the selected ayah
                             Map<int, int> startingLineIds =
                                 _quranController.getAyahStartingLineIds();
                             int? lineId = startingLineIds[ayahNumber];
                             if (lineId != null) {
                               _quranController.scrollToAyah(
                                   ayahNumber, lineId.toString());
-                              await _audioController.playSpecificAyah(
-                                  _quranController.selectedSurahId, ayahNumber);
+
+                              // Play the audio only if it was already playing
+                              if (wasPlaying) {
+                                await _audioController.playSpecificAyah(
+                                    _quranController.selectedSurahId,
+                                    ayahNumber);
+                              }
                             } else {
                               throw Exception(
                                   'LineId not found for ayah $ayahNumber');

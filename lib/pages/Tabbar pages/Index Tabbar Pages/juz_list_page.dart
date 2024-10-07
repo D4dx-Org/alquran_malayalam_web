@@ -1,4 +1,5 @@
 import 'package:alquran_web/controllers/quran_controller.dart';
+import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/routes/app_pages.dart';
 import 'package:alquran_web/services/quran_services.dart';
 import 'package:alquran_web/services/json_utils.dart';
@@ -22,6 +23,7 @@ class _JuzListPageState extends State<JuzListPage> {
   final QuranService _quranService = QuranService();
   final JsonParser _juzJsonParser = JsonParser();
   final _quranController = Get.find<QuranController>();
+  final readingController = Get.find<ReadingController>();
 
   double getScaleFactor(double screenWidth) {
     if (screenWidth < 600) return 0.05;
@@ -320,6 +322,8 @@ class _JuzListPageState extends State<JuzListPage> {
           _quranController.updateSelectedSurahId(
               int.parse(surah['SuraId'].toString()), ayahNumber);
           _quranController.updateSelectedAyahNumber(ayahNumber);
+          readingController.navigateToSpecificSurah(surahId);
+
           Get.toNamed(
             Routes.SURAH_DETAILED,
             arguments: {

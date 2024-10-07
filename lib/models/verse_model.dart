@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 class QuranVerse {
   final String verseNumber;
   final String arabicText;
-    final GlobalKey key; // Add a GlobalKey property  
-
+  final GlobalKey key;
 
   QuranVerse({
     required this.verseNumber,
@@ -18,5 +17,3 @@ class QuranVerse {
     );
   }
 }
-
-
