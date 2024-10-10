@@ -2,6 +2,7 @@ import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/routes/app_pages.dart';
 import 'package:alquran_web/services/quran_services.dart';
 import 'package:alquran_web/services/surah_unicode_data.dart';
+import 'package:alquran_web/widgets/footer.dart';
 import 'package:alquran_web/widgets/star_widget.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:flutter/material.dart';
@@ -84,17 +85,27 @@ class SurahListPageState extends State<SurahListPage> {
         index: _currentIndex,
         children: [
           const Center(child: CircularProgressIndicator()),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-            child: DynamicHeightGridView(
-              itemCount: surahs.length,
-              crossAxisCount: crossAxisCount,
-              crossAxisSpacing: 10.0,
-              mainAxisSpacing: 5.0,
-              builder: (context, index) {
-                final surah = surahs[index];
-                return _buildSurahCard(surah);
-              },
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                  child: DynamicHeightGridView(
+                    itemCount: surahs.length,
+                    crossAxisCount: crossAxisCount,
+                    crossAxisSpacing: 10.0,
+                    mainAxisSpacing: 5.0,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    builder: (context, index) {
+                      final surah = surahs[index];
+                      return _buildSurahCard(surah);
+                    },
+                  ),
+                ),
+                const SizedBox(height: 20), // Add spacing before the footer
+                const FooterWidget(), // Display the footer at the bottom
+              ],
             ),
           ),
           const Center(

@@ -4,6 +4,7 @@ import 'package:alquran_web/routes/app_pages.dart';
 import 'package:alquran_web/services/quran_services.dart';
 import 'package:alquran_web/services/json_utils.dart';
 import 'package:alquran_web/services/surah_unicode_data.dart';
+import 'package:alquran_web/widgets/footer.dart';
 import 'package:alquran_web/widgets/star_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -99,94 +100,121 @@ class _JuzListPageState extends State<JuzListPage> {
             : screenWidth * scaleFactor;
 
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-        child: FutureBuilder<Map<int, List<Map<String, dynamic>>>>(
-          future: _juzMappedData,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final juzMappedData = snapshot.data!;
-              return SingleChildScrollView(
-                child: screenWidth < 650
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: List.generate(30, (index) {
-                          final juzIndex = index + 1;
-                          final surahs = juzMappedData[juzIndex]!;
-                          return _buildJuzCard(juzIndex, surahs);
-                        }),
-                      )
-                    : screenWidth < 950
-                        ? Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: List.generate(24, (index) {
-                                    final juzIndex = index + 1;
-                                    final surahs = juzMappedData[juzIndex]!;
-                                    return _buildJuzCard(juzIndex, surahs);
-                                  }),
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: List.generate(6, (index) {
-                                    final juzIndex = index + 25;
-                                    final surahs = juzMappedData[juzIndex]!;
-                                    return _buildJuzCard(juzIndex, surahs);
-                                  }),
-                                ),
-                              ),
-                            ],
-                          )
-                        : Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: List.generate(19, (index) {
-                                    final juzIndex = index + 1;
-                                    final surahs = juzMappedData[juzIndex]!;
-                                    return _buildJuzCard(juzIndex, surahs);
-                                  }),
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: List.generate(9, (index) {
-                                    final juzIndex = index + 20;
-                                    final surahs = juzMappedData[juzIndex]!;
-                                    return _buildJuzCard(juzIndex, surahs);
-                                  }),
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    _buildJuzCard(29, juzMappedData[29]!),
-                                    _buildJuzCard(30, juzMappedData[30]!),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-              );
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text('Error: ${snapshot.error}'),
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+          child: Column(
+            children: [
+              FutureBuilder<Map<int, List<Map<String, dynamic>>>>(
+                future: _juzMappedData,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final juzMappedData = snapshot.data!;
+                    return Column(
+                      children: [
+                        screenWidth < 650
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: List.generate(30, (index) {
+                                  final juzIndex = index + 1;
+                                  final surahs = juzMappedData[juzIndex]!;
+                                  return _buildJuzCard(juzIndex, surahs);
+                                }),
+                              )
+                            : screenWidth < 950
+                                ? Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: List.generate(24, (index) {
+                                            final juzIndex = index + 1;
+                                            final surahs =
+                                                juzMappedData[juzIndex]!;
+                                            return _buildJuzCard(
+                                                juzIndex, surahs);
+                                          }),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: List.generate(6, (index) {
+                                            final juzIndex = index + 25;
+                                            final surahs =
+                                                juzMappedData[juzIndex]!;
+                                            return _buildJuzCard(
+                                                juzIndex, surahs);
+                                          }),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: List.generate(19, (index) {
+                                            final juzIndex = index + 1;
+                                            final surahs =
+                                                juzMappedData[juzIndex]!;
+                                            return _buildJuzCard(
+                                                juzIndex, surahs);
+                                          }),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: List.generate(9, (index) {
+                                            final juzIndex = index + 20;
+                                            final surahs =
+                                                juzMappedData[juzIndex]!;
+                                            return _buildJuzCard(
+                                                juzIndex, surahs);
+                                          }),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            _buildJuzCard(
+                                                29, juzMappedData[29]!),
+                                            _buildJuzCard(
+                                                30, juzMappedData[30]!),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                      ],
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 20), // Add spacing before the footer
+              const FooterWidget(), // Add FooterWidget here
+            ],
+          ),
         ),
       ),
     );
