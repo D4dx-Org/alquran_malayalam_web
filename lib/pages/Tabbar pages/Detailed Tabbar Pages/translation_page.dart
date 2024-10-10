@@ -265,6 +265,9 @@ class _TranslationPageState extends State<TranslationPage> {
     return Column(
       children: [
         HoverableAyah(
+          isPlaying: verseKey ==
+              _audioController.currentAyah
+                  .value, // Check if this is the currently playing Ayah
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -382,15 +385,20 @@ class _TranslationPageState extends State<TranslationPage> {
 
 class HoverableAyah extends StatefulWidget {
   final Widget child;
+  final bool
+      isPlaying; // New parameter to indicate if this Ayah is currently playing
 
-  const HoverableAyah({super.key, required this.child});
+  const HoverableAyah({
+    super.key,
+    required this.child,
+    this.isPlaying = false, // Default to false if not provided
+  });
 
   @override
-  // ignore: library_private_types_in_public_api
-  _HoverableAyahState createState() => _HoverableAyahState();
+  HoverableAyahState createState() => HoverableAyahState();
 }
 
-class _HoverableAyahState extends State<HoverableAyah> {
+class HoverableAyahState extends State<HoverableAyah> {
   bool _isHovered = false;
 
   @override
@@ -404,7 +412,10 @@ class _HoverableAyahState extends State<HoverableAyah> {
         onTapCancel: () => setState(() => _isHovered = false),
         child: Container(
           decoration: BoxDecoration(
-            color: _isHovered ? Colors.grey[200] : Colors.transparent,
+            color: widget.isPlaying || _isHovered
+                ? Colors
+                    .grey[200] // Apply hover effect if it's hovered or playing
+                : Colors.transparent,
             borderRadius:
                 BorderRadius.circular(12), // Adjust the radius as needed
           ),
