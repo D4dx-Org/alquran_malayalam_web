@@ -62,9 +62,9 @@ class AudioPlayerWidget extends StatelessWidget {
                   icon: const Icon(Icons.skip_previous, color: Colors.grey),
                   onPressed: () {
                     if (audioController.isPlayingSurah.value) {
-                      audioController.playPreviousAyahInSurah();
+                      audioController.playPreviousAyaInSurah();
                     } else {
-                      audioController.playPreviousAyah();
+                      audioController.playPreviousAya();
                     }
                   },
                 ),
@@ -81,9 +81,9 @@ class AudioPlayerWidget extends StatelessWidget {
                   icon: const Icon(Icons.skip_next, color: Colors.grey),
                   onPressed: () {
                     if (audioController.isPlayingSurah.value) {
-                      audioController.playNextAyahInSurah();
+                      audioController.playNextAyaInSurah();
                     } else {
-                      audioController.playNextAyah();
+                      audioController.playNextAya();
                     }
                   },
                 ),
@@ -112,13 +112,13 @@ class AudioPlayerWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Obx(() => Text(
-                      'Current: ${audioController.currentAyah.value}',
+                      'Current: ${audioController.currentAya.value}',
                       style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                     )),
                 Obx(() => Text(
                       audioController.isPlayingSurah.value
                           ? 'Playing Surah ${audioController.currentSurahNumber.value}'
-                          : 'Single Ayah Mode',
+                          : 'Single Aya Mode',
                       style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                     )),
               ],

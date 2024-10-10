@@ -45,23 +45,23 @@ class _JuzListPageState extends State<JuzListPage> {
       List<Map<String, dynamic>> juzData =
           await _quranService.fetchJuz(juzNumber);
 
-      // Process the data to get Ayah details
-      List<Map<String, dynamic>> ayahDetails = [];
+      // Process the data to get Aya details
+      List<Map<String, dynamic>> AyaDetails = [];
       for (var item in juzData) {
         int suraId = int.parse(item["SuraId"].toString());
-        int ayahFrom = int.parse(item["ayafrom"].toString());
+        int AyaFrom = int.parse(item["ayafrom"].toString());
 
-        // Fetch Ayah lines for the specific Surah and Ayah
-        List<Map<String, dynamic>> ayahLines =
-            await _quranService.fetchAyahLines(suraId, ayahFrom);
+        // Fetch Aya lines for the specific Surah and Aya
+        List<Map<String, dynamic>> AyaLines =
+            await _quranService.fetchAyaLines(suraId, AyaFrom);
 
-        // Add the Ayah details to the list
-        ayahDetails.addAll(ayahLines);
+        // Add the Aya details to the list
+        AyaDetails.addAll(AyaLines);
       }
 
-      return ayahDetails;
+      return AyaDetails;
     } catch (e) {
-      throw Exception('Failed to load Ayah from Juz: $e');
+      throw Exception('Failed to load Aya from Juz: $e');
     }
   }
 
@@ -215,37 +215,37 @@ class _JuzListPageState extends State<JuzListPage> {
                 TextButton(
                   onPressed: () async {
                     try {
-                      // Fetch Ayah details for the selected Juz
-                      List<Map<String, dynamic>> ayahDetails =
+                      // Fetch Aya details for the selected Juz
+                      List<Map<String, dynamic>> AyaDetails =
                           await getAyasFromJuz(juzIndex);
 
-                      if (ayahDetails.isNotEmpty) {
-                        // Assuming you want to navigate to the first Ayah of the Juz
-                        final firstAyah = ayahDetails.first;
-                        int ayahNumber = int.parse(firstAyah['AyahNumber']
+                      if (AyaDetails.isNotEmpty) {
+                        // Assuming you want to navigate to the first Aya of the Juz
+                        final firstAya = AyaDetails.first;
+                        int AyaNumber = int.parse(firstAya['AyaNumber']
                             .toString()); // Ensure this key exists
-                        int surahId = int.parse(firstAyah['SuraId']
+                        int surahId = int.parse(firstAya['SuraId']
                             .toString()); // Ensure this key exists
 
                         _quranController.updateSelectedSurah(
-                            firstAyah['MSuraName'], ayahNumber);
+                            firstAya['MSuraName'], AyaNumber);
                         _quranController.updateSelectedSurahId(
-                            surahId, ayahNumber);
+                            surahId, AyaNumber);
 
                         Get.toNamed(
                           Routes.SURAH_DETAILED,
                           arguments: {
                             'surahId': surahId,
-                            'surahName': firstAyah[
-                                'MSuraName'], // Ensure this key exists
-                            'ayahNumber': ayahNumber,
+                            'surahName':
+                                firstAya['MSuraName'], // Ensure this key exists
+                            'AyaNumber': AyaNumber,
                             'initialTab': 1,
                           },
                         );
                       }
                     } catch (e) {
                       // Handle any errors that occur during fetching
-                      Get.snackbar('Error', 'Failed to load Ayah details: $e');
+                      Get.snackbar('Error', 'Failed to load Aya details: $e');
                     }
                   },
                   child: const Text('Read Juz'),
@@ -315,13 +315,13 @@ class _JuzListPageState extends State<JuzListPage> {
           ),
         ),
         onTap: () {
-          int ayahNumber = 5;
+          int AyaNumber = 5;
           final surahId = int.parse(surah['SuraId'].toString());
           final surahName = surah['MSuraName'];
-          _quranController.updateSelectedSurah(surah['MSuraName'], ayahNumber);
+          _quranController.updateSelectedSurah(surah['MSuraName'], AyaNumber);
           _quranController.updateSelectedSurahId(
-              int.parse(surah['SuraId'].toString()), ayahNumber);
-          _quranController.updateSelectedAyahNumber(ayahNumber);
+              int.parse(surah['SuraId'].toString()), AyaNumber);
+          _quranController.updateSelectedAyaNumber(AyaNumber);
           readingController.navigateToSpecificSurah(surahId);
 
           Get.toNamed(
@@ -329,7 +329,7 @@ class _JuzListPageState extends State<JuzListPage> {
             arguments: {
               'surahId': surahId,
               'surahName': surahName,
-              'ayahNumber': ayahNumber,
+              'AyaNumber': AyaNumber,
               'initialTab': 1,
             },
           );

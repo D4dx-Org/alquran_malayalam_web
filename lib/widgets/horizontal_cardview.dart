@@ -55,22 +55,22 @@ class HorizontalCardWidget extends StatelessWidget {
                         cursor: SystemMouseCursors.click,
                         child: GestureDetector(
                           onTap: () {
-                            int ayahNumber = surah['id'] == 2 ? 255 : 1;
+                            int AyaNumber = surah['id'] == 2 ? 255 : 1;
 
                             if (surah['name'] != null && surah['id'] != null) {
                               quranController.updateSelectedSurah(
-                                  surah['name'].toString(), ayahNumber);
+                                  surah['name'].toString(), AyaNumber);
                               quranController.updateSelectedSurahId(
-                                  surah['id'], ayahNumber);
-                              quranController.scrollToAyah(
-                                  ayahNumber, surahLineIds[surah['id']]!);
+                                  surah['id'], AyaNumber);
+                              quranController.scrollToAya(
+                                  AyaNumber, surahLineIds[surah['id']]!);
 
                               Get.toNamed(
                                 Routes.SURAH_DETAILED,
                                 arguments: {
                                   'surahId': surah['id'],
                                   'surahName': surah['name'],
-                                  'ayahNumber': ayahNumber,
+                                  'AyaNumber': AyaNumber,
                                 },
                               );
                             } else {

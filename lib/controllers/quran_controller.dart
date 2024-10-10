@@ -26,11 +26,11 @@ class QuranController extends GetxController {
   final _surahIds = <int>[].obs;
   final _selectedSurah = ''.obs;
   final _selectedSurahId = 0.obs;
-  final _selectedSurahAyahCount = 0.obs;
-  final _selectedAyahNumber = 1.obs;
-  final _selectedAyahRange = ''.obs;
-  final _ayahLines = <Map<String, dynamic>>[].obs;
-  final _surahAyahCounts = <int>[].obs;
+  final _selectedSurahAyaCount = 0.obs;
+  final _selectedAyaNumber = 1.obs;
+  final _selectedAyaRange = ''.obs;
+  final _AyaLines = <Map<String, dynamic>>[].obs;
+  final _surahAyaCounts = <int>[].obs;
   final _surahMalMeans = <String>[].obs;
 
   int currentPage = 0;
@@ -41,10 +41,10 @@ class QuranController extends GetxController {
   List<int> get surahIds => _surahIds;
   String get selectedSurah => _selectedSurah.value;
   int get selectedSurahId => _selectedSurahId.value;
-  int get selectedSurahAyahCount => _selectedSurahAyahCount.value;
-  int get selectedAyahNumber => _selectedAyahNumber.value;
-  String get selectedAyahRange => _selectedAyahRange.value;
-  List<Map<String, dynamic>> get ayahLines => _ayahLines;
+  int get selectedSurahAyaCount => _selectedSurahAyaCount.value;
+  int get selectedAyaNumber => _selectedAyaNumber.value;
+  String get selectedAyaRange => _selectedAyaRange.value;
+  List<Map<String, dynamic>> get AyaLines => _AyaLines;
   List<String> get surahMalMeans => _surahMalMeans;
 
   @override
@@ -61,7 +61,7 @@ class QuranController extends GetxController {
     if (currentIndex > 0) {
       final newSurahId = _surahIds[currentIndex - 1];
       updateSelectedSurahId(newSurahId, 1);
-      _fetchAyahLines(newSurahId);
+      _fetchAyaLines(newSurahId);
       Get.find<AudioController>().changeSurah(newSurahId);
       readingController.navigateToSpecificSurah(newSurahId);
     }
@@ -72,69 +72,69 @@ class QuranController extends GetxController {
     if (currentIndex < _surahIds.length - 1) {
       final newSurahId = _surahIds[currentIndex + 1];
       updateSelectedSurahId(newSurahId, 1);
-      _fetchAyahLines(newSurahId);
+      _fetchAyaLines(newSurahId);
       readingController.navigateToSpecificSurah(newSurahId);
       Get.find<AudioController>().changeSurah(newSurahId);
     }
   }
 
-  void updateSelectedSurah(String surahName, int ayahNumber) {
+  void updateSelectedSurah(String surahName, int AyaNumber) {
     final index = _surahNames.indexOf(surahName);
     if (index != -1) {
       _selectedSurah.value = surahName;
       _selectedSurahId.value = _surahIds[index];
-      _selectedSurahAyahCount.value = _surahAyahCounts[index];
-      _selectedAyahNumber.value = ayahNumber;
-      _selectedAyahRange.value = '${_surahIds[index]} : $ayahNumber';
+      _selectedSurahAyaCount.value = _surahAyaCounts[index];
+      _selectedAyaNumber.value = AyaNumber;
+      _selectedAyaRange.value = '${_surahIds[index]} : $AyaNumber';
       _prefsController.setString('selectedSurah', surahName);
       _prefsController.setString(
           'selectedArabicSurah', _arabicSurahNames[index]);
       _prefsController.setInt('selectedSurahId', _surahIds[index]);
-      _prefsController.setInt('selectedAyahNumber', ayahNumber);
+      _prefsController.setInt('selectedAyaNumber', AyaNumber);
       _prefsController.setString(
-          'selectedAyahRange', '${_surahIds[index]} : $ayahNumber');
+          'selectedAyaRange', '${_surahIds[index]} : $AyaNumber');
       _prefsController.setString('selectedSurahMalMean', _surahMalMeans[index]);
-      _fetchAyahLines(_surahIds[index]);
-      scrollToAyah(ayahNumber, '1'); // Scroll to the specified Ayah
+      _fetchAyaLines(_surahIds[index]);
+      scrollToAya(AyaNumber, '1'); // Scroll to the specified Aya
     }
   }
 
-  void updateSelectedSurahId(int surahId, int ayahNumber) {
+  void updateSelectedSurahId(int surahId, int AyaNumber) {
     final index = _surahIds.indexOf(surahId);
     if (index != -1) {
       _selectedSurah.value = _surahNames[index];
       _selectedSurahId.value = surahId;
-      _selectedSurahAyahCount.value = _surahAyahCounts[index];
-      _selectedAyahNumber.value = ayahNumber;
-      _selectedAyahRange.value = '$surahId : $ayahNumber';
+      _selectedSurahAyaCount.value = _surahAyaCounts[index];
+      _selectedAyaNumber.value = AyaNumber;
+      _selectedAyaRange.value = '$surahId : $AyaNumber';
       _prefsController.setString('selectedSurah', _surahNames[index]);
       _prefsController.setString(
           'selectedArabicSurah', _arabicSurahNames[index]);
       _prefsController.setInt('selectedSurahId', surahId);
-      _prefsController.setInt('selectedAyahNumber', ayahNumber);
-      _prefsController.setString('selectedAyahRange', '$surahId : $ayahNumber');
+      _prefsController.setInt('selectedAyaNumber', AyaNumber);
+      _prefsController.setString('selectedAyaRange', '$surahId : $AyaNumber');
       _prefsController.setString('selectedSurahMalMean', _surahMalMeans[index]);
-      _fetchAyahLines(surahId);
-      scrollToAyah(ayahNumber, '1'); // Scroll to the specified Ayah
+      _fetchAyaLines(surahId);
+      scrollToAya(AyaNumber, '1'); // Scroll to the specified Aya
     }
   }
 
-  void updateSelectedAyahRange(String ayahRange) {
-    final parts = ayahRange.split(' : ');
+  void updateSelectedAyaRange(String AyaRange) {
+    final parts = AyaRange.split(' : ');
     final surahNumber = int.parse(parts[0]);
-    final ayahNumber = int.parse(parts[1]);
+    final AyaNumber = int.parse(parts[1]);
 
     if (surahNumber == _selectedSurahId.value &&
-        ayahNumber <= _selectedSurahAyahCount.value) {
-      _selectedAyahRange.value = ayahRange;
-      _selectedAyahNumber.value = ayahNumber;
-      _prefsController.setString('selectedAyahRange', ayahRange);
+        AyaNumber <= _selectedSurahAyaCount.value) {
+      _selectedAyaRange.value = AyaRange;
+      _selectedAyaNumber.value = AyaNumber;
+      _prefsController.setString('selectedAyaRange', AyaRange);
     } else {
-      final lastAyahNumber = _selectedSurahAyahCount.value;
-      _selectedAyahRange.value = '${_selectedSurahId.value} : $lastAyahNumber';
-      _selectedAyahNumber.value = lastAyahNumber;
+      final lastAyaNumber = _selectedSurahAyaCount.value;
+      _selectedAyaRange.value = '${_selectedSurahId.value} : $lastAyaNumber';
+      _selectedAyaNumber.value = lastAyaNumber;
       _prefsController.setString(
-          'selectedAyahRange', '${_selectedSurahId.value} : $lastAyahNumber');
+          'selectedAyaRange', '${_selectedSurahId.value} : $lastAyaNumber');
     }
   }
 
@@ -181,7 +181,7 @@ class QuranController extends GetxController {
           surahs.map((surah) => surah['ASuraName'] as String).toList();
       _surahIds.value =
           surahs.map((surah) => int.parse(surah['SuraId'].toString())).toList();
-      _surahAyahCounts.value = surahs
+      _surahAyaCounts.value = surahs
           .map((surah) => int.parse(surah['TotalAyas'].toString()))
           .toList();
       _surahMalMeans.value =
@@ -191,45 +191,45 @@ class QuranController extends GetxController {
     }
   }
 
-  Future<void> _fetchAyahLines(int surahNumber) async {
+  Future<void> _fetchAyaLines(int surahNumber) async {
     try {
       currentPage = 0;
-      _ayahLines.value =
-          await _quranService.fetchAyahLines(surahNumber, currentPage);
-      getAyahStartingLineIds();
+      _AyaLines.value =
+          await _quranService.fetchAyaLines(surahNumber, currentPage);
+      getAyaStartingLineIds();
     } catch (e) {
-      debugPrint('Error fetching ayah lines: $e');
+      debugPrint('Error fetching Aya lines: $e');
     }
   }
 
-  Future<void> fetchMoreAyahLines() async {
+  Future<void> fetchMoreAyaLines() async {
     try {
       currentPage++;
-      final moreAyahLines = await _quranService.fetchAyahLines(
+      final moreAyaLines = await _quranService.fetchAyaLines(
           _selectedSurahId.value, currentPage);
-      _ayahLines.addAll(moreAyahLines);
+      _AyaLines.addAll(moreAyaLines);
     } catch (e) {
-      // debugPrint('Error fetching more ayah lines: $e');
+      // debugPrint('Error fetching more Aya lines: $e');
     }
   }
 
   void _loadSelectedSurah() {
     final storedSurah = _prefsController.getString('selectedSurah');
     final storedSurahId = _prefsController.getInt('selectedSurahId');
-    final storedAyahRange = _prefsController.getString('selectedAyahRange');
+    final storedAyaRange = _prefsController.getString('selectedAyaRange');
 
     if (storedSurah != null &&
         storedSurahId != null &&
-        storedAyahRange != null &&
+        storedAyaRange != null &&
         _surahNames.isNotEmpty) {
       final index = _surahNames.indexOf(storedSurah);
       if (index != -1) {
         _selectedSurah.value = _surahNames[index];
         _selectedSurahId.value = _surahIds[index];
-        _selectedSurahAyahCount.value = _surahAyahCounts[index];
-        _selectedAyahNumber.value = 1;
-        _selectedAyahRange.value = storedAyahRange;
-        _fetchAyahLines(_surahIds[index]);
+        _selectedSurahAyaCount.value = _surahAyaCounts[index];
+        _selectedAyaNumber.value = 1;
+        _selectedAyaRange.value = storedAyaRange;
+        _fetchAyaLines(_surahIds[index]);
       } else {
         _useFirstSurah();
       }
@@ -241,23 +241,23 @@ class QuranController extends GetxController {
   void _useFirstSurah() {
     _selectedSurah.value = _surahNames.first;
     _selectedSurahId.value = _surahIds.first;
-    _selectedSurahAyahCount.value = _surahAyahCounts.first;
-    _selectedAyahNumber.value = 1;
-    _selectedAyahRange.value = '${_surahIds.first} : 1';
-    _fetchAyahLines(_surahIds.first);
+    _selectedSurahAyaCount.value = _surahAyaCounts.first;
+    _selectedAyaNumber.value = 1;
+    _selectedAyaRange.value = '${_surahIds.first} : 1';
+    _fetchAyaLines(_surahIds.first);
   }
 
-  Future<bool> ensureAyahIsLoaded(int surahId, int ayahNumber) async {
+  Future<bool> ensureAyaIsLoaded(int surahId, int AyaNumber) async {
     bool newDataLoaded = false;
     if (surahId != _selectedSurahId.value) {
-      updateSelectedSurahId(surahId, ayahNumber);
-      await _fetchAyahLines(surahId);
+      updateSelectedSurahId(surahId, AyaNumber);
+      await _fetchAyaLines(surahId);
       newDataLoaded = true;
     }
 
-    while (_ayahLines.isEmpty ||
-        int.parse(_ayahLines.last['AyaNo']) < ayahNumber) {
-      await fetchMoreAyahLines();
+    while (
+        _AyaLines.isEmpty || int.parse(_AyaLines.last['AyaNo']) < AyaNumber) {
+      await fetchMoreAyaLines();
       newDataLoaded = true;
     }
 
@@ -272,43 +272,42 @@ class QuranController extends GetxController {
     return unicodeChar + String.fromCharCode(0xE000);
   }
 
-  Map<int, int> getAyahStartingLineIds() {
-    Map<int, int> ayahStartingLineIds = {};
-    int currentAyahNumber = 0;
+  Map<int, int> getAyaStartingLineIds() {
+    Map<int, int> AyaStartingLineIds = {};
+    int currentAyaNumber = 0;
 
-    for (var line in _ayahLines) {
-      int ayahNumber = int.parse(line['AyaNo']);
+    for (var line in _AyaLines) {
+      int AyaNumber = int.parse(line['AyaNo']);
       int lineId = int.parse(line['LineId']);
 
-      if (ayahNumber != currentAyahNumber) {
-        ayahStartingLineIds[ayahNumber] = lineId;
-        currentAyahNumber = ayahNumber;
+      if (AyaNumber != currentAyaNumber) {
+        AyaStartingLineIds[AyaNumber] = lineId;
+        currentAyaNumber = AyaNumber;
       }
     }
 
-    return ayahStartingLineIds;
+    return AyaStartingLineIds;
   }
 
-  Future<void> scrollToAyah(int ayahNumber, String lineId) async {
+  Future<void> scrollToAya(int AyaNumber, String lineId) async {
     try {
-      // Ensure the ayah is loaded
-      await ensureAyahIsLoaded(_selectedSurahId.value, ayahNumber);
+      // Ensure the Aya is loaded
+      await ensureAyaIsLoaded(_selectedSurahId.value, AyaNumber);
       // Add a small delay to allow for widget initialization
       await Future.delayed(const Duration(milliseconds: 50));
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (itemScrollController.isAttached) {
-          // Find the index of the ayah
-          int index = _ayahLines.indexWhere((ayah) =>
-              int.parse(ayah['AyaNo']) == ayahNumber &&
-              ayah['LineId'] == lineId);
+          // Find the index of the Aya
+          int index = _AyaLines.indexWhere((Aya) =>
+              int.parse(Aya['AyaNo']) == AyaNumber && Aya['LineId'] == lineId);
           if (index == -1) {
-            // If exact match not found, find the nearest ayah
-            index = _ayahLines
-                .indexWhere((ayah) => int.parse(ayah['AyaNo']) >= ayahNumber);
+            // If exact match not found, find the nearest Aya
+            index = _AyaLines.indexWhere(
+                (Aya) => int.parse(Aya['AyaNo']) >= AyaNumber);
           }
           if (index == -1) {
             // If still not found, scroll to the end
-            index = _ayahLines.length;
+            index = _AyaLines.length;
           }
           // Attempt to scroll
           itemScrollController.scrollTo(
@@ -317,12 +316,12 @@ class QuranController extends GetxController {
             curve: Curves.easeInOutCubic,
             alignment: 0,
           );
-          // Update the selected ayah number and range
-          _selectedAyahNumber.value = ayahNumber;
-          _selectedAyahRange.value = '${_selectedSurahId.value} : $ayahNumber';
+          // Update the selected Aya number and range
+          _selectedAyaNumber.value = AyaNumber;
+          _selectedAyaRange.value = '${_selectedSurahId.value} : $AyaNumber';
 
           // Notify the UI to update the dropdown
-          update(); // This will trigger the UI to rebuild and reflect the new Ayah number in the dropdown
+          update(); // This will trigger the UI to rebuild and reflect the new Aya number in the dropdown
         }
       });
     } catch (e) {
@@ -330,28 +329,28 @@ class QuranController extends GetxController {
     }
   }
 
-  Future<void> navigateToAyah(int ayahNumber) async {
-    await ensureAyahIsLoaded(_selectedSurahId.value, ayahNumber);
+  Future<void> navigateToAya(int AyaNumber) async {
+    await ensureAyaIsLoaded(_selectedSurahId.value, AyaNumber);
 
-    // Find the lineId for the selected Ayah
+    // Find the lineId for the selected Aya
     String lineId = '';
-    int ayahIndex = -1;
-    for (int i = 0; i < _ayahLines.length; i++) {
-      if (int.parse(_ayahLines[i]['AyaNo']) == ayahNumber) {
-        lineId = _ayahLines[i]['LineId'];
-        ayahIndex = i;
+    int AyaIndex = -1;
+    for (int i = 0; i < _AyaLines.length; i++) {
+      if (int.parse(_AyaLines[i]['AyaNo']) == AyaNumber) {
+        lineId = _AyaLines[i]['LineId'];
+        AyaIndex = i;
         break;
       }
     }
 
-    // Update the selected Ayah number and range
-    _selectedAyahNumber.value = ayahNumber;
-    _selectedAyahRange.value = '${_selectedSurahId.value} : $ayahNumber';
+    // Update the selected Aya number and range
+    _selectedAyaNumber.value = AyaNumber;
+    _selectedAyaRange.value = '${_selectedSurahId.value} : $AyaNumber';
 
-    // Scroll to the selected Ayah
-    if (ayahIndex != -1) {
+    // Scroll to the selected Aya
+    if (AyaIndex != -1) {
       itemScrollController.scrollTo(
-        index: ayahIndex,
+        index: AyaIndex,
         duration: const Duration(milliseconds: 50),
         curve: Curves.easeInOut,
       );
@@ -364,27 +363,27 @@ class QuranController extends GetxController {
         arguments: {
           'surahId': _selectedSurahId.value,
           'surahName': _selectedSurah.value,
-          'ayahNumber': ayahNumber,
+          'AyaNumber': AyaNumber,
           'lineId': lineId,
         },
       );
     }
   }
 
-  void updateSelectedAyahNumber(int ayahNumber) {
-    if (ayahNumber <= _selectedSurahAyahCount.value) {
-      _selectedAyahNumber.value = ayahNumber;
-      _selectedAyahRange.value = '${_selectedSurahId.value} : $ayahNumber';
-      _prefsController.setInt('selectedAyahNumber', ayahNumber);
+  void updateSelectedAyaNumber(int AyaNumber) {
+    if (AyaNumber <= _selectedSurahAyaCount.value) {
+      _selectedAyaNumber.value = AyaNumber;
+      _selectedAyaRange.value = '${_selectedSurahId.value} : $AyaNumber';
+      _prefsController.setInt('selectedAyaNumber', AyaNumber);
       _prefsController.setString(
-          'selectedAyahRange', '${_selectedSurahId.value} : $ayahNumber');
+          'selectedAyaRange', '${_selectedSurahId.value} : $AyaNumber');
       // Get.find<AudioController>()
-      //     .playSpecificAyah(_selectedSurahId.value, ayahNumber);
+      //     .playSpecificAya(_selectedSurahId.value, AyaNumber);
     }
   }
 
-  void resetToFirstAyah() {
-    updateSelectedAyahNumber(1);
-    scrollToAyah(1, '1');
+  void resetToFirstAya() {
+    updateSelectedAyaNumber(1);
+    scrollToAya(1, '1');
   }
 }

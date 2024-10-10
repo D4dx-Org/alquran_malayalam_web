@@ -15,19 +15,19 @@ class BookmarksPage extends StatelessWidget {
 
     return Scaffold(
       body: Obx(() {
-        final bookmarkedAyahs = bookmarkController.getBookmarkedAyahsList();
+        final bookmarkedAyas = bookmarkController.getBookmarkedAyasList();
 
         return LayoutBuilder(
           builder: (context, constraints) {
             if (constraints.maxWidth > 800) {
               return _buildMultipleListViews(
-                  bookmarkedAyahs, 3, quranController);
+                  bookmarkedAyas, 3, quranController);
             } else if (constraints.maxWidth > 650) {
               return _buildMultipleListViews(
-                  bookmarkedAyahs, 2, quranController);
+                  bookmarkedAyas, 2, quranController);
             } else {
               return _buildMultipleListViews(
-                  bookmarkedAyahs, 1, quranController);
+                  bookmarkedAyas, 1, quranController);
             }
           },
         );
@@ -35,25 +35,25 @@ class BookmarksPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMultipleListViews(List<Map<String, dynamic>> bookmarkedAyahs,
+  Widget _buildMultipleListViews(List<Map<String, dynamic>> bookmarkedAyas,
       int columnCount, QuranController quranController) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(columnCount, (columnIndex) {
         return Expanded(
           child: ListView.builder(
-            itemCount: (bookmarkedAyahs.length / columnCount).ceil(),
+            itemCount: (bookmarkedAyas.length / columnCount).ceil(),
             itemBuilder: (context, index) {
               final itemIndex = index * columnCount + columnIndex;
-              if (itemIndex < bookmarkedAyahs.length) {
-                final bookmark = bookmarkedAyahs[itemIndex];
+              if (itemIndex < bookmarkedAyas.length) {
+                final bookmark = bookmarkedAyas[itemIndex];
                 final surahId = bookmark['surahId']!;
-                final ayahNumber = bookmark['ayahNumber']!;
+                final AyaNumber = bookmark['AyaNumber']!;
                 final lineId = bookmark['lineId']!;
                 final surahName = quranController.getSurahName(surahId);
 
                 return _buildBookmarksCard(
-                    surahName, surahId, ayahNumber, lineId);
+                    surahName, surahId, AyaNumber, lineId);
               } else {
                 return const SizedBox.shrink();
               }
@@ -65,7 +65,7 @@ class BookmarksPage extends StatelessWidget {
   }
 
   Widget _buildBookmarksCard(
-      String surahName, int surahId, int ayahNumber, String lineId) {
+      String surahName, int surahId, int AyaNumber, String lineId) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
       child: Card(
@@ -105,7 +105,7 @@ class BookmarksPage extends StatelessWidget {
             ],
           ),
           trailing: Text(
-            '$surahId : $ayahNumber',
+            '$surahId : $AyaNumber',
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
@@ -113,14 +113,14 @@ class BookmarksPage extends StatelessWidget {
           ),
           onTap: () async {
             final quranController = Get.find<QuranController>();
-                  await quranController.ensureAyahIsLoaded(surahId, ayahNumber);  
+            await quranController.ensureAyaIsLoaded(surahId, AyaNumber);
 
             Get.toNamed(
               Routes.SURAH_DETAILED,
               arguments: {
                 'surahId': surahId,
                 'surahName': surahName,
-                'ayahNumber': ayahNumber,
+                'AyaNumber': AyaNumber,
                 'lineId': lineId,
               },
             );

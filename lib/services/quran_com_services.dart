@@ -29,30 +29,29 @@ class QuranComService {
     }
   }
 
-  Future<List<QuranVerse>> fetchAyahs(int pageNumber,int surahId) async {
-    final response = await http.get(
-        Uri.parse("$baseUrl/quran/verses/uthmani?page_number=$pageNumber&chapter_number=$surahId"));
+  Future<List<QuranVerse>> fetchAyas(int pageNumber, int surahId) async {
+    final response = await http.get(Uri.parse(
+        "$baseUrl/quran/verses/uthmani?page_number=$pageNumber&chapter_number=$surahId"));
 
     if (response.statusCode == 200) {
-      final ayahsData = jsonDecode(utf8.decode(response.bodyBytes));
-      List<QuranVerse> ayahs = [];
+      final AyasData = jsonDecode(utf8.decode(response.bodyBytes));
+      List<QuranVerse> Ayas = [];
 
-      for (var verse in ayahsData['verses']) {
-        ayahs.add(QuranVerse(
+      for (var verse in AyasData['verses']) {
+        Ayas.add(QuranVerse(
           verseNumber: verse['verse_key'].toString(),
           arabicText: verse['text_uthmani'].toString(),
         ));
       }
 
-      return ayahs;
+      return Ayas;
     } else {
       throw Exception(
-          'Failed to load Ayahs for Surah $pageNumber: ${response.statusCode}');
+          'Failed to load Ayas for Surah $pageNumber: ${response.statusCode}');
     }
   }
 
-  Future<String?> fetchAyahAudio(String verseKey,
-      {int recitationId = 7}) async {
+  Future<String?> fetchAyaAudio(String verseKey, {int recitationId = 7}) async {
     try {
       final response = await http.get(
           Uri.parse("$baseUrl/verses/by_key/$verseKey?audio=$recitationId"));
@@ -73,7 +72,7 @@ class QuranComService {
         }
         return null;
       } else {
-        throw Exception('Failed to load Ayah audio: ${response.statusCode}');
+        throw Exception('Failed to load Aya audio: ${response.statusCode}');
       }
     } catch (e) {
       return null;
@@ -101,7 +100,7 @@ class QuranComService {
     }
   }
 
-  Future<List<QuranVerse>> searchAyahs(String query, String language) async {
+  Future<List<QuranVerse>> searchAyas(String query, String language) async {
     final response = await http
         .get(Uri.parse("$baseUrl/search?q=$query&language=$language"));
     if (response.statusCode == 200) {
@@ -115,7 +114,7 @@ class QuranComService {
       }
       return results;
     } else {
-      throw Exception('Failed to search Ayahs: ${response.statusCode}');
+      throw Exception('Failed to search Ayas: ${response.statusCode}');
     }
   }
 
@@ -140,12 +139,10 @@ class QuranComService {
         }
         return null;
       } else {
-        throw Exception('Failed to load Ayah audio: ${response.statusCode}');
+        throw Exception('Failed to load Aya audio: ${response.statusCode}');
       }
     } catch (e) {
       return null;
     }
   }
-
-  
 }

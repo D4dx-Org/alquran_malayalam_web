@@ -84,13 +84,13 @@ class SearchWidgetState extends State<SearchWidget> {
       searchController.updateSearchQuery(_controller.text);
       searchController.performSearch();
       _showSearchResult(_controller.text);
-      _checkAndNavigateToAyah(_controller.text);
+      _checkAndNavigateToAya(_controller.text);
     } else {
       _hideSearchResult();
     }
   }
 
-  void _checkAndNavigateToAyah(String input) {
+  void _checkAndNavigateToAya(String input) {
     final pattern = RegExp(r'^(\d+):(\d+)$');
     final match = pattern.firstMatch(input);
 
@@ -98,21 +98,21 @@ class SearchWidgetState extends State<SearchWidget> {
       _navigationDebounceTimer?.cancel();
       _navigationDebounceTimer = Timer(const Duration(seconds: 2), () {
         final surahNumber = int.parse(match.group(1)!);
-        final ayahNumber = int.parse(match.group(2)!);
+        final AyaNumber = int.parse(match.group(2)!);
 
         if (surahNumber >= 1 && surahNumber <= 114) {
           final quranController = Get.find<QuranController>();
           final surahName = quranController.getSurahName(surahNumber);
 
-          quranController.updateSelectedSurahId(surahNumber, ayahNumber);
-          quranController.updateSelectedAyahNumber(ayahNumber);
+          quranController.updateSelectedSurahId(surahNumber, AyaNumber);
+          quranController.updateSelectedAyaNumber(AyaNumber);
 
           Get.toNamed(
             Routes.SURAH_DETAILED,
             arguments: {
               'surahId': surahNumber,
               'surahName': surahName,
-              'ayahNumber': ayahNumber,
+              'AyaNumber': AyaNumber,
             },
           );
 

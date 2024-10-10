@@ -9,7 +9,7 @@ class AudioController extends GetxController {
   Rx<Duration> position = Duration.zero.obs;
   Rx<Duration> duration = Duration.zero.obs;
   RxBool isPlaying = false.obs;
-  RxString currentAyah = ''.obs;
+  RxString currentAya = ''.obs;
   RxBool isVisible = false.obs;
   RxDouble playbackSpeed = 1.0.obs;
 
@@ -17,7 +17,7 @@ class AudioController extends GetxController {
   RxInt currentAudioIndex = 0.obs;
   RxBool isPlayingSurah = false.obs;
   RxInt currentSurahNumber = 0.obs;
-  RxBool shouldPlayNextAyah = true.obs; // Add this line
+  RxBool shouldPlayNextAya = true.obs; // Add this line
   RxInt currentRecitationId = 7.obs; // Add this line for dynamic recitation ID
 
   @override
@@ -30,20 +30,20 @@ class AudioController extends GetxController {
       isPlaying.value = state.playing;
       if (state.processingState == ProcessingState.completed) {
         if (isPlayingSurah.value) {
-          playNextAyahInSurah();
+          playNextAyaInSurah();
         } else {
-          playNextAyah();
+          playNextAya();
         }
       }
     });
   }
 
-  Future<void> playAyah(String verseKey) async {
+  Future<void> playAya(String verseKey) async {
     try {
       isPlayingSurah.value = false;
       showPlayer();
-      currentAyah.value = verseKey;
-      String? audioUrl = await _quranComService.fetchAyahAudio(verseKey,
+      currentAya.value = verseKey;
+      String? audioUrl = await _quranComService.fetchAyaAudio(verseKey,
           recitationId: currentRecitationId.value); // Pass recitationId
       if (audioUrl != null) {
         if (!audioUrl.startsWith('http')) {
@@ -60,26 +60,26 @@ class AudioController extends GetxController {
     }
   }
 
-  Future<void> playNextAyah() async {
-    if (shouldPlayNextAyah.value) {
-      List<String> parts = currentAyah.value.split(':');
+  Future<void> playNextAya() async {
+    if (shouldPlayNextAya.value) {
+      List<String> parts = currentAya.value.split(':');
       if (parts.length == 2) {
         int surahNumber = int.parse(parts[0]);
-        int ayahNumber = int.parse(parts[1]);
-        String nextAyahKey = '$surahNumber:${ayahNumber + 1}';
-        await playAyah(nextAyahKey);
+        int AyaNumber = int.parse(parts[1]);
+        String nextAyaKey = '$surahNumber:${AyaNumber + 1}';
+        await playAya(nextAyaKey);
       }
     }
   }
 
-  Future<void> playPreviousAyah() async {
-    List<String> parts = currentAyah.value.split(':');
+  Future<void> playPreviousAya() async {
+    List<String> parts = currentAya.value.split(':');
     if (parts.length == 2) {
       int surahNumber = int.parse(parts[0]);
-      int ayahNumber = int.parse(parts[1]);
-      if (ayahNumber > 1) {
-        String previousAyahKey = '$surahNumber:${ayahNumber - 1}';
-        await playAyah(previousAyahKey);
+      int AyaNumber = int.parse(parts[1]);
+      if (AyaNumber > 1) {
+        String previousAyaKey = '$surahNumber:${AyaNumber - 1}';
+        await playAya(previousAyaKey);
       }
     }
   }
@@ -113,20 +113,20 @@ class AudioController extends GetxController {
       // Step 3: Now fetch and play the surah audio
       await fetchSurahAudio(surahNumber);
       if (surahAudioUrls.isNotEmpty) {
-        await playNextAyahInSurah(); // Start playing the surah
+        await playNextAyaInSurah(); // Start playing the surah
       }
     } else {
       Get.snackbar('Audio Unavailable', 'No audio found for Bismillah.');
     }
   }
 
-  Future<void> playNextAyahInSurah() async {
-    if (shouldPlayNextAyah.value &&
+  Future<void> playNextAyaInSurah() async {
+    if (shouldPlayNextAya.value &&
         currentAudioIndex.value < surahAudioUrls.length) {
       String audioUrl = surahAudioUrls[currentAudioIndex.value];
       await _audioPlayer.setUrl(audioUrl);
       await _audioPlayer.play();
-      currentAyah.value =
+      currentAya.value =
           '${currentSurahNumber.value}:${currentAudioIndex.value + 1}';
       currentAudioIndex.value++;
     } else {
@@ -148,11 +148,11 @@ class AudioController extends GetxController {
       // If a surah was playing and audio was active, resume playing the new surah
       await playSurah(newSurahNumber);
     } else if (wasPlaying) {
-      // If single ayah was playing, play the first ayah of the new surah
-      await playAyah('$newSurahNumber:1');
+      // If single Aya was playing, play the first Aya of the new surah
+      await playAya('$newSurahNumber:1');
     } else {
       // If nothing was playing, don't start playback
-      currentAyah.value = '$newSurahNumber:1';
+      currentAya.value = '$newSurahNumber:1';
     }
   }
 
@@ -181,7 +181,7 @@ class AudioController extends GetxController {
     await _audioPlayer.stop();
     position.value = Duration.zero;
     duration.value = Duration.zero;
-    currentAyah.value = '';
+    currentAya.value = '';
     isPlayingSurah.value = false;
     isPlaying.value = false; // Add this line
     currentAudioIndex.value = 0;
@@ -195,10 +195,10 @@ class AudioController extends GetxController {
     }
   }
 
-  void playPreviousAyahInSurah() {
+  void playPreviousAyaInSurah() {
     if (currentAudioIndex.value > 1) {
       currentAudioIndex.value -= 2;
-      playNextAyahInSurah();
+      playNextAyaInSurah();
     }
   }
 
@@ -207,9 +207,9 @@ class AudioController extends GetxController {
     _audioPlayer.setSpeed(speed);
   }
 
-  Future<void> playSpecificAyah(int surahNumber, int ayahNumber) async {
-    String verseKey = '$surahNumber:$ayahNumber';
-    await playAyah(verseKey);
+  Future<void> playSpecificAya(int surahNumber, int AyaNumber) async {
+    String verseKey = '$surahNumber:$AyaNumber';
+    await playAya(verseKey);
   }
 
   void changeRecitation(int newRecitationId) {

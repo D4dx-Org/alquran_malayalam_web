@@ -6,8 +6,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:alquran_web/controllers/audio_controller.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
 
-class AyahActionBar extends StatelessWidget {
-  final int ayahNumber;
+class AyaActionBar extends StatelessWidget {
+  final int AyaNumber;
   final String lineId;
   final VoidCallback onPlayPressed;
   final VoidCallback onBookmarkPressed;
@@ -15,9 +15,9 @@ class AyahActionBar extends StatelessWidget {
   final List<Map<String, dynamic>> lineWords;
   final String translation;
 
-  AyahActionBar({
+  AyaActionBar({
     super.key,
-    required this.ayahNumber,
+    required this.AyaNumber,
     required this.lineId,
     required this.onPlayPressed,
     required this.onBookmarkPressed,
@@ -38,11 +38,11 @@ class AyahActionBar extends StatelessWidget {
     final arabicWords = lineWords.map((word) => word['ArabWord']).join(' ');
     final wordMeanings = lineWords.map((word) => word['MalWord']).join(' ');
     final shareText =
-        'Surah ${quranController.selectedSurah}, Ayah $ayahNumber\n\n'
+        'Surah ${quranController.selectedSurah}, Aya $AyaNumber\n\n'
         'Arabic: $arabicWords\n\n'
         'Word Meanings: $wordMeanings\n\n'
         'Translation: $translation\n\n'
-        'Check it out here: https://alquranmalayalam.net/newsite/#/surah_detailed/quran/${quranController.selectedSurahId}/$ayahNumber';
+        'Check it out here: https://alquranmalayalam.net/newsite/#/surah_detailed/quran/${quranController.selectedSurahId}/$AyaNumber';
 
     showDialog(
       context: context,
@@ -90,7 +90,7 @@ class AyahActionBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            '${quranController.selectedSurahId}:$ayahNumber',
+            '${quranController.selectedSurahId}:$AyaNumber',
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,

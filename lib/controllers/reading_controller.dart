@@ -80,7 +80,7 @@ class ReadingController extends GetxController {
       for (int surahId in surahIds) {
         // Fetch all the verses of the surah for the given page number
         final fetchedVerses =
-            await _quranComService.fetchAyahs(pageNumber, surahId);
+            await _quranComService.fetchAyas(pageNumber, surahId);
 
         if (fetchedVerses.isNotEmpty) {
           // Check if the surah starts on this page
@@ -188,10 +188,10 @@ class ReadingController extends GetxController {
   String _buildContinuousText(List<QuranVerse> verses, int surahId) {
     verseKeys.clear();
     return verses.map((verse) {
-      final ayahNumber = verse.verseNumber.split(':').last;
-      final key = ValueKey<String>("$surahId:$ayahNumber");
+      final AyaNumber = verse.verseNumber.split(':').last;
+      final key = ValueKey<String>("$surahId:$AyaNumber");
       verseKeys.add(key);
-      return '${verse.arabicText} \uFD3F${_convertToArabicNumbers(ayahNumber)}\uFD3E';
+      return '${verse.arabicText} \uFD3F${_convertToArabicNumbers(AyaNumber)}\uFD3E';
     }).join();
   }
 

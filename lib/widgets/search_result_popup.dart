@@ -75,20 +75,24 @@ class SearchResultPopup extends StatelessWidget {
                           ' ${result['MSuraName']}, ആയ ${result['AyaNo']}'),
                       subtitle: Text(result['MalTran']),
                       onTap: () {
-                        int ayahNumber = result['AyahNo'];
+                        int ayaNumber = int.parse(result['AyaNo'].toString());
                         quranController.updateSelectedSurah(
-                            result['MSuraName'], ayahNumber);
+                            result['MSuraName'], ayaNumber);
                         quranController.updateSelectedSurahId(
-                            int.parse(result['SuraNo'].toString()), ayahNumber);
-                        final surahId = int.parse(result['SuraNo'].toString());
+                            int.parse(
+                              result['SuraNo'].toString(),
+                            ),
+                            ayaNumber);
+                        final surahId = int.parse(
+                          result['SuraNo'].toString(),
+                        );
                         final surahName = result['MSuraName'];
                         Get.toNamed(
                           Routes.SURAH_DETAILED,
                           arguments: {
                             'surahId': surahId,
                             'surahName': surahName,
-                            'ayahNumber':
-                                ayahNumber, // Include the initial ayah number
+                            'AyaNumber': ayaNumber,
                           },
                         );
                       },

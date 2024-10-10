@@ -83,7 +83,7 @@ class AudioPlayerSettingsPopup extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  children: [Text("Continuous Ayah Play")],
+                  children: [Text("Continuous Aya Play")],
                 )
               ],
             )
@@ -92,12 +92,11 @@ class AudioPlayerSettingsPopup extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Text("Continuous Ayah Play"),
+                    const Text("Continuous Aya Play"),
                     Obx(() => Checkbox(
-                          value: controller.shouldPlayNextAyah.value,
+                          value: controller.shouldPlayNextAya.value,
                           onChanged: (value) {
-                            controller.shouldPlayNextAyah.value =
-                                value ?? false;
+                            controller.shouldPlayNextAya.value = value ?? false;
                           },
                         )),
                   ],

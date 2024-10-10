@@ -6,7 +6,7 @@ import 'package:alquran_web/controllers/bookmarks_controller.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:alquran_web/widgets/audio_player_widget.dart';
-import 'package:alquran_web/widgets/ayah_action_bar.dart';
+import 'package:alquran_web/widgets/Ayah_action_bar.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class TranslationPage extends StatefulWidget {
@@ -30,42 +30,41 @@ class _TranslationPageState extends State<TranslationPage> {
   void initState() {
     super.initState();
     itemPositionsListener.itemPositions.addListener(_onScroll);
-    // itemPositionsListener.itemPositions.addListener(_updateCurrentAyah);
+    // itemPositionsListener.itemPositions.addListener(_updateCurrentAya);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _handleInitialNavigation();
     });
   }
 
-  void _updateCurrentAyah() {
+  void _updateCurrentAya() {
     if (itemPositionsListener.itemPositions.value.isNotEmpty) {
       final firstVisibleItemIndex =
           itemPositionsListener.itemPositions.value.first.index;
       if (firstVisibleItemIndex > 0 &&
-          firstVisibleItemIndex < _quranController.ayahLines.length) {
-        final visibleAyah =
-            _quranController.ayahLines[firstVisibleItemIndex - 1];
-        final ayahNumber = int.parse(visibleAyah['AyaNo']);
-        _quranController.updateSelectedAyahNumber(ayahNumber);
+          firstVisibleItemIndex < _quranController.AyaLines.length) {
+        final visibleAya = _quranController.AyaLines[firstVisibleItemIndex - 1];
+        final AyaNumber = int.parse(visibleAya['AyaNo']);
+        _quranController.updateSelectedAyaNumber(AyaNumber);
       }
     }
   }
 
   void _handleInitialNavigation() async {
     final args = Get.arguments;
-    if (args != null && args['ayahNumber'] != null && args['lineId'] != null) {
+    if (args != null && args['AyaNumber'] != null && args['lineId'] != null) {
       final surahId = args['surahId'] as int;
-      final ayahNumber = args['ayahNumber'] as int;
+      final AyaNumber = args['AyaNumber'] as int;
       final lineId = args['lineId'] as String;
 
-      await _quranController.ensureAyahIsLoaded(surahId, ayahNumber);
-      scrollToAyah(ayahNumber, lineId);
+      await _quranController.ensureAyaIsLoaded(surahId, AyaNumber);
+      scrollToAya(AyaNumber, lineId);
     }
   }
 
   @override
   void dispose() {
     itemPositionsListener.itemPositions.removeListener(_onScroll);
-    itemPositionsListener.itemPositions.removeListener(_updateCurrentAyah);
+    itemPositionsListener.itemPositions.removeListener(_updateCurrentAya);
     super.dispose();
   }
 
@@ -74,16 +73,16 @@ class _TranslationPageState extends State<TranslationPage> {
       final positions = itemPositionsListener.itemPositions.value;
       if (positions.isNotEmpty) {
         final lastIndex = positions.last.index;
-        if (lastIndex >= _quranController.ayahLines.length - 5) {
-          _loadMoreAyahLines();
+        if (lastIndex >= _quranController.AyaLines.length - 5) {
+          _loadMoreAyaLines();
         }
       }
     }
   }
 
-  void scrollToAyah(int ayahNumber, String lineId) {
-    final index = _quranController.ayahLines.indexWhere((ayah) =>
-        ayah['AyaNo'] == ayahNumber.toString() && ayah['LineId'] == lineId);
+  void scrollToAya(int AyaNumber, String lineId) {
+    final index = _quranController.AyaLines.indexWhere((Aya) =>
+        Aya['AyaNo'] == AyaNumber.toString() && Aya['LineId'] == lineId);
     if (index != -1) {
       _quranController.itemScrollController.scrollTo(
         index: index, // +1 to account for the header
@@ -91,25 +90,25 @@ class _TranslationPageState extends State<TranslationPage> {
         curve: Curves.easeInOutCubic,
       );
     } else {
-      // If the ayah is not found, it might not be loaded yet.
+      // If the Aya is not found, it might not be loaded yet.
       // You could show a loading indicator here and retry after a short delay.
       Future.delayed(const Duration(milliseconds: 500),
-          () => scrollToAyah(ayahNumber, lineId));
+          () => scrollToAya(AyaNumber, lineId));
     }
   }
 
-  Future<void> _loadMoreAyahLines() async {
+  Future<void> _loadMoreAyaLines() async {
     if (_isEndOfSurah()) return;
 
     setState(() => _isLoading = true);
-    await _quranController.fetchMoreAyahLines();
+    await _quranController.fetchMoreAyaLines();
     setState(() => _isLoading = false);
   }
 
   bool _isEndOfSurah() {
-    return _quranController.ayahLines.isNotEmpty &&
-        _quranController.ayahLines.last['AyaNo'] ==
-            _quranController.selectedSurahAyahCount.toString();
+    return _quranController.AyaLines.isNotEmpty &&
+        _quranController.AyaLines.last['AyaNo'] ==
+            _quranController.selectedSurahAyaCount.toString();
   }
 
   double getScaleFactor(double screenWidth) {
@@ -142,18 +141,17 @@ class _TranslationPageState extends State<TranslationPage> {
                   () => ScrollablePositionedList.builder(
                     itemScrollController: _quranController.itemScrollController,
                     itemPositionsListener: itemPositionsListener,
-                    itemCount: _quranController.ayahLines.length + 2,
+                    itemCount: _quranController.AyaLines.length + 2,
                     itemBuilder: (context, index) {
                       if (index == 0) {
                         return _buildHeader();
                       } else if (index ==
-                          _quranController.ayahLines.length + 1) {
+                          _quranController.AyaLines.length + 1) {
                         return _isLoading
                             ? const Center(child: CircularProgressIndicator())
                             : const SizedBox.shrink();
                       } else {
-                        return _buildAyah(
-                            _quranController.ayahLines[index - 1]);
+                        return _buildAya(_quranController.AyaLines[index - 1]);
                       }
                     },
                   ),
@@ -257,42 +255,42 @@ class _TranslationPageState extends State<TranslationPage> {
     );
   }
 
-  Widget _buildAyah(Map<String, dynamic> ayah) {
-    int ayahNumber = int.tryParse(ayah['AyaNo'] ?? '') ?? 0;
-    String lineId = ayah['LineId'] ?? '';
-    String verseKey = "${_quranController.selectedSurahId}:$ayahNumber";
+  Widget _buildAya(Map<String, dynamic> Aya) {
+    int AyaNumber = int.tryParse(Aya['AyaNo'] ?? '') ?? 0;
+    String lineId = Aya['LineId'] ?? '';
+    String verseKey = "${_quranController.selectedSurahId}:$AyaNumber";
 
     return Column(
       children: [
-        HoverableAyah(
+        HoverableAya(
           isPlaying: verseKey ==
-              _audioController.currentAyah
-                  .value, // Check if this is the currently playing Ayah
+              _audioController.currentAya
+                  .value, // Check if this is the currently playing Aya
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Obx(() => AyahActionBar(
-                      ayahNumber: ayahNumber,
+                child: Obx(() => AyaActionBar(
+                      AyaNumber: AyaNumber,
                       lineId: lineId,
                       onPlayPressed: () {
-                        _audioController.playAyah(verseKey);
+                        _audioController.playAya(verseKey);
                       },
                       onBookmarkPressed: () {
                         _bookmarkController.toggleBookmark(
                           _quranController.selectedSurahId,
-                          ayahNumber,
+                          AyaNumber,
                           lineId,
                         );
                       },
-                      isBookmarked: _bookmarkController.isAyahBookmarked(
+                      isBookmarked: _bookmarkController.isAyaBookmarked(
                         _quranController.selectedSurahId,
-                        ayahNumber,
+                        AyaNumber,
                         lineId,
                       ),
-                      lineWords: ayah['LineWords'],
-                      translation: ayah['MalTran'],
+                      lineWords: Aya['LineWords'],
+                      translation: Aya['MalTran'],
                     )),
               ),
               Column(
@@ -307,7 +305,7 @@ class _TranslationPageState extends State<TranslationPage> {
                         runAlignment: WrapAlignment.end,
                         direction: Axis.horizontal,
                         children: [
-                          ...(ayah['LineWords'] as List<Map<String, dynamic>>)
+                          ...(Aya['LineWords'] as List<Map<String, dynamic>>)
                               .map(
                             (word) => Padding(
                               padding:
@@ -324,7 +322,7 @@ class _TranslationPageState extends State<TranslationPage> {
                     padding: const EdgeInsets.all(16.0),
                     child: Obx(
                       () => SelectableText(
-                        ayah['MalTran'],
+                        Aya['MalTran'],
                         style: TextStyle(
                           fontSize:
                               _settingsController.translationFontSize.value,
@@ -383,22 +381,22 @@ class _TranslationPageState extends State<TranslationPage> {
   }
 }
 
-class HoverableAyah extends StatefulWidget {
+class HoverableAya extends StatefulWidget {
   final Widget child;
   final bool
-      isPlaying; // New parameter to indicate if this Ayah is currently playing
+      isPlaying; // New parameter to indicate if this Aya is currently playing
 
-  const HoverableAyah({
+  const HoverableAya({
     super.key,
     required this.child,
     this.isPlaying = false, // Default to false if not provided
   });
 
   @override
-  HoverableAyahState createState() => HoverableAyahState();
+  HoverableAyaState createState() => HoverableAyaState();
 }
 
-class HoverableAyahState extends State<HoverableAyah> {
+class HoverableAyaState extends State<HoverableAya> {
   bool _isHovered = false;
 
   @override

@@ -6,7 +6,7 @@ class QuranService {
   // ignore: non_constant_identifier_names
   var ArticleId = 1;
   var surahNumber = 1;
-  var ayahNumber = 1;
+  var AyaNumber = 1;
   var pageNumber = 0;
   String searchword = '';
 
@@ -43,7 +43,7 @@ class QuranService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> fetchAyahLines(
+  Future<List<Map<String, dynamic>>> fetchAyaLines(
       int surahNumber, int currentPage) async {
     pageNumber = currentPage;
     final response = await http
@@ -65,7 +65,7 @@ class QuranService {
         };
       }).toList(); // Call toList() here
     } else {
-      throw Exception('Failed to load Ayah');
+      throw Exception('Failed to load Aya');
     }
   }
 

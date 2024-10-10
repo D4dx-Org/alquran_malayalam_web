@@ -108,52 +108,52 @@ class SurahBottomRowState extends State<SurahBottomRow>
                   Obx(
                     () => CustomDropdown(
                       options: List.generate(
-                        _quranController.selectedSurahAyahCount,
+                        _quranController.selectedSurahAyaCount,
                         (index) => '${index + 1}',
                       ),
                       selectedValue:
-                          _quranController.selectedAyahNumber.toString(),
+                          _quranController.selectedAyaNumber.toString(),
                       onChanged: (value) async {
                         if (value != null) {
-                          int ayahNumber = int.parse(value);
+                          int AyaNumber = int.parse(value);
 
                           // Check if the audio is currently playing
                           bool wasPlaying = _audioController.isPlaying.value;
 
                           if (_audioController.isPlaying.value) {
-                            // Stop the current Surah audio before switching to another Ayah
+                            // Stop the current Surah audio before switching to another Aya
                             _audioController.stopSurahPlayback();
                           }
 
                           try {
-                            // Ensure the selected ayah is loaded in the UI
-                            await _quranController.ensureAyahIsLoaded(
+                            // Ensure the selected Aya is loaded in the UI
+                            await _quranController.ensureAyaIsLoaded(
                               _quranController.selectedSurahId,
-                              ayahNumber,
+                              AyaNumber,
                             );
 
-                            // Scroll to the selected ayah
+                            // Scroll to the selected Aya
                             Map<int, int> startingLineIds =
-                                _quranController.getAyahStartingLineIds();
-                            int? lineId = startingLineIds[ayahNumber];
+                                _quranController.getAyaStartingLineIds();
+                            int? lineId = startingLineIds[AyaNumber];
                             if (lineId != null) {
-                              _quranController.scrollToAyah(
-                                  ayahNumber, lineId.toString());
+                              _quranController.scrollToAya(
+                                  AyaNumber, lineId.toString());
 
                               // Play the audio only if it was already playing
                               if (wasPlaying) {
-                                await _audioController.playSpecificAyah(
+                                await _audioController.playSpecificAya(
                                     _quranController.selectedSurahId,
-                                    ayahNumber);
+                                    AyaNumber);
                               }
                             } else {
                               throw Exception(
-                                  'LineId not found for ayah $ayahNumber');
+                                  'LineId not found for Aya $AyaNumber');
                             }
                           } catch (e) {
-                            debugPrint('Error navigating to ayah: $e');
+                            debugPrint('Error navigating to Aya: $e');
                             Get.snackbar('Error',
-                                'Failed to navigate to the selected ayah',
+                                'Failed to navigate to the selected Aya',
                                 snackPosition: SnackPosition.BOTTOM);
                           }
                         }
@@ -217,7 +217,7 @@ class SurahBottomRowState extends State<SurahBottomRow>
                   ElevatedButton(
                     onPressed: () {
                       _quranController.navigateToPreviousSurah();
-                      _quranController.resetToFirstAyah();
+                      _quranController.resetToFirstAya();
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
@@ -239,7 +239,7 @@ class SurahBottomRowState extends State<SurahBottomRow>
                   ElevatedButton(
                     onPressed: () {
                       _quranController.navigateToNextSurah();
-                      _quranController.resetToFirstAyah();
+                      _quranController.resetToFirstAya();
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
