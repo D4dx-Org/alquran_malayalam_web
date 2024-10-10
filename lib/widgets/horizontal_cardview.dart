@@ -3,7 +3,7 @@ import 'package:alquran_web/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class HorizontalCardWidget extends StatelessWidget {
+class HorizontalCardWidget extends StatefulWidget {
   final QuranController quranController;
 
   const HorizontalCardWidget({
@@ -12,30 +12,38 @@ class HorizontalCardWidget extends StatelessWidget {
   });
 
   @override
+  _HorizontalCardWidgetState createState() => _HorizontalCardWidgetState();
+}
+
+class _HorizontalCardWidgetState extends State<HorizontalCardWidget> {
+  final double cardHeight = 34;
+  final double cardWidth = 160;
+
+  final List<Map<String, dynamic>> surahs = [
+    {
+      'id': 2,
+      'name': 'ആയത്തൗൽ കുർസി'
+    }, // Ayat al-Kursi is from Surah Al-Baqarah (2)
+    {'id': 36, 'name': 'സൂറ: യാസീൻ'},
+    {'id': 67, 'name': 'സൂറ: അൽമുൽക്ക്'},
+    {'id': 55, 'name': 'സൂറ: അർറഹ്മാൻ'},
+    {'id': 56, 'name': 'സൂറ: അൽവാഖിഅ'},
+    {'id': 18, 'name': 'സൂറ: അൽകഹ്ഫ്'},
+  ];
+
+  Map<int, String> surahLineIds = {
+    2: '1000',
+    36: '10668',
+    67: '13914',
+    55: '13142',
+    56: '13226',
+  };
+
+  // Track hovered card index
+  int? _hoveredIndex;
+
+  @override
   Widget build(BuildContext context) {
-    double cardHeight = 34;
-    double cardWidth = 160;
-
-    final List<Map<String, dynamic>> surahs = [
-      {
-        'id': 2,
-        'name': 'ആയത്തൗൽ കുർസി'
-      }, // Ayat al-Kursi is from Surah Al-Baqarah (2)
-      {'id': 36, 'name': 'സൂറ: യാസീൻ'},
-      {'id': 67, 'name': 'സൂറ: അൽമുൽക്ക്'},
-      {'id': 55, 'name': 'സൂറ: അർറഹ്മാൻ'},
-      {'id': 56, 'name': 'സൂറ: അൽവാഖിഅ'},
-      {'id': 18, 'name': 'സൂറ: അൽകഹ്ഫ്'},
-    ];
-
-    Map<int, String> surahLineIds = {
-      2: '1000',
-      36: '10668',
-      67: '13914',
-      55: '13142',
-      56: '13226',
-    };
-
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
@@ -46,23 +54,36 @@ class HorizontalCardWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: surahs.map((surah) {
+                children: surahs.asMap().entries.map((entry) {
+                  int index = entry.key;
+                  Map<String, dynamic> surah = entry.value;
+
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: SizedBox(
                       width: cardWidth,
                       child: MouseRegion(
                         cursor: SystemMouseCursors.click,
+                        onEnter: (_) {
+                          setState(() {
+                            _hoveredIndex = index;
+                          });
+                        },
+                        onExit: (_) {
+                          setState(() {
+                            _hoveredIndex = null;
+                          });
+                        },
                         child: GestureDetector(
                           onTap: () {
                             int AyaNumber = surah['id'] == 2 ? 255 : 1;
 
                             if (surah['name'] != null && surah['id'] != null) {
-                              quranController.updateSelectedSurah(
+                              widget.quranController.updateSelectedSurah(
                                   surah['name'].toString(), AyaNumber);
-                              quranController.updateSelectedSurahId(
+                              widget.quranController.updateSelectedSurahId(
                                   surah['id'], AyaNumber);
-                              quranController.scrollToAya(
+                              widget.quranController.scrollToAya(
                                   AyaNumber, surahLineIds[surah['id']]!);
 
                               Get.toNamed(
@@ -81,7 +102,11 @@ class HorizontalCardWidget extends StatelessWidget {
                             height: cardHeight,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(25),
-                              color: const Color.fromRGBO(226, 226, 226, 1),
+                              color: _hoveredIndex == index
+                                  ? const Color.fromRGBO(
+                                      180, 180, 180, 1) // Darker grey on hover
+                                  : const Color.fromRGBO(
+                                      226, 226, 226, 1), // Default grey color
                             ),
                             child: Center(
                               child: Text(
