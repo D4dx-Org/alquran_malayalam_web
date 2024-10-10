@@ -191,7 +191,7 @@ class ReadingController extends GetxController {
       final AyaNumber = verse.verseNumber.split(':').last;
       final key = ValueKey<String>("$surahId:$AyaNumber");
       verseKeys.add(key);
-      return '${verse.arabicText} \uFD3F${_convertToArabicNumbers(AyaNumber)}\uFD3E';
+      return '${verse.arabicText} \uFD3F${_convertToArabicNumbers(AyaNumber)}\uFD3E ';
     }).join();
   }
 

@@ -223,7 +223,7 @@ class ReadingPageState extends State<ReadingPage> {
         child: Column(
           children: [
             Obx(
-              () => Text(
+              () => SelectableText(
                 piece.text,
                 style: settingsController.quranFontStyle.value.copyWith(
                   height: 2.5,
