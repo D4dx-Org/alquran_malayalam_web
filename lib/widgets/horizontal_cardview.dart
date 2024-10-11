@@ -37,6 +37,7 @@ class HorizontalCardWidgetState extends State<HorizontalCardWidget> {
     67: '13914',
     55: '13142',
     56: '13226',
+    18: '7258',
   };
 
   // Track hovered card index
