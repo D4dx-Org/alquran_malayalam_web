@@ -28,16 +28,17 @@ class ReadingController extends GetxController {
   int minPageLoaded = 1;
   int maxPageLoaded = 1;
 
+  var currentSurahId = 1; // Default to Surah 1
+
   @override
   Future<void> onInit() async {
     super.onInit();
-    _loadPageToSurahMapping();
-    pageToSurahMap = {};
+    await _loadPageToSurahMapping(); // Await the mapping to be loaded
     _sharedPreferences = await SharedPreferences.getInstance();
     // Load saved preferences for current page
     _loadSavedPreferences();
     // Fetch initial verses
-    fetchVerses(direction: 'replace');
+    await fetchVerses(direction: 'replace');
   }
 
   Future<void> _loadPageToSurahMapping() async {
@@ -80,6 +81,8 @@ class ReadingController extends GetxController {
       List<ContentPiece> combinedVersesContent = [];
 
       for (int surahId in surahIds) {
+        currentSurahId = surahId; // Update the current Surah ID
+
         // Fetch all the verses of the surah for the given page number
         final fetchedVerses =
             await _quranComService.fetchAyas(pageNumber, surahId);
