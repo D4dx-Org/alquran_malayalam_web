@@ -1,7 +1,6 @@
 // lib/pages/reading_page.dart
 
 import 'dart:async';
-
 import 'package:alquran_web/controllers/audio_controller.dart';
 import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
@@ -11,7 +10,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
-import 'package:extended_text/extended_text.dart';
 
 class ReadingPage extends StatefulWidget {
   const ReadingPage({super.key});
@@ -27,6 +25,9 @@ class ReadingPageState extends State<ReadingPage> {
   bool _isLoading = false;
   Timer? _debounce;
   bool _scrollControllerDisposed = false;
+
+  // FocusNode to manage focus and selection
+  final FocusNode _focusNode = FocusNode();
 
   // List to hold TapGestureRecognizers
   final List<TapGestureRecognizer> _tapGestureRecognizers = [];
@@ -50,6 +51,7 @@ class ReadingPageState extends State<ReadingPage> {
     readingController.scrollController.dispose();
     _scrollControllerDisposed = true;
     _debounce?.cancel();
+    _focusNode.dispose(); // Dispose the FocusNode
 
     // Dispose of all TapGestureRecognizers
     for (var recognizer in _tapGestureRecognizers) {
@@ -162,50 +164,55 @@ class ReadingPageState extends State<ReadingPage> {
             : screenWidth * scaleFactor;
 
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: Center(
-              child: Container(
-                constraints: const BoxConstraints(maxWidth: 1000),
-                child: Obx(() {
-                  return readingController.isLoading.value &&
-                          readingController.versesContent.isEmpty
-                      ? const Center(child: CircularProgressIndicator())
-                      : Directionality(
-                          textDirection: TextDirection.rtl,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: horizontalPadding),
-                            child: ScrollConfiguration(
-                              behavior: NoScrollbarScrollBehavior(),
-                              child: ListView.builder(
-                                controller: readingController.scrollController,
-                                itemCount: readingController
-                                        .versesContent.length +
-                                    1, // Add 1 to account for the extra SizedBox
-                                itemBuilder: (context, index) {
-                                  if (index ==
-                                      readingController.versesContent.length) {
-                                    return SizedBox(
-                                      height: screenHeight *
-                                          0.2, // Adjust the height as needed
-                                    );
-                                  }
-                                  final ContentPiece piece =
-                                      readingController.versesContent[index];
-                                  return _buildContentPiece(piece);
-                                },
+      body: GestureDetector(
+        onTap: () => _focusNode.unfocus(), // Cancel selection on screen tap
+        child: Column(
+          children: [
+            Expanded(
+              child: Center(
+                child: Container(
+                  constraints: const BoxConstraints(maxWidth: 1000),
+                  child: Obx(() {
+                    return readingController.isLoading.value &&
+                            readingController.versesContent.isEmpty
+                        ? const Center(child: CircularProgressIndicator())
+                        : Directionality(
+                            textDirection: TextDirection.rtl,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: horizontalPadding),
+                              child: ScrollConfiguration(
+                                behavior: NoScrollbarScrollBehavior(),
+                                child: ListView.builder(
+                                  controller:
+                                      readingController.scrollController,
+                                  itemCount: readingController
+                                          .versesContent.length +
+                                      1, // Add 1 to account for the extra SizedBox
+                                  itemBuilder: (context, index) {
+                                    if (index ==
+                                        readingController
+                                            .versesContent.length) {
+                                      return SizedBox(
+                                        height: screenHeight *
+                                            0.2, // Adjust the height as needed
+                                      );
+                                    }
+                                    final ContentPiece piece =
+                                        readingController.versesContent[index];
+                                    return _buildContentPiece(piece);
+                                  },
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                }),
+                          );
+                  }),
+                ),
               ),
             ),
-          ),
-          AudioPlayerWidget(), // Add the AudioPlayerWidget here
-        ],
+            AudioPlayerWidget(), // Add the AudioPlayerWidget here
+          ],
+        ),
       ),
     );
   }
@@ -248,15 +255,17 @@ class ReadingPageState extends State<ReadingPage> {
         child: Column(
           children: [
             Obx(
-              () => SelectableText.rich(
-                TextSpan(
-                  style: settingsController.quranFontStyle.value.copyWith(
-                    height: 2.5,
+              () => Focus(
+                focusNode: _focusNode,
+                child: SelectableText.rich(
+                  TextSpan(
+                    style: settingsController.quranFontStyle.value.copyWith(
+                      height: 2.5,
+                    ),
+                    children: _buildTextSpans(piece.text),
                   ),
-                  children: _buildTextSpans(piece.text),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
-                // selectionEnabled: true,
               ),
             ),
             SizedBox(
