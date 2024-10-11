@@ -100,9 +100,8 @@ class QuranComService {
     }
   }
 
-  Future<List<QuranVerse>> searchAyas(String query, String language) async {
-    final response = await http
-        .get(Uri.parse("$baseUrl/search?q=$query&language=$language"));
+  Future<List<QuranVerse>> searchAyas(String query) async {
+    final response = await http.get(Uri.parse("$baseUrl/search?q=$query"));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       List<QuranVerse> results = [];

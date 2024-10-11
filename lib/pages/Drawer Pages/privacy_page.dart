@@ -15,6 +15,8 @@ class PrivacyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final int currentYear = DateTime.now().year;
+
     final screenWidth = MediaQuery.of(context).size.width;
     final scaleFactor = getScaleFactor(screenWidth);
 
@@ -33,7 +35,7 @@ class PrivacyPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            const SelectableText(
               "D4media Privacy Policy Statement",
               style: TextStyle(
                 fontSize: 24,
@@ -45,7 +47,7 @@ class PrivacyPage extends StatelessWidget {
             const SizedBox(height: 16),
             _buildSection(
               "Introduction",
-              "The D4media (Dharmadhara Division for Digital Media), Kerala, India (referred to as \"D4media\", \"we\", \"us\" and \"our\") takes individuals' privacy seriously. This Statement explains our policies and practices and applies to information collection and use including but not limited to while you are visiting and using www.d4media.in (the \"Site\") and our Apps.\n\n"
+              "The D4media (Dharmadhara Division for Digital Media), Kerala, India (referred to as \"D4media\", \"we\", \"us\" and \"our\") takes individuals' privacy seriously. This Statement explains our policies and practices and applies to information collection and use including but not limited to while you are visiting and using www.alquranmalayalam.net (the \"Site\") and our Apps.\n\n"
                   "For the purposes of the relevant data protection laws in force in places including but not limited to India, D4media, is controller and/or data user which control the collection, holding, processing or use of your personal data on our behalf. This Statement is privacy policy for the Site and our Apps.",
               textColor,
             ),
@@ -140,8 +142,8 @@ class PrivacyPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
-              "© 2022 D4Media",
+            Text(
+              "© $currentYear D4Media",
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
@@ -160,7 +162,7 @@ class PrivacyPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 24),
-        Text(
+        SelectableText(
           title,
           style: TextStyle(
             fontSize: 18,
@@ -169,7 +171,7 @@ class PrivacyPage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        Text(
+        SelectableText(
           content,
           style: TextStyle(color: textColor),
           textAlign: TextAlign.justify,
@@ -203,8 +205,28 @@ class PrivacyPage extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(height: 8),
+        InkWell(
+          onTap: () => _launchWebsite('https://d4media.in/'),
+          child: const Text(
+            "Website: https://d4media.in/",
+            style: TextStyle(
+              color: Colors.blue,
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        ),
       ],
     );
+  }
+
+  void _launchWebsite(String url) async {
+    final Uri websiteUri = Uri.parse(url);
+    if (await canLaunchUrl(websiteUri)) {
+      await launchUrl(websiteUri);
+    } else {
+      debugPrint('Could not launch $websiteUri');
+    }
   }
 
   void _launchPhone(String phoneNumber) async {
