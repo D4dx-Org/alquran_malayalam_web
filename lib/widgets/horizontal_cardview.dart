@@ -12,10 +12,10 @@ class HorizontalCardWidget extends StatefulWidget {
   });
 
   @override
-  _HorizontalCardWidgetState createState() => _HorizontalCardWidgetState();
+  HorizontalCardWidgetState createState() => HorizontalCardWidgetState();
 }
 
-class _HorizontalCardWidgetState extends State<HorizontalCardWidget> {
+class HorizontalCardWidgetState extends State<HorizontalCardWidget> {
   final double cardHeight = 34;
   final double cardWidth = 160;
 
@@ -76,6 +76,7 @@ class _HorizontalCardWidgetState extends State<HorizontalCardWidget> {
                         },
                         child: GestureDetector(
                           onTap: () {
+                            // ignore: non_constant_identifier_names
                             int AyaNumber = surah['id'] == 2 ? 255 : 1;
 
                             if (surah['name'] != null && surah['id'] != null) {

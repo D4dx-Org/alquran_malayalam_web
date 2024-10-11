@@ -1,5 +1,7 @@
 // lib/controllers/reading_controller.dart
 
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:alquran_web/models/content_peice.dart';
 import 'package:alquran_web/services/surah_unicode_data.dart';
 import 'package:flutter/material.dart';

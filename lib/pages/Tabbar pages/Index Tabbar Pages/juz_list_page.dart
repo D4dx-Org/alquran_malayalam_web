@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/routes/app_pages.dart';

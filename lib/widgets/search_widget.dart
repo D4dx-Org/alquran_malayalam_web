@@ -98,6 +98,7 @@ class SearchWidgetState extends State<SearchWidget> {
       _navigationDebounceTimer?.cancel();
       _navigationDebounceTimer = Timer(const Duration(seconds: 2), () {
         final surahNumber = int.parse(match.group(1)!);
+        // ignore: non_constant_identifier_names
         final AyaNumber = int.parse(match.group(2)!);
 
         if (surahNumber >= 1 && surahNumber <= 114) {

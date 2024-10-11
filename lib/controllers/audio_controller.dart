@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:alquran_web/services/quran_com_services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:get/get.dart';
