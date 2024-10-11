@@ -223,21 +223,59 @@ class ReadingPageState extends State<ReadingPage> {
         child: Column(
           children: [
             Obx(
-              () => SelectableText(
-                piece.text,
-                style: settingsController.quranFontStyle.value.copyWith(
-                  height: 2.5,
-                ),
+              () => RichText(
                 textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: settingsController.quranFontStyle.value.copyWith(
+                    height: 2.5,
+                  ),
+                  children: _buildTextSpans(piece.text),
+                ),
               ),
             ),
             SizedBox(
               height: 50,
-            )
+            ),
           ],
         ),
       );
     }
+  }
+
+  List<TextSpan> _buildTextSpans(String text) {
+    List<TextSpan> spans = [];
+    int lastIndex = 0;
+
+    // Regular expression to match the verse numbers enclosed in Unicode characters
+    RegExp regex = RegExp(r'(\uFD3F[^\uFD3F\uFD3E]+\uFD3E)');
+    Iterable<RegExpMatch> matches = regex.allMatches(text);
+
+    for (final match in matches) {
+      // Add text before the match
+      if (match.start > lastIndex) {
+        String beforeText = text.substring(lastIndex, match.start);
+        spans.add(TextSpan(text: beforeText));
+      }
+
+      // Add the matched verse number with Uthmani font
+      String verseNumberText = match.group(0)!;
+      spans.add(TextSpan(
+        text: verseNumberText,
+        style: TextStyle(
+          fontFamily: 'Uthmanic_Script', // Specify the Uthmani font here
+        ),
+      ));
+
+      lastIndex = match.end;
+    }
+
+    // Add remaining text after the last match
+    if (lastIndex < text.length) {
+      String remainingText = text.substring(lastIndex);
+      spans.add(TextSpan(text: remainingText));
+    }
+
+    return spans;
   }
 }
 
