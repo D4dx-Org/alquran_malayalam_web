@@ -19,7 +19,7 @@ void main() async {
   Get.put(QuranController(sharedPreferences: sharedPreferences),
       permanent: true);
   Get.put(SettingsController(sharedPreferences: sharedPreferences),
-      permanent: true); 
+      permanent: true);
 
   // Lazy load other controllers
   Get.lazyPut(() => BookmarkController(sharedPreferences: sharedPreferences),
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
         appBarTheme: const AppBarTheme(backgroundColor: Colors.white),
         scaffoldBackgroundColor: Colors.white,
       ),
-      initialRoute: AppPages.INITIAL,
+      initialRoute: Routes.SPLASH,
       getPages: AppPages.routes,
     );
   }
