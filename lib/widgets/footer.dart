@@ -20,16 +20,19 @@ class FooterWidget extends StatelessWidget {
             'COPYRIGHT © $currentYear.AL-QURAN. ', // Use the current year
             style: TextStyle(fontSize: 14, color: Colors.white),
           ),
-          GestureDetector(
-            onTap: () {
-              Get.toNamed(Routes.PRIVACY);
-            },
-            child: Text(
-              'PRIVACY POLICY',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.blue,
-                decoration: TextDecoration.underline,
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () {
+                Get.toNamed(Routes.PRIVACY);
+              },
+              child: Text(
+                'PRIVACY POLICY',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                ),
               ),
             ),
           ),
@@ -37,16 +40,19 @@ class FooterWidget extends StatelessWidget {
             ' - DEVELOPED BY ',
             style: TextStyle(fontSize: 14, color: Colors.white),
           ),
-          GestureDetector(
-            onTap: () {
-              _launchWebsite('https://d4media.in/');
-            },
-            child: Text(
-              'D4MEDIA',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.blue,
-                decoration: TextDecoration.underline,
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () {
+                _launchWebsite('https://d4media.in/');
+              },
+              child: Text(
+                'D4MEDIA',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                ),
               ),
             ),
           ),

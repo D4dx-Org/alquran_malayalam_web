@@ -15,14 +15,15 @@ class AppPages {
   static const INITIAL = Routes.SPLASH;
 
   static final routes = [
-        GetPage(
+    GetPage(
       name: Routes.SPLASH,
       page: () => const SplashScreen(),
     ),
-
     GetPage(
       name: Routes.HOME,
       page: () => const IndexPage(),
+      transition: Transition.fade,
+      transitionDuration: const Duration(milliseconds: 600),
     ),
     GetPage(
       name: Routes.SETTINGS,
