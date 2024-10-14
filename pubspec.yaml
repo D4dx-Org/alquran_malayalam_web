@@ -33,18 +33,22 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
-  get: ^4.6.6
-  google_fonts: ^6.2.1
-  # get_storage: ^2.1.1
-  url_launcher: ^6.3.0
-  flutter_svg: ^2.0.10+1
-  floating_tabbar: ^1.0.3
-  flutter_staggered_grid_view: ^0.7.0
-  http: ^1.2.2
-  flutter_widget_from_html_core: ^0.15.2
-  dynamic_height_grid_view: ^0.0.4
-  shared_preferences: ^2.3.2
+  cupertino_icons: 
+  get: 
+  google_fonts: 
+  url_launcher: 
+  flutter_svg: 
+  floating_tabbar: 
+  http: 
+  flutter_widget_from_html_core: 
+  dynamic_height_grid_view: 
+  shared_preferences: 
+  audio_session: 
+  just_audio: 
+  share_plus: 
+  scrollable_positioned_list: 
+  speech_to_text: 
+  extended_text: 
 
 dev_dependencies:
   flutter_test:
@@ -55,7 +59,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -71,7 +75,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    - assets/juz-to-chapter-verse-mappings.json
+    - assets/json/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -85,17 +89,20 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
+  fonts:
+    - family: Uthmanic_Script
+      fonts:
+        - asset: assets/fonts/ScheherazadeNew-Regular.ttf
+
+    - family: Amiri_Script
+      fonts:
+        - asset: assets/fonts/amiri-quran.ttf
+
+    - family: SuraNames
+      fonts:
+        - asset: assets/fonts/sura_names.ttf
+
+  # weight: 700
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

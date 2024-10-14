@@ -1,3 +1,4 @@
+import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/pages/Tabbar%20pages/Index%20Tabbar%20Pages/surah_list_page.dart';
 import 'package:alquran_web/pages/Tabbar%20pages/Index%20Tabbar%20Pages/bookmarks.dart';
 import 'package:alquran_web/pages/Tabbar%20pages/Index%20Tabbar%20Pages/juz_list_page.dart';
@@ -7,6 +8,7 @@ import 'package:alquran_web/widgets/index_floating_tabbar.dart';
 import 'package:alquran_web/widgets/navigation_drawer_widget.dart';
 import 'package:alquran_web/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class IndexPage extends StatefulWidget {
   const IndexPage({super.key});
@@ -18,16 +20,21 @@ class IndexPage extends StatefulWidget {
 class _IndexPageState extends State<IndexPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late QuranController _quranController;
+  late TransformationController _transformationController;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _quranController = Get.find<QuranController>();
+    _transformationController = TransformationController();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _transformationController.dispose();
     super.dispose();
   }
 
@@ -41,17 +48,15 @@ class _IndexPageState extends State<IndexPage>
             SliverToBoxAdapter(
               child: Column(
                 children: [
+                  const SizedBox(height: 25),
                   SearchWidget(
                     width: MediaQuery.of(context).size.width,
-                    onChanged: (value) {
-                      // Handle search text changes
-                    },
-                    onClear: () {
-                      // Handle clear button press
+                    onSearch: (searchText) {
+                      // Perform search operation here
                     },
                   ),
                   const SizedBox(height: 25),
-                  const HorizontalCardWidget(),
+                  HorizontalCardWidget(quranController: _quranController),
                   const SizedBox(height: 25),
                   IndexFloatingTabbar(
                     controller: _tabController,
@@ -60,6 +65,7 @@ class _IndexPageState extends State<IndexPage>
                       _tabController.animateTo(index);
                     },
                   ),
+                  const SizedBox(height: 25)
                 ],
               ),
             )

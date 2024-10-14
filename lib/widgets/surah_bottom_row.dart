@@ -1,235 +1,325 @@
+// ignore_for_file: non_constant_identifier_names
 
-import 'package:alquran_web/controllers/quran_controller.dart';  
-import 'package:alquran_web/widgets/detailed_tabbar.dart';  
-import 'package:flutter/material.dart';  
-import 'package:get/get.dart';  
-import 'package:google_fonts/google_fonts.dart';  
+import 'package:alquran_web/controllers/reading_controller.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:alquran_web/controllers/quran_controller.dart';
+import 'package:alquran_web/widgets/search_widget.dart';
 
-class SurahBottomRow extends StatefulWidget {  
-  final double scaleFactor;  
-  final TabController tabController;  
+import '../controllers/audio_controller.dart';
 
-  const SurahBottomRow(this.scaleFactor, {required this.tabController, super.key});  
+class SurahBottomRow extends StatefulWidget {
+  final double scaleFactor;
+  final TabController tabController;
 
-  @override  
-  State<SurahBottomRow> createState() => _SurahBottomRowState();  
-}  
+  const SurahBottomRow(this.scaleFactor,
+      {required this.tabController, super.key});
 
-class _SurahBottomRowState extends State<SurahBottomRow>  
-    with SingleTickerProviderStateMixin {  
-  final _quranController = Get.find<QuranController>();  
+  @override
+  SurahBottomRowState createState() => SurahBottomRowState();
+}
 
-  @override  
-  Widget build(BuildContext context) {  
-    return Container(  
-      color: const Color.fromRGBO(115, 78, 9, 1),  
-      height: 50 * widget.scaleFactor,  
-      child: Row(  
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,  
-        children: [  
-          Expanded(  
-            child: Row(  
-              children: [  
-                Obx(  
-                  () => CustomDropdown(  
-                    options: _quranController.surahNames,  
-                    selectedValue: _quranController.selectedSurah,  
-                    onChanged: (value) {  
-                      if (value != null) {  
-                        _quranController.updateSelectedSurah(value);  
-                      }  
-                    },  
-                    scaleFactor: widget.scaleFactor,  
-                  ),  
-                ),  
-                const SizedBox(width: 16),  
-                Obx(  
-                  () => CustomDropdown(  
-                    options: _quranController.surahIds  
-                        .map((id) => id.toString())  
-                        .toList(),  
-                    selectedValue: _quranController.selectedSurahId.toString(),  
-                    onChanged: (value) {  
-                      if (value != null) {  
-                        _quranController.updateSelectedSurahId(int.parse(value));  
-                      }  
-                    },  
-                    scaleFactor: widget.scaleFactor,  
-                  ),  
-                ),  
-                const SizedBox(width: 16),  
-                Obx(  
-                  () => CustomDropdown(  
-                    options: List.generate(  
-                      _quranController.selectedSurahAyahCount,  
-                      (index) =>  
-                          '${_quranController.selectedSurahId} : ${index + 1}',  
-                    ),  
-                    selectedValue: _quranController.selectedAyahRange,  
-                    onChanged: (value) {  
-                      if (value != null) {  
-                        final parts = value.split(' : ');  
-                        final surahNumber = int.parse(parts[0]);  
-                        final ayahNumber = int.parse(parts[1]);  
-                        _quranController.updateSelectedAyahRange(  
-                            '$surahNumber : $ayahNumber');  
-                      }  
-                    },  
-                    scaleFactor: widget.scaleFactor,  
-                  ),  
-                ),  
-              ],  
-            ),  
-          ),  
-          Expanded(  
-            child: DetailedTabbar(  
-              controller: widget.tabController,  
-            ),  
-          ),  
-          Expanded(  
-            child: Row(  
-              mainAxisAlignment: MainAxisAlignment.end,  
-              children: [  
-                const Text(  
-                  "Page",  
-                  style: TextStyle(  
-                    color: Colors.white,  
-                  ),  
-                ),  
-                const SizedBox(  
-                  width: 4,  
-                ),  
-                Obx(  
-                  () => CustomDropdown(  
-                    options: List.generate(  
-                      _quranController.selectedSurahAyahCount,  
-                      (index) =>  
-                          '${_quranController.selectedSurahId} : ${index + 1}',  
-                    ),  
-                    selectedValue: _quranController.selectedAyahRange,  
-                    onChanged: (value) {  
-                      if (value != null) {  
-                        final parts = value.split(' : ');  
-                        final surahNumber = int.parse(parts[0]);  
-                        final ayahNumber = int.parse(parts[1]);  
-                        _quranController.updateSelectedAyahRange(  
-                            '$surahNumber : $ayahNumber');  
-                      }  
-                    },  
-                    scaleFactor: widget.scaleFactor,  
-                  ),  
-                ),  
-                const SizedBox(  
-                  width: 16,  
-                ),  
-                ElevatedButton(  
-                  onPressed: () {  
-                    _quranController.navigateToPreviousSurah();  
-                  },  
-                  style: ElevatedButton.styleFrom(  
-                    shape: RoundedRectangleBorder(  
-                      borderRadius: BorderRadius.circular(12),  
-                    ),  
-                    padding: const EdgeInsets.all(8),  
-                    backgroundColor: const Color.fromRGBO(115, 78, 9, 1),  
-                    foregroundColor: const Color.fromRGBO(162, 132, 94, 1),  
-                    side: const BorderSide(  
-                      color: Color.fromRGBO(162, 132, 94, 1),  
-                      width: 2,  
-                    ),  
-                  ),  
-                  child: const Icon(Icons.arrow_back_ios_new_rounded, size: 16),  
-                ),  
-                const SizedBox(width: 16),  
-                ElevatedButton(  
-                  onPressed: () {  
-                    _quranController.navigateToNextSurah();  
-                  },  
-                  style: ElevatedButton.styleFrom(  
-                    shape: RoundedRectangleBorder(  
-                      borderRadius: BorderRadius.circular(12),  
-                    ),  
-                    padding: const EdgeInsets.all(8),  
-                    backgroundColor: const Color.fromRGBO(115, 78, 9, 1),  
-                    foregroundColor: const Color.fromRGBO(162, 132, 94, 1),  
-                    side: const BorderSide(  
-                      color: Color.fromRGBO(162, 132, 94, 1),  
-                      width: 2,  
-                    ),  
-                  ),  
-                  child: const Icon(Icons.arrow_forward_ios_rounded, size: 16),  
-                ),  
-              ],  
-            ),  
-          ),  
-        ],  
-      ),  
-    );  
-  }  
-}  
+class SurahBottomRowState extends State<SurahBottomRow>
+    with SingleTickerProviderStateMixin {
+  final _quranController = Get.find<QuranController>();
+  final _audioController = Get.find<AudioController>();
+  final readingController = Get.find<ReadingController>();
 
-class CustomDropdown extends StatefulWidget {  
-  final List<String> options;  
-  final String selectedValue;  
-  final ValueChanged<String?> onChanged;  
-  final double scaleFactor;  
+  bool _showSearchBar = false;
+  final FocusNode _searchFocusNode = FocusNode();
 
-  const CustomDropdown({  
-    super.key,  
-    required this.options,  
-    required this.selectedValue,  
-    required this.onChanged,  
-    required this.scaleFactor,  
-  });  
+  @override
+  void initState() {
+    super.initState();
+    _searchFocusNode.addListener(_onFocusChange);
+  }
 
-  @override  
-  // ignore: library_private_types_in_public_api  
-  _CustomDropdownState createState() => _CustomDropdownState();  
-}  
+  @override
+  void dispose() {
+    _searchFocusNode.removeListener(_onFocusChange);
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
 
-class _CustomDropdownState extends State<CustomDropdown> {  
-  @override  
-  Widget build(BuildContext context) {  
-    return Container(  
-      padding: EdgeInsets.symmetric(horizontal: 8 * widget.scaleFactor),  
-      decoration: BoxDecoration(  
-        color: const Color.fromRGBO(92, 62, 5, 1),  
-        border: Border.all(  
-          color: const Color(0xFF825B11),  
-          width: 2 * widget.scaleFactor,  
-        ),  
-        borderRadius: BorderRadius.circular(10 * widget.scaleFactor),  
-      ),  
-      child: DropdownButtonHideUnderline(  
-        child: SizedBox(  
-          height: 30 * widget.scaleFactor,  
-          child: DropdownButton<String>(  
-            value: widget.selectedValue,  
-            icon: Padding(  
-              padding: const EdgeInsets.only(left: 32.0),  
-              child: Icon(  
-                Icons.arrow_drop_down_circle_outlined,  
-                color: const Color.fromRGBO(130, 91, 17, 1),  
-                size: 18 * widget.scaleFactor,  
-              ),  
-            ),  
-            style: GoogleFonts.notoSansMalayalam(  
-              color: const Color.fromRGBO(217, 217, 217, 1),  
-              fontSize: 12 * widget.scaleFactor,  
-            ),  
-            dropdownColor: const Color.fromRGBO(130, 90, 17, 1),  
-            items: widget.options.map<DropdownMenuItem<String>>((String value) {  
-              return DropdownMenuItem<String>(  
-                value: value,  
-                child: Text(value),  
-              );  
-            }).toList(),  
-            onChanged: (value) {  
-              widget.onChanged(value);  
-            },  
-          ),  
-        ),  
-      ),  
-    );  
-  }  
+  void _onFocusChange() {
+    if (!_searchFocusNode.hasFocus) {
+      setState(() {
+        _showSearchBar = false;
+      });
+    }
+  }
+
+  double getScaleFactor(double screenWidth) {
+    if (screenWidth < 600) return 0.05;
+    if (screenWidth < 800) return 0.08;
+    if (screenWidth < 1440) return 0.1;
+    return 0.15 + (screenWidth - 1440) / 10000;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final scaleFactor = getScaleFactor(screenWidth);
+    final horizontalPadding = screenWidth > 1440
+        ? (screenWidth - 1440) * 0.3 + 50
+        : screenWidth > 800
+            ? 50.0
+            : screenWidth * scaleFactor;
+
+    final isLargeScreen = screenWidth > 800;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: Container(
+        color: const Color.fromRGBO(115, 78, 9, 1),
+        height: 50,
+        child: Row(
+          children: [
+            Expanded(
+              child: Wrap(
+                spacing: 5.0,
+                children: [
+                  // First Drop Down
+                  Obx(
+                    () => CustomDropdown(
+                      options: List.generate(
+                        _quranController.surahIds.length,
+                        (index) =>
+                            '${_quranController.surahIds[index]} - ${_quranController.surahNames[index]}',
+                      ),
+                      selectedValue:
+                          '${_quranController.selectedSurahId} - ${_quranController.selectedSurah}',
+                      onChanged: (value) {
+                        if (value != null) {
+                          final parts = value.split(' - ');
+                          int newSurahId = int.parse(parts[0]);
+
+                          // Update selectedSurahId and trigger navigation
+                          _quranController.updateSelectedSurahId(newSurahId, 1);
+
+                          // Navigate to the selected Surah in the ReadingPage
+                          readingController.navigateToSpecificSurah(newSurahId);
+                        }
+                      },
+                      scaleFactor: widget.scaleFactor,
+                    ),
+                  ),
+
+                  // Second Drop Down
+                  Obx(
+                    () => CustomDropdown(
+                      options: List.generate(
+                        _quranController.selectedSurahAyaCount,
+                        (index) => '${index + 1}',
+                      ),
+                      selectedValue:
+                          _quranController.selectedAyaNumber.toString(),
+                      onChanged: (value) async {
+                        if (value != null) {
+                          int AyaNumber = int.parse(value);
+
+                          // Check if the audio is currently playing
+                          bool wasPlaying = _audioController.isPlaying.value;
+
+                          if (_audioController.isPlaying.value) {
+                            // Stop the current Surah audio before switching to another Aya
+                            _audioController.stopSurahPlayback();
+                          }
+
+                          try {
+                            // Ensure the selected Aya is loaded in the UI
+                            await _quranController.ensureAyaIsLoaded(
+                              _quranController.selectedSurahId,
+                              AyaNumber,
+                            );
+
+                            // Scroll to the selected Aya
+                            Map<int, int> startingLineIds =
+                                _quranController.getAyaStartingLineIds();
+                            int? lineId = startingLineIds[AyaNumber];
+                            if (lineId != null) {
+                              _quranController.scrollToAya(
+                                  AyaNumber, lineId.toString());
+
+                              // Play the audio only if it was already playing
+                              if (wasPlaying) {
+                                await _audioController.playSpecificAya(
+                                    _quranController.selectedSurahId,
+                                    AyaNumber);
+                              }
+                            } else {
+                              throw Exception(
+                                  'LineId not found for Aya $AyaNumber');
+                            }
+                          } catch (e) {
+                            debugPrint('Error navigating to Aya: $e');
+                            Get.snackbar('Error',
+                                'Failed to navigate to the selected Aya',
+                                snackPosition: SnackPosition.BOTTOM);
+                          }
+                        }
+                      },
+                      scaleFactor: widget.scaleFactor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (_showSearchBar)
+              Expanded(
+                child: isLargeScreen
+                    ? Row(
+                        children: [
+                          const Spacer(),
+                          SizedBox(
+                            width: 400,
+                            child: SearchWidget(
+                              width: 400,
+                              onSearch: (query) {},
+                              focusNode: _searchFocusNode,
+                            ),
+                          ),
+                        ],
+                      )
+                    : SearchWidget(
+                        width: screenWidth,
+                        onSearch: (query) {},
+                        focusNode: _searchFocusNode,
+                      ),
+              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (!_showSearchBar || isLargeScreen)
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _showSearchBar = true;
+                        _searchFocusNode.requestFocus();
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.all(8),
+                      backgroundColor: const Color.fromRGBO(115, 78, 9, 1),
+                      foregroundColor: const Color.fromRGBO(162, 132, 94, 1),
+                      side: const BorderSide(
+                        color: Color.fromRGBO(162, 132, 94, 1),
+                        width: 2,
+                      ),
+                      minimumSize: const Size(50, 40),
+                    ),
+                    child: const Icon(Icons.search_outlined),
+                  ),
+                if (!_showSearchBar || isLargeScreen) ...[
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: () {
+                      _quranController.navigateToPreviousSurah();
+                      _quranController.resetToFirstAya();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.all(8),
+                      backgroundColor: const Color.fromRGBO(115, 78, 9, 1),
+                      foregroundColor: const Color.fromRGBO(162, 132, 94, 1),
+                      side: const BorderSide(
+                        color: Color.fromRGBO(162, 132, 94, 1),
+                        width: 2,
+                      ),
+                      minimumSize: const Size(50, 40),
+                    ),
+                    child:
+                        const Icon(Icons.arrow_back_ios_new_rounded, size: 16),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: () {
+                      _quranController.navigateToNextSurah();
+                      _quranController.resetToFirstAya();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.all(8),
+                      backgroundColor: const Color.fromRGBO(115, 78, 9, 1),
+                      foregroundColor: const Color.fromRGBO(162, 132, 94, 1),
+                      side: const BorderSide(
+                        color: Color.fromRGBO(162, 132, 94, 1),
+                        width: 2,
+                      ),
+                      minimumSize: const Size(50, 40),
+                    ),
+                    child:
+                        const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+                  ),
+                ],
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CustomDropdown extends StatelessWidget {
+  final List<String> options;
+  final String selectedValue;
+  final ValueChanged<String?> onChanged;
+  final double scaleFactor;
+
+  const CustomDropdown({
+    super.key,
+    required this.options,
+    required this.selectedValue,
+    required this.onChanged,
+    required this.scaleFactor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8 * scaleFactor),
+      decoration: BoxDecoration(
+        color: const Color.fromRGBO(92, 62, 5, 1),
+        border: Border.all(
+          color: const Color(0xFF825B11),
+          width: 2 * scaleFactor,
+        ),
+        borderRadius: BorderRadius.circular(10 * scaleFactor),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: SizedBox(
+          height: 30 * scaleFactor,
+          child: DropdownButton<String>(
+            value: selectedValue,
+            icon: Icon(
+              Icons.arrow_drop_down_circle_outlined,
+              color: const Color.fromRGBO(130, 91, 17, 1),
+              size: 20 * scaleFactor,
+            ),
+            style: GoogleFonts.notoSansMalayalam(
+              color: const Color.fromRGBO(217, 217, 217, 1),
+              fontSize: 16 * scaleFactor,
+            ),
+            dropdownColor: const Color.fromRGBO(130, 90, 17, 1),
+            items: options.map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: onChanged,
+          ),
+        ),
+      ),
+    );
+  }
 }

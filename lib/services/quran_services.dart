@@ -1,13 +1,15 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class QuranService {
-  final String baseUrl = "http://alquranmalayalam.net/alquran-api";
-  // ignore: non_constant_identifier_names
+  final String baseUrl = "https://alquranmalayalam.net/alquran-api";
   var ArticleId = 1;
   var surahNumber = 1;
-  var ayahNumber = 1;
+  var AyaNumber = 1;
   var pageNumber = 0;
+  String searchword = '';
 
   Future<List<Map<String, dynamic>>> fetchSurahs() async {
     final response = await http.get(Uri.parse("$baseUrl/suranames"));
@@ -42,7 +44,7 @@ class QuranService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> fetchAyahLines(
+  Future<List<Map<String, dynamic>>> fetchAyaLines(
       int surahNumber, int currentPage) async {
     pageNumber = currentPage;
     final response = await http
@@ -64,7 +66,54 @@ class QuranService {
         };
       }).toList(); // Call toList() here
     } else {
-      throw Exception('Failed to load Ayah');
+      throw Exception('Failed to load Aya');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchSearchResult(
+      String searchword) async {
+    final response =
+        await http.get(Uri.parse("$baseUrl/searchword/0/$searchword"));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as List;
+
+      // Fetch all surahs to get the MSuraName
+      List<Map<String, dynamic>> surahs = await fetchSurahs();
+
+      return data.map((item) {
+        // Find the corresponding surah
+        var surah = surahs.firstWhere((s) => s['SuraId'] == item['SuraNo'],
+            orElse: () => {'MSuraName': 'Unknown'});
+
+        return {
+          "LineId": item["LineId"],
+          "SuraNo": item["SuraNo"],
+          "MSuraName": surah['MSuraName'],
+          "AyaNo": item["AyaNo"],
+          "MalTran": item["MalTran"],
+          "LineWords": item["LineWords"],
+        };
+      }).toList();
+    } else {
+      throw Exception('Failed to load Search Results');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchJuz(int juzNumber) async {
+    final response =
+        await http.get(Uri.parse("$baseUrl/juzsuraaya/$juzNumber"));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as List;
+      return data
+          .map(
+            (item) => {
+              "SuraId": item["SuraId"],
+              "ayafrom": item["ayafrom"],
+            },
+          )
+          .toList();
+    } else {
+      throw Exception('Failed to load Juz');
     }
   }
 }

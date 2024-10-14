@@ -1,114 +1,73 @@
+// ignore_for_file: non_constant_identifier_names
+
+import 'package:alquran_web/controllers/bookmarks_controller.dart';
+import 'package:alquran_web/controllers/quran_controller.dart';
+import 'package:alquran_web/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
-class BookmarksPage extends StatefulWidget {
+class BookmarksPage extends StatelessWidget {
   const BookmarksPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _BookmarksPageState createState() => _BookmarksPageState();
-}
-
-class _BookmarksPageState extends State<BookmarksPage> {
-  int _currentIndex = 0; // To manage the IndexedStack
-  List<Map<String, dynamic>> surahs = [];
-
-  @override
-  void initState() {
-    super.initState();
-    fetchSurahs();
-  }
-
-  Future<void> fetchSurahs() async {
-    setState(() {
-      _currentIndex = 0; // Show loading spinner
-    });
-
-    // Simulate network delay
-    await Future.delayed(const Duration(seconds: 1));
-
-    surahs = List.generate(
-      10,
-      (index) {
-        // Generate dummy data for Surah
-        final surahNumber = index + 1;
-        final isMakkiya = (surahNumber % 2 ==
-            0); // Example logic: Even numbers are Makkiya, odd are Madani
-        return {
-          'number': surahNumber,
-          'name':
-              'Surah $surahNumber', // Replace with actual names if available
-          'arabicName': 'سورة',
-          'verses':
-              '${surahNumber * 2} Ayat', // Example: Number of Ayat is twice the Surah number
-          'type': isMakkiya ? 'Makkiya' : 'Madani',
-        };
-      },
-    );
-
-    setState(() {
-      _currentIndex = 1; // Show the list view
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    int crossAxisCount = 3;
-
-    if (screenWidth < 480) {
-      crossAxisCount = 1;
-    } else if (screenWidth < 800) {
-      crossAxisCount = 2;
-    } else {
-      crossAxisCount = 3;
-    }
-
-    double childAspectRatio = screenWidth / screenHeight;
-
-    if (screenWidth < 480) {
-      childAspectRatio =
-          childAspectRatio * 6; // Taller cards for smaller screens
-    } else if (screenWidth < 800) {
-      childAspectRatio =
-          childAspectRatio * 3; // Medium-sized cards for medium screens
-    } else if (screenWidth < 1025) {
-      childAspectRatio =
-          childAspectRatio * 2; // Shorter cards for larger screens
-    } else {
-      childAspectRatio = childAspectRatio * 3;
-    }
+    final bookmarkController = Get.find<BookmarkController>();
+    final quranController = Get.find<QuranController>();
 
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: [
-          const Center(child: CircularProgressIndicator()),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: GridView.builder(
-              itemCount: surahs.length,
-              itemBuilder: (context, index) {
-                final surah = surahs[index];
-                return _buildBookmarksCard(surah);
-              },
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisCount,
-                childAspectRatio:
-                    childAspectRatio, // Maintain the original aspect ratio
-                crossAxisSpacing: 10.0,
-                mainAxisSpacing: 5.0,
-              ),
-            ),
-          ),
-        ],
-      ),
+      body: Obx(() {
+        final bookmarkedAyas = bookmarkController.getBookmarkedAyasList();
+
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth > 800) {
+              return _buildMultipleListViews(
+                  bookmarkedAyas, 3, quranController);
+            } else if (constraints.maxWidth > 650) {
+              return _buildMultipleListViews(
+                  bookmarkedAyas, 2, quranController);
+            } else {
+              return _buildMultipleListViews(
+                  bookmarkedAyas, 1, quranController);
+            }
+          },
+        );
+      }),
     );
   }
 
-  Widget _buildBookmarksCard(Map<String, dynamic> surah) {
+  Widget _buildMultipleListViews(List<Map<String, dynamic>> bookmarkedAyas,
+      int columnCount, QuranController quranController) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: List.generate(columnCount, (columnIndex) {
+        return Expanded(
+          child: ListView.builder(
+            itemCount: (bookmarkedAyas.length / columnCount).ceil(),
+            itemBuilder: (context, index) {
+              final itemIndex = index * columnCount + columnIndex;
+              if (itemIndex < bookmarkedAyas.length) {
+                final bookmark = bookmarkedAyas[itemIndex];
+                final surahId = bookmark['surahId']!;
+                final AyaNumber = bookmark['AyaNumber']!;
+                final lineId = bookmark['lineId']!;
+                final surahName = quranController.getSurahName(surahId);
+
+                return _buildBookmarksCard(
+                    surahName, surahId, AyaNumber, lineId);
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildBookmarksCard(
+      String surahName, int surahId, int AyaNumber, String lineId) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
       child: Card(
@@ -120,13 +79,13 @@ class _BookmarksPageState extends State<BookmarksPage> {
           leading: CircleAvatar(
             backgroundColor: const Color(0xFFF6F6F6),
             child: SvgPicture.asset(
-              'assets/icons/Bookmarks_Icon.svg',
+              'icons/Bookmarks_Icon.svg',
               colorFilter: const ColorFilter.mode(
                   Color.fromRGBO(115, 78, 9, 1), BlendMode.srcIn),
             ),
           ),
           title: Text(
-            surah['name'],
+            surahName,
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
@@ -147,13 +106,27 @@ class _BookmarksPageState extends State<BookmarksPage> {
               ),
             ],
           ),
-          trailing: const Text(
-            '2 ; 17',
-            style: TextStyle(
+          trailing: Text(
+            '$surahId : $AyaNumber',
+            style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
             ),
           ),
+          onTap: () async {
+            final quranController = Get.find<QuranController>();
+            await quranController.ensureAyaIsLoaded(surahId, AyaNumber);
+
+            Get.toNamed(
+              Routes.SURAH_DETAILED,
+              arguments: {
+                'surahId': surahId,
+                'surahName': surahName,
+                'AyaNumber': AyaNumber,
+                'lineId': lineId,
+              },
+            );
+          },
         ),
       ),
     );

@@ -1,19 +1,19 @@
+import 'package:flutter/material.dart';
+
 class QuranVerse {
   final String verseNumber;
   final String arabicText;
-  final String translation;
+  final GlobalKey key;
 
   QuranVerse({
     required this.verseNumber,
     required this.arabicText,
-    required this.translation,
-  });
+  }) : key = GlobalKey(); // Initialize the GlobalKey
 
   factory QuranVerse.fromJson(Map<String, dynamic> json) {
     return QuranVerse(
       verseNumber: json['verse_number'].toString(),
       arabicText: json['verse'],
-      translation: json['translation'],
     );
   }
 }

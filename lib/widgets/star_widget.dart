@@ -14,7 +14,7 @@ class StarNumber extends StatelessWidget {
     required this.number,
     this.size = 37,
     this.borderColor = const Color.fromRGBO(115, 78, 9, 1),
-    this.fillColor = Colors.white,
+    this.fillColor = const Color(0xFFF6F6F6),
     this.textColor = const Color.fromARGB(255, 0, 0, 0),
   });
 
@@ -35,6 +35,7 @@ class StarNumber extends StatelessWidget {
                 color: textColor,
                 fontWeight: FontWeight.w500,
                 fontSize: 14,
+                letterSpacing: -0.5, // Add this line to reduce letter spacing
               ),
             ),
           ),
@@ -76,7 +77,7 @@ class _StarPainter extends CustomPainter {
     Paint borderPaint = Paint()
       ..color = borderColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 4.0;
+      ..strokeWidth = 2.0;
 
     canvas.drawPath(path, fillPaint);
     canvas.drawPath(path, borderPaint);

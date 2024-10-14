@@ -1,38 +1,41 @@
+import 'package:alquran_web/widgets/index_appbar.dart';
+import 'package:alquran_web/widgets/navigation_drawer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PrivacyPage extends StatelessWidget {
   const PrivacyPage({super.key});
 
+  double getScaleFactor(double screenWidth) {
+    if (screenWidth < 600) return 0.05;
+    if (screenWidth < 800) return 0.08;
+    if (screenWidth < 1440) return 0.1;
+    return 0.15 + (screenWidth - 1440) / 10000;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDarkMode ? Colors.white : const Color.fromRGBO(67, 67, 67, 1);
+    final int currentYear = DateTime.now().year;
+
+    final screenWidth = MediaQuery.of(context).size.width;
+    final scaleFactor = getScaleFactor(screenWidth);
+
+    final horizontalPadding = screenWidth > 1440
+        ? (screenWidth - 1440) * 0.3 + 50
+        : screenWidth > 800
+            ? 50.0
+            : screenWidth * scaleFactor;
+
+    const textColor = Color.fromRGBO(67, 67, 67, 1);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Privacy Policy",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
-            color: textColor,
-          ),
-        ),
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
+      appBar: const IndexAppbar(),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const SelectableText(
               "D4media Privacy Policy Statement",
               style: TextStyle(
                 fontSize: 24,
@@ -44,7 +47,7 @@ class PrivacyPage extends StatelessWidget {
             const SizedBox(height: 16),
             _buildSection(
               "Introduction",
-              "The D4media (Dharmadhara Division for Digital Media), Kerala, India (referred to as \"D4media\", \"we\", \"us\" and \"our\") takes individuals' privacy seriously. This Statement explains our policies and practices and applies to information collection and use including but not limited to while you are visiting and using www.d4media.in (the \"Site\") and our Apps.\n\n"
+              "The D4media (Dharmadhara Division for Digital Media), Kerala, India (referred to as \"D4media\", \"we\", \"us\" and \"our\") takes individuals' privacy seriously. This Statement explains our policies and practices and applies to information collection and use including but not limited to while you are visiting and using www.alquranmalayalam.net (the \"Site\") and our Apps.\n\n"
                   "For the purposes of the relevant data protection laws in force in places including but not limited to India, D4media, is controller and/or data user which control the collection, holding, processing or use of your personal data on our behalf. This Statement is privacy policy for the Site and our Apps.",
               textColor,
             ),
@@ -131,7 +134,7 @@ class PrivacyPage extends StatelessWidget {
             ),
             _buildContactInfo(context, textColor),
             const SizedBox(height: 24),
-            Text(
+            const Text(
               "Last updated on 10-02-2024",
               style: TextStyle(
                 fontSize: 14,
@@ -140,7 +143,7 @@ class PrivacyPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              "© 2022 D4Media",
+              "© $currentYear D4Media",
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
@@ -150,6 +153,7 @@ class PrivacyPage extends StatelessWidget {
           ],
         ),
       ),
+      drawer: const NavigationDrawerWidget(),
     );
   }
 
@@ -158,7 +162,7 @@ class PrivacyPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 24),
-        Text(
+        SelectableText(
           title,
           style: TextStyle(
             fontSize: 18,
@@ -167,7 +171,7 @@ class PrivacyPage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        Text(
+        SelectableText(
           content,
           style: TextStyle(color: textColor),
           textAlign: TextAlign.justify,
@@ -201,8 +205,28 @@ class PrivacyPage extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(height: 8),
+        InkWell(
+          onTap: () => _launchWebsite('https://d4media.in/'),
+          child: const Text(
+            "Website: https://d4media.in/",
+            style: TextStyle(
+              color: Colors.blue,
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        ),
       ],
     );
+  }
+
+  void _launchWebsite(String url) async {
+    final Uri websiteUri = Uri.parse(url);
+    if (await canLaunchUrl(websiteUri)) {
+      await launchUrl(websiteUri);
+    } else {
+      debugPrint('Could not launch $websiteUri');
+    }
   }
 
   void _launchPhone(String phoneNumber) async {

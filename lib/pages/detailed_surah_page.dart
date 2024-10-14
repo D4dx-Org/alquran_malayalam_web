@@ -3,8 +3,8 @@ import 'package:alquran_web/pages/Tabbar%20pages/Detailed%20Tabbar%20Pages/trans
 import 'package:alquran_web/widgets/detailed_appbar.dart';
 import 'package:alquran_web/widgets/detailed_tabbar.dart';
 import 'package:alquran_web/widgets/navigation_drawer_widget.dart';
-import 'package:alquran_web/widgets/surah_bottom_row.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class DetailedSurahPage extends StatefulWidget {
   const DetailedSurahPage({super.key});
@@ -16,29 +16,52 @@ class DetailedSurahPage extends StatefulWidget {
 class _DetailedSurahPageState extends State<DetailedSurahPage>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
-
+  late TransformationController _transformationController;
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    final arguments = Get.arguments as Map<String, dynamic>?;
+    final initialTab = arguments?['initialTab'] as int? ?? 0;
+    _tabController =
+        TabController(length: 2, vsync: this, initialIndex: initialTab);
+    _transformationController = TransformationController();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _transformationController.dispose();
+    super.dispose();
   }
 
   TabController get tabController => _tabController;
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: DetailedAppbar(
         currentPage: AppPage.detailedsurah,
-        tabController: _tabController,
+        tabController: tabController,
       ),
       drawer: const NavigationDrawerWidget(),
       body: Column(
         children: [
+          if (screenWidth < 670)
+            DetailedTabbar(
+              controller: tabController,
+            )
+          else
+            SizedBox(
+              width: screenWidth * 0.5,
+              child: DetailedTabbar(
+                controller: tabController,
+              ),
+            ),
           Expanded(
             child: TabBarView(
-              physics: const NeverScrollableScrollPhysics(),
-              controller: _tabController,
+              controller: tabController,
               children: const [
                 TranslationPage(),
                 ReadingPage(),
