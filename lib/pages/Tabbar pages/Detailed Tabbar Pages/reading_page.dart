@@ -1,6 +1,7 @@
 // lib/pages/reading_page.dart
 
 import 'dart:async';
+import 'dart:math';
 import 'package:alquran_web/controllers/audio_controller.dart';
 import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
@@ -36,7 +37,11 @@ class ReadingPageState extends State<ReadingPage> {
   void initState() {
     super.initState();
     _initializeScrollController();
-    readingController.fetchVerses(direction: 'replace');
+
+    // Delay the initial fetch to ensure controller is properly initialized
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      readingController.fetchVerses(direction: 'replace');
+    });
   }
 
   void _initializeScrollController() {
@@ -64,7 +69,6 @@ class ReadingPageState extends State<ReadingPage> {
 
   /// Handles scroll events to load next or previous pages.
   void _onScroll() {
-    // Reinitialize the scroll controller if disposed
     if (_scrollControllerDisposed) {
       _initializeScrollController();
     }
@@ -74,13 +78,20 @@ class ReadingPageState extends State<ReadingPage> {
       const Duration(milliseconds: 200),
       () {
         if (!_isLoading) {
-          if (readingController.scrollController.position.pixels >=
-              readingController.scrollController.position.maxScrollExtent -
-                  200) {
+          double viewportHeight =
+              readingController.scrollController.position.viewportDimension;
+          double scrollPosition =
+              readingController.scrollController.position.pixels;
+          double maxScroll =
+              readingController.scrollController.position.maxScrollExtent;
+
+          // Calculate visible portion percentage
+          double visiblePortion = viewportHeight / (maxScroll + viewportHeight);
+
+          // If content is shorter than viewport or we're near the bottom
+          if (visiblePortion > 0.1 || scrollPosition >= maxScroll - 200) {
             _loadNextPage();
-          } else if (readingController.scrollController.position.pixels <=
-              readingController.scrollController.position.minScrollExtent +
-                  200) {
+          } else if (scrollPosition <= 200) {
             _loadPreviousPage();
           }
         }
@@ -183,26 +194,30 @@ class ReadingPageState extends State<ReadingPage> {
                                   horizontal: horizontalPadding),
                               child: ScrollConfiguration(
                                 behavior: NoScrollbarScrollBehavior(),
-                                child: ListView.builder(
-                                  controller:
-                                      readingController.scrollController,
-                                  itemCount: readingController
-                                          .versesContent.length +
-                                      1, // Add 1 to account for the extra SizedBox
-                                  itemBuilder: (context, index) {
-                                    if (index ==
-                                        readingController
-                                            .versesContent.length) {
-                                      return SizedBox(
-                                        height: screenHeight *
-                                            0.2, // Adjust the height as needed
-                                      );
-                                    }
-                                    final ContentPiece piece =
-                                        readingController.versesContent[index];
-                                    return _buildContentPiece(piece);
-                                  },
-                                ),
+                                child: LayoutBuilder(
+                                    builder: (context, constraints) {
+                                  return ListView.builder(
+                                    controller:
+                                        readingController.scrollController,
+                                    itemCount: readingController
+                                            .versesContent.length +
+                                        1, // Add 1 to account for the extra SizedBox
+                                    itemBuilder: (context, index) {
+                                      if (index ==
+                                          readingController
+                                              .versesContent.length) {
+                                        return SizedBox(
+                                          height: max(screenHeight * 0.2,
+                                              constraints.maxHeight),
+                                        );
+                                      }
+                                      final ContentPiece piece =
+                                          readingController
+                                              .versesContent[index];
+                                      return _buildContentPiece(piece);
+                                    },
+                                  );
+                                }),
                               ),
                             ),
                           );
