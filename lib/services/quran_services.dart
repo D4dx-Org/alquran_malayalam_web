@@ -99,6 +99,32 @@ class QuranService {
     }
   }
 
+Future<List<Map<String, dynamic>>> fetchVerses(int surahNumber, int verseNumber) async {
+    final response = await http.get(
+      Uri.parse("$baseUrl/ayalines/$surahNumber/$verseNumber")
+    );
+    
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as List<dynamic>;
+      return data.map((item) {
+        return {
+          "LineId": item["LineId"],
+          "SuraNo": item["SuraNo"],
+          "AyaNo": item["AyaNo"],
+          "MalTran": item["MalTran"],
+          "LineWords": (item["LineWords"] as List<dynamic>).map((wordItem) {
+            return {
+              "MalWord": wordItem["MalWord"],
+              "ArabWord": wordItem["ArabWord"],
+            };
+          }).toList(),
+        };
+      }).toList();
+    } else {
+      throw Exception('Failed to load verse');
+    }
+  }
+
   Future<List<Map<String, dynamic>>> fetchJuz(int juzNumber) async {
     final response =
         await http.get(Uri.parse("$baseUrl/juzsuraaya/$juzNumber"));

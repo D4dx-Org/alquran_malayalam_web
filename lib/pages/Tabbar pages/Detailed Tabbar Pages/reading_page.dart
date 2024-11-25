@@ -45,9 +45,12 @@ class ReadingPageState extends State<ReadingPage> {
   }
 
   void _initializeScrollController() {
-    readingController.scrollController = ScrollController();
-    readingController.scrollController.addListener(_onScroll);
-    _scrollControllerDisposed = false;
+    if (_scrollControllerDisposed ||
+        readingController.scrollController.hasClients == false) {
+      readingController.scrollController = ScrollController();
+      readingController.scrollController.addListener(_onScroll);
+      _scrollControllerDisposed = false;
+    }
   }
 
   @override
@@ -56,9 +59,8 @@ class ReadingPageState extends State<ReadingPage> {
     readingController.scrollController.dispose();
     _scrollControllerDisposed = true;
     _debounce?.cancel();
-    _focusNode.dispose(); // Dispose the FocusNode
+    _focusNode.dispose();
 
-    // Dispose of all TapGestureRecognizers
     for (var recognizer in _tapGestureRecognizers) {
       recognizer.dispose();
     }
@@ -67,32 +69,46 @@ class ReadingPageState extends State<ReadingPage> {
     super.dispose();
   }
 
+  @override
+  void deactivate() {
+    super.deactivate();
+    _scrollControllerDisposed = true;
+  }
+
+  @override
+  void activate() {
+    super.activate();
+    _initializeScrollController();
+  }
+
   /// Handles scroll events to load next or previous pages.
   void _onScroll() {
     if (_scrollControllerDisposed) {
       _initializeScrollController();
     }
 
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    // Cancel existing debounce timer
+    _debounce?.cancel();
+
+    // Immediate check for previous page loading
+    final scrollPosition = readingController.scrollController.position.pixels;
+    if (scrollPosition <= 200) {
+      _loadPreviousPage();
+    }
+
+    // Debounce next page loading
     _debounce = Timer(
-      const Duration(milliseconds: 200),
+      const Duration(milliseconds: 50), // Reduced from 200ms
       () {
         if (!_isLoading) {
           double viewportHeight =
               readingController.scrollController.position.viewportDimension;
-          double scrollPosition =
-              readingController.scrollController.position.pixels;
           double maxScroll =
               readingController.scrollController.position.maxScrollExtent;
-
-          // Calculate visible portion percentage
           double visiblePortion = viewportHeight / (maxScroll + viewportHeight);
 
-          // If content is shorter than viewport or we're near the bottom
           if (visiblePortion > 0.1 || scrollPosition >= maxScroll - 200) {
             _loadNextPage();
-          } else if (scrollPosition <= 200) {
-            _loadPreviousPage();
           }
         }
       },
@@ -118,38 +134,29 @@ class ReadingPageState extends State<ReadingPage> {
   }
 
   Future<void> _loadPreviousPage() async {
-    if (_isLoading) return;
+    if (_isLoading || readingController.minPageLoaded <= 1) return;
 
-    if (readingController.minPageLoaded <= 1) {
-      debugPrint('Already at the first page.');
-      return;
-    }
+    setState(() => _isLoading = true);
 
-    setState(() {
-      _isLoading = true;
-    });
-
-    // Save the current scroll offset
+    // Cache current position
     double oldScrollHeight =
         readingController.scrollController.position.extentAfter;
 
+    // Preload threshold - start loading when approaching page boundary
     await readingController.fetchVerses(direction: 'previous');
 
-    setState(() {
-      _isLoading = false;
-    });
+    setState(() => _isLoading = false);
 
-    // After the content is prepended, adjust the scroll position
+    // Adjust scroll position after content loads
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      if (_scrollControllerDisposed) {
-        _initializeScrollController();
+      if (!_scrollControllerDisposed &&
+          readingController.scrollController.hasClients) {
+        double newScrollHeight =
+            readingController.scrollController.position.extentAfter;
+        double scrollOffset = newScrollHeight - oldScrollHeight;
+        readingController.scrollController
+            .jumpTo(readingController.scrollController.offset + scrollOffset);
       }
-
-      double newScrollHeight =
-          readingController.scrollController.position.extentAfter;
-      double scrollOffset = newScrollHeight - oldScrollHeight;
-      readingController.scrollController
-          .jumpTo(readingController.scrollController.offset + scrollOffset);
     });
   }
 
