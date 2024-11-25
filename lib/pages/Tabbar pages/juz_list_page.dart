@@ -1,4 +1,3 @@
-
 import 'package:alquran_web/services/quran_services.dart';
 import 'package:alquran_web/widgets/star_widget.dart';
 import 'package:flutter/material.dart';
@@ -142,7 +141,7 @@ class _JuzListPageState extends State<JuzListPage> {
                                     subtitle: Row(
                                       children: [
                                         SvgPicture.asset(
-                                          surah['SuraType'] == 'Makkiya'
+                                          surah['SuraType'] == 'مَكِّيَة'
                                               ? "icons/Makiyyah_Icon.svg"
                                               : "icons/Madaniyya_Icon.svg",
                                           height: 11,
