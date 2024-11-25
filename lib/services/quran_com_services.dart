@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:convert';
+import 'package:alquran_web/models/search_quran_com_model.dart';
 import 'package:alquran_web/models/verse_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -102,20 +103,20 @@ class QuranComService {
     }
   }
 
-  Future<List<QuranVerse>> searchAyas(String query) async {
-    final response = await http.get(Uri.parse("$baseUrl/search?q=$query"));
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      List<QuranVerse> results = [];
-      for (var item in data['search']['results']) {
-        results.add(QuranVerse(
-          verseNumber: item['verse_key'],
-          arabicText: item['text'],
-        ));
+  Future<List<SearchResult>> searchAyas(String query) async {
+    try {
+      final response = await http.get(Uri.parse("$baseUrl/search?q=$query"));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final results = data['search']['results'] as List;
+
+        return results.map((item) => SearchResult.fromJson(item)).toList();
+      } else {
+        throw Exception('Failed to search Ayas: ${response.statusCode}');
       }
-      return results;
-    } else {
-      throw Exception('Failed to search Ayas: ${response.statusCode}');
+    } catch (e) {
+      throw Exception('Error searching Ayas: $e');
     }
   }
 

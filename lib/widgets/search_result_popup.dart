@@ -13,6 +13,11 @@ class SearchResultPopup extends StatelessWidget {
     required String searchText,
   });
 
+  // Function to check if text contains Arabic characters
+  bool _containsArabic(String text) {
+    return RegExp(r'[\u0600-\u06FF]').hasMatch(text);
+  }
+
   @override
   Widget build(BuildContext context) {
     final QuranSearchController searchController =
@@ -69,11 +74,28 @@ class SearchResultPopup extends StatelessWidget {
                   separatorBuilder: (context, index) => const Divider(),
                   itemBuilder: (context, index) {
                     final result = searchController.searchResults[index];
+                    final bool isArabicText =
+                        _containsArabic(result['MalTran']);
 
                     return ListTile(
                       title: Text(
-                          ' ${result['MSuraName']}, ആയ ${result['AyaNo']}'),
-                      subtitle: Text(result['MalTran']),
+                        ' ${result['MSuraName']}, ആയ ${result['AyaNo']}',
+                      ),
+                      subtitle: Text(
+                        result['MalTran'],
+                        style: TextStyle(
+                          fontFamily: isArabicText
+                              ? 'Uthmanic_Script'
+                              : 'NotoSansMalayalam',
+                          fontSize: isArabicText ? 24 : null,
+                          height: isArabicText ? 2.0 : null,
+                        ),
+                        textDirection: isArabicText
+                            ? TextDirection.rtl
+                            : TextDirection.ltr,
+                        textAlign:
+                            isArabicText ? TextAlign.right : TextAlign.left,
+                      ),
                       onTap: () {
                         int ayaNumber = int.parse(result['AyaNo'].toString());
                         quranController.updateSelectedSurah(
