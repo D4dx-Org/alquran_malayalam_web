@@ -181,8 +181,6 @@ class _DetailedAppbarState extends State<DetailedAppbar> {
       case AppPage.articles:
         return ArticlesBottomRow(context, scaleFactor,
             tabController: tabController);
-      default:
-        return const SizedBox.shrink();
-    }
+      }
   }
 }

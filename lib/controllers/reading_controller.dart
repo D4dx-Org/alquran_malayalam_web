@@ -27,10 +27,10 @@ class ReadingController extends GetxController {
   var hoveredVerseIndex = (-1).obs;
   int minPageLoaded = 1;
   int maxPageLoaded = 1;
+  // ignore: constant_identifier_names
   static const int BUFFER_PAGES =
       2; // Number of pages to preload in each direction
-  bool _isBufferLoading =
-      false; // Add this flag to prevent multiple buffer loads
+// Add this flag to prevent multiple buffer loads
 
   var currentSurahId = 1; // Default to Surah 1
 
@@ -167,36 +167,7 @@ class ReadingController extends GetxController {
     return surahNumbers ?? [];
   }
 
-  Future<void> _loadNextBuffer() async {
-    if (_isBufferLoading) return;
-    _isBufferLoading = true;
 
-    try {
-      // Always try to maintain buffer size
-      while (maxPageLoaded - currentPage.value < BUFFER_PAGES) {
-        int nextPage = maxPageLoaded + 1;
-        if (nextPage > 604 || loadedPages.contains(nextPage)) break;
-        await fetchVerses(direction: 'next');
-      }
-    } finally {
-      _isBufferLoading = false;
-    }
-  }
-
-  Future<void> _loadPreviousBuffer() async {
-    if (_isBufferLoading) return;
-    _isBufferLoading = true;
-
-    try {
-      while (currentPage.value - minPageLoaded < BUFFER_PAGES) {
-        int previousPage = minPageLoaded - 1;
-        if (previousPage < 1 || loadedPages.contains(previousPage)) break;
-        await fetchVerses(direction: 'previous');
-      }
-    } finally {
-      _isBufferLoading = false;
-    }
-  }
 
   Future<void> nextPage() async {
     if (currentPage.value >= 604) {

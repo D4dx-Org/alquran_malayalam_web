@@ -1,5 +1,3 @@
-import 'package:alquran_web/controllers/quran_controller.dart';
-import 'package:alquran_web/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -78,49 +76,10 @@ class SearchWidgetState extends State<SearchWidget> {
   }
 
   void _onSearchChanged() {
-    if (_controller.text.isNotEmpty && mounted) {
-      widget.onSearch?.call(_controller.text);
+    if (_controller.text.isNotEmpty) {
+      // Use the new direct navigation handler for format "surah:aya"
       final searchController = Get.find<QuranSearchController>();
-      searchController.updateSearchQuery(_controller.text);
-      searchController.performSearch();
-      _showSearchResult(_controller.text);
-      _checkAndNavigateToAya(_controller.text);
-    } else {
-      _hideSearchResult();
-    }
-  }
-
-  void _checkAndNavigateToAya(String input) {
-    final pattern = RegExp(r'^(\d+):(\d+)$');
-    final match = pattern.firstMatch(input);
-
-    if (match != null) {
-      _navigationDebounceTimer?.cancel();
-      _navigationDebounceTimer = Timer(const Duration(seconds: 2), () {
-        final surahNumber = int.parse(match.group(1)!);
-        // ignore: non_constant_identifier_names
-        final AyaNumber = int.parse(match.group(2)!);
-
-        if (surahNumber >= 1 && surahNumber <= 114) {
-          final quranController = Get.find<QuranController>();
-          final surahName = quranController.getSurahName(surahNumber);
-
-          quranController.updateSelectedSurahId(surahNumber, AyaNumber);
-          quranController.updateSelectedAyaNumber(AyaNumber);
-
-          Get.toNamed(
-            Routes.SURAH_DETAILED,
-            arguments: {
-              'surahId': surahNumber,
-              'surahName': surahName,
-              'AyaNumber': AyaNumber,
-            },
-          );
-
-          _controller.clear();
-          _hideSearchResult();
-        }
-      });
+      searchController.handleSearchNavigation(_controller.text);
     }
   }
 

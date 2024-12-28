@@ -1,5 +1,4 @@
 import 'package:alquran_web/controllers/quran_controller.dart';
-import 'package:alquran_web/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:alquran_web/controllers/search_controller.dart';
@@ -22,7 +21,7 @@ class SearchResultPopup extends StatelessWidget {
   Widget build(BuildContext context) {
     final QuranSearchController searchController =
         Get.find<QuranSearchController>();
-    final quranController = Get.find<QuranController>();
+    Get.find<QuranController>();
 
     return Container(
       padding: const EdgeInsets.all(8.0),
@@ -96,27 +95,10 @@ class SearchResultPopup extends StatelessWidget {
                         textAlign:
                             isArabicText ? TextAlign.right : TextAlign.left,
                       ),
-                      onTap: () {
-                        int ayaNumber = int.parse(result['AyaNo'].toString());
-                        quranController.updateSelectedSurah(
-                            result['MSuraName'], ayaNumber);
-                        quranController.updateSelectedSurahId(
-                            int.parse(
-                              result['SuraNo'].toString(),
-                            ),
-                            ayaNumber);
-                        final surahId = int.parse(
-                          result['SuraNo'].toString(),
-                        );
-                        final surahName = result['MSuraName'];
-                        Get.toNamed(
-                          Routes.SURAH_DETAILED,
-                          arguments: {
-                            'surahId': surahId,
-                            'surahName': surahName,
-                            'AyaNumber': ayaNumber,
-                          },
-                        );
+                      onTap: () async {
+                        // Use the new navigation method
+                        await searchController.navigateToSearchResult(
+                            context, result);
                       },
                     );
                   },

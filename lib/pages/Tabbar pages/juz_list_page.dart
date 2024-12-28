@@ -5,9 +5,10 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 
 class JuzListPage extends StatefulWidget {
-  JuzListPage({super.key});
+  const JuzListPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _JuzListPageState createState() => _JuzListPageState();
 }
 
@@ -29,7 +30,7 @@ class _JuzListPageState extends State<JuzListPage> {
     List<Map<String, dynamic>> currentJuzSurahs = [];
 
     for (final surah in surahs) {
-      if (currentJuzSurahs.length == 0 || currentJuzSurahs.length >= 20) {
+      if (currentJuzSurahs.isEmpty || currentJuzSurahs.length >= 20) {
         if (currentJuzSurahs.isNotEmpty) {
           juzList.add({
             'juz': currentJuz,
