@@ -212,7 +212,10 @@ class SurahBottomRowState extends State<SurahBottomRow>
                       ),
                       minimumSize: const Size(50, 40),
                     ),
-                    child: const Icon(Icons.search_outlined),
+                    child: const Icon(
+                      Icons.search_outlined,
+                      color: Colors.white,
+                    ),
                   ),
                 if (!_showSearchBar || isLargeScreen) ...[
                   const SizedBox(width: 8),
@@ -234,8 +237,11 @@ class SurahBottomRowState extends State<SurahBottomRow>
                       ),
                       minimumSize: const Size(50, 40),
                     ),
-                    child:
-                        const Icon(Icons.arrow_back_ios_new_rounded, size: 16),
+                    child: const Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      size: 16,
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(
@@ -256,8 +262,11 @@ class SurahBottomRowState extends State<SurahBottomRow>
                       ),
                       minimumSize: const Size(50, 40),
                     ),
-                    child:
-                        const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+                    child: const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 16,
+                      color: Colors.white,
+                    ),
                   ),
                 ],
               ],

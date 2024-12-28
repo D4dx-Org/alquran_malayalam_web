@@ -34,40 +34,58 @@ class ReadingController extends GetxController {
 
   var currentSurahId = 1; // Default to Surah 1
 
+  // Add new properties for better state management
+  var isInitialized = false.obs;
+  var isBuffering = false.obs;
+
+  // Add focus management
+  final focusNode = FocusNode();
+
   @override
   Future<void> onInit() async {
     super.onInit();
-    await _loadPageToSurahMapping();
-    _sharedPreferences = await SharedPreferences.getInstance();
-    _loadSavedPreferences();
-    await _initializeWithBuffer(); // New method to handle initial loading with buffer
+    await _initializeController();
+  }
+
+  Future<void> _initializeController() async {
+    isLoading.value = true;
+    try {
+      await _loadPageToSurahMapping();
+      _sharedPreferences = await SharedPreferences.getInstance();
+      _loadSavedPreferences();
+      await _initializeWithBuffer();
+      isInitialized.value = true;
+    } catch (e) {
+      debugPrint('Error initializing ReadingController: $e');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> _initializeWithBuffer() async {
-    isLoading.value = true;
+    isBuffering.value = true;
     try {
       // Load current page first
       await fetchVerses(direction: 'replace');
 
-      // Preload pages ahead
-      for (int i = 1; i <= BUFFER_PAGES; i++) {
-        int nextPage = currentPage.value + i;
-        if (nextPage <= 604) {
-          // Check if within Quran bounds
-          await fetchVerses(direction: 'next');
-        }
-      }
-
-      // Preload pages behind
-      for (int i = 1; i <= BUFFER_PAGES; i++) {
-        int previousPage = currentPage.value - i;
-        if (previousPage >= 1) {
-          // Check if within Quran bounds
-          await fetchVerses(direction: 'previous');
-        }
-      }
+      // Load buffer pages concurrently
+      await Future.wait([
+        _loadBufferPages(direction: 'next'),
+        _loadBufferPages(direction: 'previous'),
+      ]);
     } finally {
-      isLoading.value = false;
+      isBuffering.value = false;
+    }
+  }
+
+  Future<void> _loadBufferPages({required String direction}) async {
+    for (int i = 1; i <= BUFFER_PAGES; i++) {
+      int targetPage =
+          direction == 'next' ? currentPage.value + i : currentPage.value - i;
+
+      if (targetPage >= 1 && targetPage <= 604) {
+        await fetchVerses(direction: direction);
+      }
     }
   }
 
@@ -76,6 +94,9 @@ class ReadingController extends GetxController {
   }
 
   Future<bool> fetchVerses({String direction = 'replace'}) async {
+    // Unfocus any active focus before fetching
+    focusNode.unfocus();
+
     int pageNumber;
 
     if (direction == 'next') {
@@ -166,8 +187,6 @@ class ReadingController extends GetxController {
     final surahNumbers = pageToSurahMap[pageNumber];
     return surahNumbers ?? [];
   }
-
-
 
   Future<void> nextPage() async {
     if (currentPage.value >= 604) {
@@ -314,5 +333,21 @@ class ReadingController extends GetxController {
   void _saveLastReadVerse(int surahId, int verseNumber) {
     _sharedPreferences.setInt('lastReadSurahId', surahId);
     _sharedPreferences.setInt('lastReadVerseNumber', verseNumber);
+  }
+
+  // Add method to safely handle text selection
+  void handleTextSelection() {
+    try {
+      focusNode.requestFocus();
+    } catch (e) {
+      debugPrint('Error handling text selection: $e');
+    }
+  }
+
+  @override
+  void onClose() {
+    focusNode.dispose();
+    scrollController.dispose();
+    super.onClose();
   }
 }

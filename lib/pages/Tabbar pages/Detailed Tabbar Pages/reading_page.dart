@@ -27,9 +27,6 @@ class ReadingPageState extends State<ReadingPage> {
   Timer? _debounce;
   bool _scrollControllerDisposed = false;
 
-  // FocusNode to manage focus and selection
-  final FocusNode _focusNode = FocusNode();
-
   // List to hold TapGestureRecognizers
   final List<TapGestureRecognizer> _tapGestureRecognizers = [];
 
@@ -37,11 +34,17 @@ class ReadingPageState extends State<ReadingPage> {
   void initState() {
     super.initState();
     _initializeScrollController();
+    _initializeReadingPage();
+  }
 
-    // Delay the initial fetch to ensure controller is properly initialized
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      readingController.fetchVerses(direction: 'replace');
-    });
+  Future<void> _initializeReadingPage() async {
+    // Wait for the reading controller to be fully initialized
+    if (!readingController.isInitialized.value) {
+      await Future.doWhile(() async {
+        await Future.delayed(const Duration(milliseconds: 100));
+        return !readingController.isInitialized.value;
+      });
+    }
   }
 
   void _initializeScrollController() {
@@ -59,7 +62,6 @@ class ReadingPageState extends State<ReadingPage> {
     readingController.scrollController.dispose();
     _scrollControllerDisposed = true;
     _debounce?.cancel();
-    _focusNode.dispose();
 
     for (var recognizer in _tapGestureRecognizers) {
       recognizer.dispose();
@@ -183,7 +185,7 @@ class ReadingPageState extends State<ReadingPage> {
 
     return Scaffold(
       body: GestureDetector(
-        onTap: () => _focusNode.unfocus(), // Cancel selection on screen tap
+        onTap: () => readingController.focusNode.unfocus(),
         child: Column(
           children: [
             Expanded(
@@ -191,49 +193,81 @@ class ReadingPageState extends State<ReadingPage> {
                 child: Container(
                   constraints: const BoxConstraints(maxWidth: 1000),
                   child: Obx(() {
-                    return readingController.isLoading.value &&
-                            readingController.versesContent.isEmpty
-                        ? const Center(child: CircularProgressIndicator())
-                        : Directionality(
-                            textDirection: TextDirection.rtl,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: horizontalPadding),
-                              child: ScrollConfiguration(
-                                behavior: NoScrollbarScrollBehavior(),
-                                child: LayoutBuilder(
-                                    builder: (context, constraints) {
-                                  return ListView.builder(
-                                    controller:
-                                        readingController.scrollController,
-                                    itemCount: readingController
-                                            .versesContent.length +
-                                        1, // Add 1 to account for the extra SizedBox
-                                    itemBuilder: (context, index) {
-                                      if (index ==
-                                          readingController
-                                              .versesContent.length) {
-                                        return SizedBox(
-                                          height: max(screenHeight * 0.2,
-                                              constraints.maxHeight),
-                                        );
-                                      }
-                                      final ContentPiece piece =
-                                          readingController
-                                              .versesContent[index];
-                                      return _buildContentPiece(piece);
-                                    },
-                                  );
-                                }),
+                    if (!readingController.isInitialized.value) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    if (readingController.isLoading.value &&
+                        readingController.versesContent.isEmpty) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    return Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: Stack(
+                        children: [
+                          _buildMainContent(horizontalPadding),
+                          if (readingController.isBuffering.value)
+                            const Positioned(
+                              top: 16,
+                              right: 16,
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
                               ),
                             ),
-                          );
+                        ],
+                      ),
+                    );
                   }),
                 ),
               ),
             ),
-            AudioPlayerWidget(), // Add the AudioPlayerWidget here
+            AudioPlayerWidget(),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMainContent(double horizontalPadding) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: ScrollConfiguration(
+        behavior: NoScrollbarScrollBehavior(),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTapDown: (_) {
+                readingController.focusNode.unfocus();
+              },
+              child: ListView.builder(
+                controller: readingController.scrollController,
+                itemCount: readingController.versesContent.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == readingController.versesContent.length) {
+                    return SizedBox(
+                      height: max(
+                        MediaQuery.of(context).size.height * 0.2,
+                        constraints.maxHeight,
+                      ),
+                    );
+                  }
+                  return _buildContentPiece(
+                    readingController.versesContent[index],
+                  );
+                },
+              ),
+            );
+          },
         ),
       ),
     );
@@ -278,7 +312,7 @@ class ReadingPageState extends State<ReadingPage> {
           children: [
             Obx(
               () => Focus(
-                focusNode: _focusNode,
+                focusNode: readingController.focusNode,
                 child: SelectableText.rich(
                   TextSpan(
                     style: settingsController.quranFontStyle.value.copyWith(
@@ -287,6 +321,9 @@ class ReadingPageState extends State<ReadingPage> {
                     children: _buildTextSpans(piece.text),
                   ),
                   textAlign: TextAlign.center,
+                  onTap: () {
+                    readingController.handleTextSelection();
+                  },
                 ),
               ),
             ),
@@ -303,22 +340,19 @@ class ReadingPageState extends State<ReadingPage> {
     List<TextSpan> spans = [];
     int lastIndex = 0;
 
-    // Regular expression to match the verse numbers enclosed in Unicode characters
     RegExp regex = RegExp(r'(\uFD3F[^\uFD3F\uFD3E]+\uFD3E)');
     Iterable<RegExpMatch> matches = regex.allMatches(text);
 
     for (final match in matches) {
-      // Add text before the match
       if (match.start > lastIndex) {
         String beforeText = text.substring(lastIndex, match.start);
         spans.add(TextSpan(text: beforeText));
       }
 
-      // Add the matched verse number with Uthmani font and a TapGestureRecognizer
       String verseNumberText = match.group(0)!;
       TapGestureRecognizer recognizer = TapGestureRecognizer()
-        ..onTap = () {
-          // Handle verse number tap here
+        ..onTapDown = (TapDownDetails details) {
+          readingController.focusNode.unfocus();
           _onVerseNumberTapped(verseNumberText);
         };
       _tapGestureRecognizers.add(recognizer);
@@ -326,7 +360,7 @@ class ReadingPageState extends State<ReadingPage> {
       spans.add(TextSpan(
         text: verseNumberText,
         style: TextStyle(
-          fontFamily: 'Uthmanic_Script', // Specify the Uthmani font here
+          fontFamily: 'Uthmanic_Script',
         ),
         recognizer: recognizer,
       ));
@@ -334,7 +368,6 @@ class ReadingPageState extends State<ReadingPage> {
       lastIndex = match.end;
     }
 
-    // Add remaining text after the last match
     if (lastIndex < text.length) {
       String remainingText = text.substring(lastIndex);
       spans.add(TextSpan(text: remainingText));
