@@ -48,9 +48,10 @@ dependencies:
   share_plus: ^10.0.2
   scrollable_positioned_list: ^0.3.8
   speech_to_text: ^7.0.0
-  extended_text: 
+  extended_text:
   flutter_staggered_grid_view: ^0.7.0
   characters:
+  visibility_detector: ^0.4.0+2
 
 dev_dependencies:
   flutter_test:

@@ -11,6 +11,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class ReadingPage extends StatefulWidget {
   const ReadingPage({super.key});
@@ -275,14 +276,22 @@ class ReadingPageState extends State<ReadingPage> {
 
   Widget _buildContentPiece(ContentPiece piece) {
     if (piece.isSurahName) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
-        child: Center(
-          child: Text(
-            piece.text,
-            style: const TextStyle(
-              fontFamily: 'SuraNames',
-              fontSize: 60,
+      return VisibilityDetector(
+        key: Key('surah_${piece.surahId}'),
+        onVisibilityChanged: (visibilityInfo) {
+          if (visibilityInfo.visibleFraction > 0.5) {
+            readingController.updateVisibleSurah(piece.surahId);
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          child: Center(
+            child: Text(
+              piece.text,
+              style: const TextStyle(
+                fontFamily: 'SuraNames',
+                fontSize: 60,
+              ),
             ),
           ),
         ),
@@ -306,6 +315,9 @@ class ReadingPageState extends State<ReadingPage> {
         indent: 20,
       );
     } else {
+      // Store the surah ID for this content piece
+      final currentSurahId = piece.surahId;
+
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Column(
@@ -318,7 +330,7 @@ class ReadingPageState extends State<ReadingPage> {
                     style: settingsController.quranFontStyle.value.copyWith(
                       height: 2.5,
                     ),
-                    children: _buildTextSpans(piece.text),
+                    children: _buildTextSpans(piece.text, currentSurahId),
                   ),
                   textAlign: TextAlign.center,
                   onTap: () {
@@ -336,7 +348,7 @@ class ReadingPageState extends State<ReadingPage> {
     }
   }
 
-  List<TextSpan> _buildTextSpans(String text) {
+  List<TextSpan> _buildTextSpans(String text, int surahId) {
     List<TextSpan> spans = [];
     int lastIndex = 0;
 
@@ -353,7 +365,7 @@ class ReadingPageState extends State<ReadingPage> {
       TapGestureRecognizer recognizer = TapGestureRecognizer()
         ..onTapDown = (TapDownDetails details) {
           readingController.focusNode.unfocus();
-          _onVerseNumberTapped(verseNumberText);
+          _onVerseNumberTapped(verseNumberText, surahId);
         };
       _tapGestureRecognizers.add(recognizer);
 
@@ -376,20 +388,19 @@ class ReadingPageState extends State<ReadingPage> {
     return spans;
   }
 
-  void _onVerseNumberTapped(String verseNumberText) {
-    // Extract the verse number from the text
-    // Assuming verseNumberText is like '\uFD3F١\uFD3E', extract '١' and convert it back to the actual number
+  void _onVerseNumberTapped(String verseNumberText, int surahId) {
     String arabicNumber =
         verseNumberText.replaceAll(RegExp(r'[\uFD3F\uFD3E\s]'), '');
     String ayaNumber = _convertArabicNumbersToEnglish(arabicNumber);
 
-    // Access the current surah ID
-    int surahId = readingController.currentSurahId; // Ensure this is available
+    audioController.playAya('$surahId:$ayaNumber');
 
-    // Now you can perform actions like playing the audio
-    String verseKey = '$surahId:$ayaNumber';
-    // Play the audio for the verse
-    audioController.playAya(verseKey);
+    Get.snackbar(
+      'Playing Audio',
+      'Playing Surah $surahId, Verse $ayaNumber',
+      duration: const Duration(seconds: 1),
+      snackPosition: SnackPosition.TOP,
+    );
   }
 
   String _convertArabicNumbersToEnglish(String arabicNumber) {

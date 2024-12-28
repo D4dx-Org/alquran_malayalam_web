@@ -2,6 +2,7 @@
 
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/models/content_peice.dart';
 import 'package:alquran_web/services/surah_unicode_data.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,10 @@ class ReadingController extends GetxController {
 
   // Add focus management
   final focusNode = FocusNode();
+
+  // Add this near other reactive variables
+  final _visibleSurahId = 1.obs;
+  int get visibleSurahId => _visibleSurahId.value;
 
   @override
   Future<void> onInit() async {
@@ -121,7 +126,6 @@ class ReadingController extends GetxController {
       List<ContentPiece> combinedVersesContent = [];
 
       for (int surahId in surahIds) {
-        currentSurahId = surahId;
         final fetchedVerses =
             await _quranComService.fetchAyas(pageNumber, surahId);
 
@@ -130,6 +134,7 @@ class ReadingController extends GetxController {
               int.parse(fetchedVerses.first.verseNumber.split(':').last);
 
           if (firstVerseNumberInSurah == 1) {
+            currentSurahId = surahId;
             combinedVersesContent.add(
               ContentPiece(
                 text: getSurahNameUnicode(surahId),
@@ -149,6 +154,7 @@ class ReadingController extends GetxController {
             ContentPiece(
               text: _buildContinuousText(fetchedVerses, surahId),
               isBismilla: false,
+              surahId: surahId,
             ),
           );
         }
@@ -341,6 +347,15 @@ class ReadingController extends GetxController {
       focusNode.requestFocus();
     } catch (e) {
       debugPrint('Error handling text selection: $e');
+    }
+  }
+
+  // Add this method to update visible surah
+  void updateVisibleSurah(int surahId) {
+    if (_visibleSurahId.value != surahId) {
+      _visibleSurahId.value = surahId;
+      // Update QuranController's selected surah
+      Get.find<QuranController>().updateSelectedSurahId(surahId, 1);
     }
   }
 

@@ -89,7 +89,7 @@ class SurahBottomRowState extends State<SurahBottomRow>
                             '${_quranController.surahIds[index]} - ${_quranController.surahNames[index]}',
                       ),
                       selectedValue:
-                          '${_quranController.selectedSurahId} - ${_quranController.selectedSurah}',
+                          '${readingController.visibleSurahId} - ${_quranController.getSurahName(readingController.visibleSurahId)}',
                       onChanged: (value) {
                         if (value != null) {
                           final parts = value.split(' - ');

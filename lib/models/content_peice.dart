@@ -3,7 +3,7 @@ class ContentPiece {
   final bool isBismilla;
   final bool isSurahName;
   final bool isDivider;
-  final int? surahId;
+  final int surahId;
   final int? verseId;
 
   ContentPiece({
@@ -11,7 +11,7 @@ class ContentPiece {
     this.isBismilla = false,
     this.isSurahName = false,
     this.isDivider = false,
-    this.surahId,
+    this.surahId = 0,
     this.verseId,
   });
 }
