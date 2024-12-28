@@ -74,11 +74,40 @@ class _TranslationPageState extends State<TranslationPage> {
     if (!_isLoading) {
       final positions = itemPositionsListener.itemPositions.value;
       if (positions.isNotEmpty) {
+        // Check for scrolling down (load more)
         final lastIndex = positions.last.index;
         if (lastIndex >= _quranController.AyaLines.length - 5) {
           _loadMoreAyaLines();
         }
+
+        // Check for scrolling up (load previous)
+        final firstIndex = positions.first.index;
+        if (firstIndex <= 5) {
+          _loadPreviousAyaLines();
+        }
       }
+    }
+  }
+
+  Future<void> _loadPreviousAyaLines() async {
+    if (_isLoading) return;
+    setState(() => _isLoading = true);
+
+    try {
+      if (_quranController.AyaLines.isNotEmpty) {
+        final firstAyaNo =
+            int.parse(_quranController.AyaLines.first['AyaNo'].toString());
+        if (firstAyaNo > 1) {
+          // Load previous 10 verses
+          final startAya = (firstAyaNo - 10).clamp(1, firstAyaNo - 1);
+          for (int ayaNo = startAya; ayaNo < firstAyaNo; ayaNo++) {
+            await _quranController.ensureAyaIsLoaded(
+                _quranController.selectedSurahId, ayaNo);
+          }
+        }
+      }
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 

@@ -34,6 +34,7 @@ class QuranController extends GetxController {
   final _AyaLines = <Map<String, dynamic>>[].obs;
   final _surahAyaCounts = <int>[].obs;
   final _surahMalMeans = <String>[].obs;
+  final isLoadingEntireSurah = false.obs;
 
   int currentPage = 0;
   static QuranController get instance => Get.find<QuranController>();
@@ -48,6 +49,9 @@ class QuranController extends GetxController {
   String get selectedAyaRange => _selectedAyaRange.value;
   List<Map<String, dynamic>> get AyaLines => _AyaLines;
   List<String> get surahMalMeans => _surahMalMeans;
+
+  // Add cache for verses
+  final Map<int, List<Map<String, dynamic>>> _versesCache = {};
 
   @override
   void onInit() async {
@@ -195,12 +199,73 @@ class QuranController extends GetxController {
 
   Future<void> _fetchAyaLines(int surahNumber) async {
     try {
-      currentPage = 0;
-      _AyaLines.value =
-          await _quranService.fetchAyaLines(surahNumber, currentPage);
-      getAyaStartingLineIds();
+      // Load just the first verse initially
+      final verses = await _quranService.fetchVerses(surahNumber, 1);
+      if (verses.isNotEmpty) {
+        _AyaLines.value = verses;
+        getAyaStartingLineIds();
+      }
     } catch (e) {
       debugPrint('Error fetching Aya lines: $e');
+    }
+  }
+
+  Future<void> loadEntireSurah(int surahNumber) async {
+    try {
+      isLoadingEntireSurah.value = true;
+
+      // Load verses in smaller batches
+      const batchSize = 5; // Load 5 pages at a time
+      final totalAyas = _selectedSurahAyaCount.value;
+      final estimatedPages =
+          (totalAyas / 10).ceil(); // Assuming 10 lines per page
+
+      for (int i = 0; i < estimatedPages; i += batchSize) {
+        final endIndex =
+            (i + batchSize < estimatedPages) ? i + batchSize : estimatedPages;
+        final batchFutures = List.generate(
+          endIndex - i,
+          (index) => _quranService.fetchAyaLines(surahNumber, i + index + 1),
+        );
+
+        try {
+          final batchResults = await Future.wait(batchFutures);
+          for (final lines in batchResults) {
+            if (lines.isNotEmpty) {
+              _AyaLines.addAll(lines);
+            }
+          }
+        } catch (e) {
+          debugPrint('Error loading batch starting at page ${i + 1}: $e');
+          // Continue with next batch even if this one fails
+        }
+
+        // Add a small delay between batches
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+
+      // Sort AyaLines by AyaNo and LineId
+      _AyaLines.sort((a, b) {
+        int ayaComp = int.parse(a['AyaNo'].toString())
+            .compareTo(int.parse(b['AyaNo'].toString()));
+        if (ayaComp != 0) return ayaComp;
+        return int.parse(a['LineId'].toString())
+            .compareTo(int.parse(b['LineId'].toString()));
+      });
+
+      // Remove duplicates if any
+      final seen = <String>{};
+      _AyaLines.removeWhere((line) {
+        final key = '${line['AyaNo']}-${line['LineId']}';
+        return !seen.add(key);
+      });
+
+      debugPrint(
+          'Loaded ${_AyaLines.length} total lines for surah $surahNumber');
+      isLoadingEntireSurah.value = false;
+    } catch (e) {
+      debugPrint('Error loading entire surah: $e');
+      isLoadingEntireSurah.value = false;
     }
   }
 
@@ -250,20 +315,50 @@ class QuranController extends GetxController {
   }
 
   Future<bool> ensureAyaIsLoaded(int surahId, int AyaNumber) async {
-    bool newDataLoaded = false;
-    if (surahId != _selectedSurahId.value) {
-      updateSelectedSurahId(surahId, AyaNumber);
-      await _fetchAyaLines(surahId);
-      newDataLoaded = true;
-    }
+    try {
+      // Check if verse is already loaded
+      if (_AyaLines.any(
+          (aya) => int.parse(aya['AyaNo'].toString()) == AyaNumber)) {
+        return false;
+      }
 
-    while (
-        _AyaLines.isEmpty || int.parse(_AyaLines.last['AyaNo']) < AyaNumber) {
-      await fetchMoreAyaLines();
-      newDataLoaded = true;
-    }
+      // Load the specific verse and its surrounding verses for smoother scrolling
+      final startVerse = (AyaNumber - 5).clamp(1, AyaNumber);
+      final endVerse =
+          (AyaNumber + 5).clamp(AyaNumber, _selectedSurahAyaCount.value);
 
-    return newDataLoaded;
+      // Load verses in range
+      for (int verse = startVerse; verse <= endVerse; verse++) {
+        if (!_AyaLines.any(
+            (aya) => int.parse(aya['AyaNo'].toString()) == verse)) {
+          final verses = await _quranService.fetchVerses(surahId, verse);
+          if (verses.isNotEmpty) {
+            _AyaLines.addAll(verses);
+          }
+        }
+      }
+
+      // Sort verses by AyaNo and LineId
+      _AyaLines.sort((a, b) {
+        int ayaComp = int.parse(a['AyaNo'].toString())
+            .compareTo(int.parse(b['AyaNo'].toString()));
+        if (ayaComp != 0) return ayaComp;
+        return int.parse(a['LineId'].toString())
+            .compareTo(int.parse(b['LineId'].toString()));
+      });
+
+      // Remove duplicates
+      final seen = <String>{};
+      _AyaLines.removeWhere((line) {
+        final key = '${line['AyaNo']}-${line['LineId']}';
+        return !seen.add(key);
+      });
+
+      return true;
+    } catch (e) {
+      debugPrint('Error in ensureAyaIsLoaded: $e');
+      return false;
+    }
   }
 
   String getSurahNameUnicode(int surahId) {
@@ -276,19 +371,57 @@ class QuranController extends GetxController {
 
   Map<int, int> getAyaStartingLineIds() {
     Map<int, int> AyaStartingLineIds = {};
-    int currentAyaNumber = 0;
 
-    for (var line in _AyaLines) {
-      int AyaNumber = int.parse(line['AyaNo']);
-      int lineId = int.parse(line['LineId']);
-
-      if (AyaNumber != currentAyaNumber) {
-        AyaStartingLineIds[AyaNumber] = lineId;
-        currentAyaNumber = AyaNumber;
-      }
+    if (_AyaLines.isEmpty) {
+      debugPrint(
+          'Warning: AyaLines is empty when trying to get starting line IDs');
+      return AyaStartingLineIds;
     }
 
-    return AyaStartingLineIds;
+    try {
+      // Sort AyaLines by AyaNo and LineId to ensure correct order
+      final sortedLines = List<Map<String, dynamic>>.from(_AyaLines);
+      sortedLines.sort((a, b) {
+        int aAya = int.parse(a['AyaNo'].toString());
+        int bAya = int.parse(b['AyaNo'].toString());
+        if (aAya != bAya) return aAya.compareTo(bAya);
+        return int.parse(a['LineId'].toString())
+            .compareTo(int.parse(b['LineId'].toString()));
+      });
+
+      // Process each line to find starting line IDs
+      for (var line in sortedLines) {
+        if (line['AyaNo'] == null || line['LineId'] == null) {
+          debugPrint('Warning: Invalid line data: $line');
+          continue;
+        }
+
+        int AyaNumber = int.parse(line['AyaNo'].toString());
+        int lineId = int.parse(line['LineId'].toString());
+
+        // Store the first line ID for each Aya
+        if (!AyaStartingLineIds.containsKey(AyaNumber)) {
+          AyaStartingLineIds[AyaNumber] = lineId;
+        }
+      }
+
+      // Debug information
+      if (AyaStartingLineIds.isEmpty) {
+        debugPrint('Warning: No starting line IDs found.');
+        debugPrint('First few lines of data: ${sortedLines.take(5)}');
+      } else {
+        debugPrint(
+            'Found starting line IDs for Ayas: ${AyaStartingLineIds.keys.toList()}');
+        debugPrint(
+            'Total number of Ayas with line IDs: ${AyaStartingLineIds.length}');
+      }
+
+      return AyaStartingLineIds;
+    } catch (e) {
+      debugPrint('Error in getAyaStartingLineIds: $e');
+      debugPrint('Current AyaLines data: ${_AyaLines.take(5)}');
+      return AyaStartingLineIds;
+    }
   }
 
   Future<void> scrollToAya(int AyaNumber, String lineId) async {
