@@ -27,6 +27,7 @@ class ReadingPageState extends State<ReadingPage> {
   bool _isLoading = false;
   Timer? _debounce;
   bool _scrollControllerDisposed = false;
+  final FocusNode _pageFocusNode = FocusNode();
 
   // List to hold TapGestureRecognizers
   final List<TapGestureRecognizer> _tapGestureRecognizers = [];
@@ -63,6 +64,7 @@ class ReadingPageState extends State<ReadingPage> {
     readingController.scrollController.dispose();
     _scrollControllerDisposed = true;
     _debounce?.cancel();
+    _pageFocusNode.dispose();
 
     for (var recognizer in _tapGestureRecognizers) {
       recognizer.dispose();
@@ -88,22 +90,20 @@ class ReadingPageState extends State<ReadingPage> {
   void _onScroll() {
     if (_scrollControllerDisposed) {
       _initializeScrollController();
+      return;
     }
 
-    // Cancel existing debounce timer
     _debounce?.cancel();
-
-    // Immediate check for previous page loading
     final scrollPosition = readingController.scrollController.position.pixels;
+
     if (scrollPosition <= 200) {
       _loadPreviousPage();
     }
 
-    // Debounce next page loading
     _debounce = Timer(
-      const Duration(milliseconds: 50), // Reduced from 200ms
+      const Duration(milliseconds: 50),
       () {
-        if (!_isLoading) {
+        if (!_isLoading && readingController.scrollController.hasClients) {
           double viewportHeight =
               readingController.scrollController.position.viewportDimension;
           double maxScroll =
@@ -140,27 +140,24 @@ class ReadingPageState extends State<ReadingPage> {
     if (_isLoading || readingController.minPageLoaded <= 1) return;
 
     setState(() => _isLoading = true);
-
-    // Cache current position
     double oldScrollHeight =
         readingController.scrollController.position.extentAfter;
-
-    // Preload threshold - start loading when approaching page boundary
     await readingController.fetchVerses(direction: 'previous');
 
-    setState(() => _isLoading = false);
+    if (mounted) {
+      setState(() => _isLoading = false);
 
-    // Adjust scroll position after content loads
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      if (!_scrollControllerDisposed &&
-          readingController.scrollController.hasClients) {
-        double newScrollHeight =
-            readingController.scrollController.position.extentAfter;
-        double scrollOffset = newScrollHeight - oldScrollHeight;
-        readingController.scrollController
-            .jumpTo(readingController.scrollController.offset + scrollOffset);
-      }
-    });
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (!_scrollControllerDisposed &&
+            readingController.scrollController.hasClients) {
+          double newScrollHeight =
+              readingController.scrollController.position.extentAfter;
+          double scrollOffset = newScrollHeight - oldScrollHeight;
+          readingController.scrollController
+              .jumpTo(readingController.scrollController.offset + scrollOffset);
+        }
+      });
+    }
   }
 
   /// Determines the scale factor based on screen width for responsive design.
@@ -177,62 +174,64 @@ class ReadingPageState extends State<ReadingPage> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final scaleFactor = getScaleFactor(screenWidth);
-
     final horizontalPadding = screenWidth > 1440
         ? (screenWidth - 1440) * 0.3 + 50
         : screenWidth > 800
             ? 50.0
             : screenWidth * scaleFactor;
 
-    return Scaffold(
-      body: GestureDetector(
-        onTap: () => readingController.focusNode.unfocus(),
-        child: Column(
-          children: [
-            Expanded(
-              child: Center(
-                child: Container(
-                  constraints: const BoxConstraints(maxWidth: 1000),
-                  child: Obx(() {
-                    if (!readingController.isInitialized.value) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
+    return Focus(
+      focusNode: _pageFocusNode,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          _pageFocusNode.requestFocus();
+          readingController.focusNode.unfocus();
+        },
+        child: Scaffold(
+          body: Column(
+            children: [
+              Expanded(
+                child: Center(
+                  child: Container(
+                    constraints: const BoxConstraints(maxWidth: 1000),
+                    child: Obx(() {
+                      if (!readingController.isInitialized.value) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-                    if (readingController.isLoading.value &&
-                        readingController.versesContent.isEmpty) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
+                      if (readingController.isLoading.value &&
+                          readingController.versesContent.isEmpty) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-                    return Directionality(
-                      textDirection: TextDirection.rtl,
-                      child: Stack(
-                        children: [
-                          _buildMainContent(horizontalPadding),
-                          if (readingController.isBuffering.value)
-                            const Positioned(
-                              top: 16,
-                              right: 16,
-                              child: SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
+                      return Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: Stack(
+                          children: [
+                            _buildMainContent(horizontalPadding),
+                            if (readingController.isBuffering.value)
+                              const Positioned(
+                                top: 16,
+                                right: 16,
+                                child: SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
                                 ),
                               ),
-                            ),
-                        ],
-                      ),
-                    );
-                  }),
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
                 ),
               ),
-            ),
-            AudioPlayerWidget(),
-          ],
+              AudioPlayerWidget(),
+            ],
+          ),
         ),
       ),
     );
@@ -245,28 +244,22 @@ class ReadingPageState extends State<ReadingPage> {
         behavior: NoScrollbarScrollBehavior(),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            return GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTapDown: (_) {
-                readingController.focusNode.unfocus();
-              },
-              child: ListView.builder(
-                controller: readingController.scrollController,
-                itemCount: readingController.versesContent.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == readingController.versesContent.length) {
-                    return SizedBox(
-                      height: max(
-                        MediaQuery.of(context).size.height * 0.2,
-                        constraints.maxHeight,
-                      ),
-                    );
-                  }
-                  return _buildContentPiece(
-                    readingController.versesContent[index],
+            return ListView.builder(
+              controller: readingController.scrollController,
+              itemCount: readingController.versesContent.length + 1,
+              itemBuilder: (context, index) {
+                if (index == readingController.versesContent.length) {
+                  return SizedBox(
+                    height: max(
+                      MediaQuery.of(context).size.height * 0.2,
+                      constraints.maxHeight,
+                    ),
                   );
-                },
-              ),
+                }
+                return _buildContentPiece(
+                  readingController.versesContent[index],
+                );
+              },
             );
           },
         ),
@@ -418,6 +411,14 @@ class NoScrollbarScrollBehavior extends ScrollBehavior {
   @override
   Widget buildScrollbar(
       BuildContext context, Widget child, ScrollableDetails details) {
-    return child; // Return the child without wrapping it in a Scrollbar
+    return child;
   }
+
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.stylus,
+        PointerDeviceKind.trackpad,
+      };
 }
