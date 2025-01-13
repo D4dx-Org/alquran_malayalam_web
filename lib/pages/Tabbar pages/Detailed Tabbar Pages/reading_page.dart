@@ -326,9 +326,6 @@ class ReadingPageState extends State<ReadingPage> {
                     children: _buildTextSpans(piece.text, currentSurahId),
                   ),
                   textAlign: TextAlign.center,
-                  onTap: () {
-                    readingController.handleTextSelection();
-                  },
                 ),
               ),
             ),
