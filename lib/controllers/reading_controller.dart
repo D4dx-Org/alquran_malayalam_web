@@ -283,9 +283,10 @@ class ReadingController extends GetxController {
   }
 
   void navigateToSpecificSurah(int surahId) {
+    // Immediately update the visible surah ID
+    updateVisibleSurah(surahId);
     navigateToSurah(surahId, scrollController);
-    _saveLastReadVerse(
-        surahId, 1); // Save the surah and verse number (change as needed)
+    _saveLastReadVerse(surahId, 1);
   }
 
   List<int> _findPagesForSurah(int surahId) {
