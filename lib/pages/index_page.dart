@@ -1,12 +1,12 @@
 import 'package:alquran_web/controllers/quran_controller.dart';
-import 'package:alquran_web/pages/Tabbar%20pages/Index%20Tabbar%20Pages/surah_list_page.dart';
-import 'package:alquran_web/pages/Tabbar%20pages/Index%20Tabbar%20Pages/bookmarks.dart';
-import 'package:alquran_web/pages/Tabbar%20pages/Index%20Tabbar%20Pages/juz_list_page.dart';
-import 'package:alquran_web/widgets/horizontal_cardview.dart';
-import 'package:alquran_web/widgets/index_appbar.dart';
+import 'package:alquran_web/pages/home_pages/surah_list_page.dart';
+import 'package:alquran_web/pages/home_pages/bookmarks.dart';
+import 'package:alquran_web/pages/home_pages/juz_list_page.dart';
+import 'package:alquran_web/pages/home_pages/widgets/horizontal_cardview.dart';
+import 'package:alquran_web/widgets/appbar/index_appbar.dart';
 import 'package:alquran_web/widgets/index_floating_tabbar.dart';
-import 'package:alquran_web/widgets/navigation_drawer_widget.dart';
-import 'package:alquran_web/widgets/search_widget.dart';
+import 'package:alquran_web/pages/Drawer%20Pages/navigation_drawer_widget.dart';
+import 'package:alquran_web/widgets/search/search_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

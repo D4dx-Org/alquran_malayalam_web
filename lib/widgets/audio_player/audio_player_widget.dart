@@ -1,5 +1,5 @@
 import 'package:alquran_web/controllers/audio_controller.dart';
-import 'package:alquran_web/widgets/audio_player_settings_popup.dart';
+import 'package:alquran_web/widgets/audio_player/audio_player_settings_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

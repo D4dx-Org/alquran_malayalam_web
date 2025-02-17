@@ -3,9 +3,9 @@
 import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/routes/app_pages.dart';
 import 'package:alquran_web/services/quran_services.dart';
-import 'package:alquran_web/services/surah_unicode_data.dart';
-import 'package:alquran_web/widgets/footer.dart';
-import 'package:alquran_web/widgets/star_widget.dart';
+import 'package:alquran_web/utils/surah_unicode_data.dart';
+import 'package:alquran_web/pages/home_pages/widgets/footer.dart';
+import 'package:alquran_web/pages/home_pages/widgets/star_widget.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

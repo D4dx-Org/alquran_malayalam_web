@@ -6,7 +6,7 @@ import 'package:alquran_web/controllers/audio_controller.dart';
 import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:alquran_web/models/content_peice.dart';
-import 'package:alquran_web/widgets/audio_player_widget.dart';
+import 'package:alquran_web/widgets/audio_player/audio_player_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';

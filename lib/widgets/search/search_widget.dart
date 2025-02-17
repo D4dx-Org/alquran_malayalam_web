@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:alquran_web/controllers/search_controller.dart';
-import 'package:alquran_web/widgets/search_result_popup.dart';
+import 'package:alquran_web/widgets/search/search_result_popup.dart';
 import 'dart:async';
 import 'dart:developer' as developer;
 

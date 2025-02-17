@@ -4,13 +4,13 @@
 
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/models/content_peice.dart';
-import 'package:alquran_web/services/surah_unicode_data.dart';
+import 'package:alquran_web/utils/surah_unicode_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:alquran_web/models/verse_model.dart';
 import 'package:alquran_web/services/quran_com_services.dart';
-import 'package:alquran_web/services/json_utils.dart';
+import 'package:alquran_web/utils/json_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ReadingController extends GetxController {

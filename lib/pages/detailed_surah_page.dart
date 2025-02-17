@@ -1,8 +1,8 @@
-import 'package:alquran_web/pages/Tabbar%20pages/Detailed%20Tabbar%20Pages/reading_page.dart';
-import 'package:alquran_web/pages/Tabbar%20pages/Detailed%20Tabbar%20Pages/translation_page.dart';
-import 'package:alquran_web/widgets/detailed_appbar.dart';
+import 'package:alquran_web/pages/detailed_pages/reading_page.dart';
+import 'package:alquran_web/pages/detailed_pages/translation_page.dart';
+import 'package:alquran_web/widgets/appbar/detailed_appbar.dart';
 import 'package:alquran_web/widgets/detailed_tabbar.dart';
-import 'package:alquran_web/widgets/navigation_drawer_widget.dart';
+import 'package:alquran_web/pages/Drawer%20Pages/navigation_drawer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

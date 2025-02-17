@@ -4,7 +4,7 @@ import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/controllers/shared_preference_controller.dart';
 import 'package:alquran_web/routes/app_pages.dart';
 import 'package:alquran_web/services/quran_services.dart';
-import 'package:alquran_web/services/surah_unicode_data.dart';
+import 'package:alquran_web/utils/surah_unicode_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';

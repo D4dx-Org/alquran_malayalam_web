@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
-import 'package:alquran_web/widgets/search_widget.dart';
+import 'package:alquran_web/widgets/search/search_widget.dart';
 
-import '../controllers/audio_controller.dart';
+import '../../controllers/audio_controller.dart';
 
 class SurahBottomRow extends StatefulWidget {
   final double scaleFactor;
