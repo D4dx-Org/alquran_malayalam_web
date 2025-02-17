@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'dart:developer' as developer;
 
 class ReadingPage extends StatefulWidget {
   const ReadingPage({super.key});
@@ -27,7 +28,8 @@ class ReadingPageState extends State<ReadingPage> {
   bool _isLoading = false;
   Timer? _debounce;
   bool _scrollControllerDisposed = false;
-  final FocusNode _pageFocusNode = FocusNode();
+  final FocusNode _pageFocusNode = FocusNode(debugLabel: 'ReadingPageFocus');
+  bool _handlingFocusChange = false;
 
   // List to hold TapGestureRecognizers
   final List<TapGestureRecognizer> _tapGestureRecognizers = [];
@@ -35,6 +37,7 @@ class ReadingPageState extends State<ReadingPage> {
   @override
   void initState() {
     super.initState();
+    developer.log('Reading page initialized', name: 'ReadingPage');
     _initializeScrollController();
     _initializeReadingPage();
   }
@@ -182,11 +185,43 @@ class ReadingPageState extends State<ReadingPage> {
 
     return Focus(
       focusNode: _pageFocusNode,
+      onFocusChange: (hasFocus) {
+        if (_handlingFocusChange) return;
+        _handlingFocusChange = true;
+        developer.log('Reading page focus changed: hasFocus=$hasFocus',
+            name: 'ReadingPage');
+
+        if (hasFocus) {
+          // Delay the focus request to avoid conflicts
+          Future.microtask(() {
+            if (mounted) {
+              readingController.focusNode.unfocus();
+              _pageFocusNode.requestFocus();
+            }
+          });
+        }
+        _handlingFocusChange = false;
+      },
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
+        onTapDown: (TapDownDetails details) {
+          developer.log('Reading page tapped at: ${details.globalPosition}',
+              name: 'ReadingPage');
+        },
         onTap: () {
-          _pageFocusNode.requestFocus();
-          readingController.focusNode.unfocus();
+          if (_handlingFocusChange) return;
+          _handlingFocusChange = true;
+          developer.log('Reading page tapped, requesting focus',
+              name: 'ReadingPage');
+
+          // Delay the focus changes to avoid conflicts
+          Future.microtask(() {
+            if (mounted) {
+              readingController.focusNode.unfocus();
+              _pageFocusNode.requestFocus();
+            }
+          });
+          _handlingFocusChange = false;
         },
         child: Scaffold(
           body: Column(
@@ -354,6 +389,8 @@ class ReadingPageState extends State<ReadingPage> {
       String verseNumberText = match.group(0)!;
       TapGestureRecognizer recognizer = TapGestureRecognizer()
         ..onTapDown = (TapDownDetails details) {
+          developer.log('Verse number tap down: ${details.globalPosition}',
+              name: 'ReadingPage');
           readingController.focusNode.unfocus();
           _onVerseNumberTapped(verseNumberText, surahId);
         };
@@ -379,6 +416,8 @@ class ReadingPageState extends State<ReadingPage> {
   }
 
   void _onVerseNumberTapped(String verseNumberText, int surahId) {
+    developer.log('Verse number tapped: $verseNumberText, surahId: $surahId',
+        name: 'ReadingPage');
     String arabicNumber =
         verseNumberText.replaceAll(RegExp(r'[\uFD3F\uFD3E\s]'), '');
     String ayaNumber = _convertArabicNumbersToEnglish(arabicNumber);

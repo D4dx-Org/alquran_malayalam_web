@@ -4,6 +4,7 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:alquran_web/controllers/search_controller.dart';
 import 'package:alquran_web/widgets/search_result_popup.dart';
 import 'dart:async';
+import 'dart:developer' as developer;
 
 class SearchWidget extends StatefulWidget {
   final double? width;
@@ -70,12 +71,17 @@ class SearchWidgetState extends State<SearchWidget> {
   }
 
   void _onFocusChange() {
+    developer.log(
+        'Search widget focus changed: hasFocus=${_focusNode.hasFocus}',
+        name: 'SearchWidget');
     if (!_focusNode.hasFocus) {
       _hideSearchResult();
     }
   }
 
   void _onSearchChanged() {
+    developer.log('Search text changed: ${_controller.text}',
+        name: 'SearchWidget');
     if (_controller.text.isNotEmpty) {
       // Use the new direct navigation handler for format "surah:aya"
       final searchController = Get.find<QuranSearchController>();
@@ -216,6 +222,7 @@ class SearchWidgetState extends State<SearchWidget> {
 
         return GestureDetector(
           onTap: () {
+            developer.log('Search widget tapped', name: 'SearchWidget');
             if (_overlayEntry != null) {
               _hideSearchResult();
             }
@@ -244,7 +251,12 @@ class SearchWidgetState extends State<SearchWidget> {
               child: TextField(
                 controller: _controller,
                 focusNode: _focusNode,
+                onTap: () {
+                  developer.log('TextField tapped', name: 'SearchWidget');
+                },
                 onChanged: (value) {
+                  developer.log('TextField value changed: $value',
+                      name: 'SearchWidget');
                   widget.onSearch?.call(value);
                 },
                 decoration: InputDecoration(

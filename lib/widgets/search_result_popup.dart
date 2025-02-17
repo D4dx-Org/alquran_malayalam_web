@@ -1,27 +1,30 @@
-import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:alquran_web/controllers/search_controller.dart';
+import 'dart:developer' as developer;
 
 class SearchResultPopup extends StatelessWidget {
+  final String searchText;
   final VoidCallback onClose;
+  final QuranSearchController searchController =
+      Get.find<QuranSearchController>();
 
-  const SearchResultPopup({
+  SearchResultPopup({
     super.key,
+    required this.searchText,
     required this.onClose,
-    required String searchText,
-  });
+  }) {
+    developer.log('Search result popup created with text: $searchText',
+        name: 'SearchResultPopup');
+  }
 
-  // Function to check if text contains Arabic characters
   bool _containsArabic(String text) {
     return RegExp(r'[\u0600-\u06FF]').hasMatch(text);
   }
 
   @override
   Widget build(BuildContext context) {
-    final QuranSearchController searchController =
-        Get.find<QuranSearchController>();
-    Get.find<QuranController>();
+    developer.log('Building search result popup', name: 'SearchResultPopup');
 
     return Container(
       padding: const EdgeInsets.all(8.0),
@@ -48,14 +51,22 @@ class SearchResultPopup extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Obx(() => Text(
-                      'Results for "${searchController.currentSearchQuery}"',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    )),
+                child: Obx(() {
+                  developer.log('Current search query: $searchText',
+                      name: 'SearchResultPopup');
+                  return Text(
+                    'Results for "$searchText"',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  );
+                }),
               ),
               IconButton(
                 icon: const Icon(Icons.close),
-                onPressed: onClose,
+                onPressed: () {
+                  developer.log('Close button pressed',
+                      name: 'SearchResultPopup');
+                  onClose();
+                },
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
               ),
@@ -63,10 +74,16 @@ class SearchResultPopup extends StatelessWidget {
           ),
           Obx(() {
             if (searchController.isLoading.value) {
+              developer.log('Search is loading', name: 'SearchResultPopup');
               return const Center(child: CircularProgressIndicator());
             } else if (searchController.searchResults.isEmpty) {
+              developer.log('No search results found',
+                  name: 'SearchResultPopup');
               return const Center(child: Text('No results found'));
             } else {
+              developer.log(
+                  'Found ${searchController.searchResults.length} results',
+                  name: 'SearchResultPopup');
               return Expanded(
                 child: ListView.separated(
                   itemCount: searchController.searchResults.length,
@@ -96,7 +113,9 @@ class SearchResultPopup extends StatelessWidget {
                             isArabicText ? TextAlign.right : TextAlign.left,
                       ),
                       onTap: () async {
-                        // Use the new navigation method
+                        developer.log(
+                            'Search result tapped: ${result['MSuraName']}, Aya ${result['AyaNo']}',
+                            name: 'SearchResultPopup');
                         await searchController.navigateToSearchResult(
                             context, result);
                       },
