@@ -4,7 +4,7 @@ import 'package:alquran_web/pages/home_pages/bookmarks.dart';
 import 'package:alquran_web/pages/home_pages/juz_list_page.dart';
 import 'package:alquran_web/pages/home_pages/widgets/horizontal_cardview.dart';
 import 'package:alquran_web/widgets/appbar/index_appbar.dart';
-import 'package:alquran_web/widgets/index_floating_tabbar.dart';
+import 'package:alquran_web/widgets/index_tabbar.dart';
 import 'package:alquran_web/pages/Drawer%20Pages/navigation_drawer_widget.dart';
 import 'package:alquran_web/widgets/search/search_widget.dart';
 import 'package:flutter/material.dart';

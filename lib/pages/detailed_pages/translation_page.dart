@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:alquran_web/pages/detailed_pages/widgets/ayah_action_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,7 +9,6 @@ import 'package:alquran_web/controllers/bookmarks_controller.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
 import 'package:alquran_web/widgets/audio_player/audio_player_widget.dart';
-import 'package:alquran_web/widgets/Ayah_action_bar.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class TranslationPage extends StatefulWidget {
