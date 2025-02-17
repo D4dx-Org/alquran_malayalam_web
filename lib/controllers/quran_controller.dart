@@ -50,8 +50,6 @@ class QuranController extends GetxController {
   List<Map<String, dynamic>> get AyaLines => _AyaLines;
   List<String> get surahMalMeans => _surahMalMeans;
 
-  // Add cache for verses
-  final Map<int, List<Map<String, dynamic>>> _versesCache = {};
 
   @override
   void onInit() async {

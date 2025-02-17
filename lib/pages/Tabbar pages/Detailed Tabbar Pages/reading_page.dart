@@ -29,7 +29,6 @@ class ReadingPageState extends State<ReadingPage> {
   Timer? _debounce;
   bool _scrollControllerDisposed = false;
   final FocusNode _pageFocusNode = FocusNode(debugLabel: 'ReadingPageFocus');
-  bool _handlingFocusChange = false;
 
   // List to hold TapGestureRecognizers
   final List<TapGestureRecognizer> _tapGestureRecognizers = [];
@@ -174,7 +173,6 @@ class ReadingPageState extends State<ReadingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final scaleFactor = getScaleFactor(screenWidth);
     final horizontalPadding = screenWidth > 1440
@@ -183,45 +181,12 @@ class ReadingPageState extends State<ReadingPage> {
             ? 50.0
             : screenWidth * scaleFactor;
 
-    return Focus(
-      focusNode: _pageFocusNode,
-      onFocusChange: (hasFocus) {
-        if (_handlingFocusChange) return;
-        _handlingFocusChange = true;
-        developer.log('Reading page focus changed: hasFocus=$hasFocus',
-            name: 'ReadingPage');
-
-        if (hasFocus) {
-          // Delay the focus request to avoid conflicts
-          Future.microtask(() {
-            if (mounted) {
-              readingController.focusNode.unfocus();
-              _pageFocusNode.requestFocus();
-            }
-          });
-        }
-        _handlingFocusChange = false;
-      },
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTapDown: (TapDownDetails details) {
-          developer.log('Reading page tapped at: ${details.globalPosition}',
+    return SelectionArea(
+      child: Focus(
+        focusNode: _pageFocusNode,
+        onFocusChange: (hasFocus) {
+          developer.log('Reading page focus changed: hasFocus=$hasFocus',
               name: 'ReadingPage');
-        },
-        onTap: () {
-          if (_handlingFocusChange) return;
-          _handlingFocusChange = true;
-          developer.log('Reading page tapped, requesting focus',
-              name: 'ReadingPage');
-
-          // Delay the focus changes to avoid conflicts
-          Future.microtask(() {
-            if (mounted) {
-              readingController.focusNode.unfocus();
-              _pageFocusNode.requestFocus();
-            }
-          });
-          _handlingFocusChange = false;
         },
         child: Scaffold(
           body: Column(
@@ -343,7 +308,6 @@ class ReadingPageState extends State<ReadingPage> {
         indent: 20,
       );
     } else {
-      // Store the surah ID for this content piece
       final currentSurahId = piece.surahId;
 
       return Padding(
@@ -351,8 +315,8 @@ class ReadingPageState extends State<ReadingPage> {
         child: Column(
           children: [
             Obx(
-              () => Focus(
-                focusNode: readingController.focusNode,
+              () => MouseRegion(
+                cursor: SystemMouseCursors.text,
                 child: SelectableText.rich(
                   TextSpan(
                     style: settingsController.quranFontStyle.value.copyWith(
@@ -361,6 +325,18 @@ class ReadingPageState extends State<ReadingPage> {
                     children: _buildTextSpans(piece.text, currentSurahId),
                   ),
                   textAlign: TextAlign.center,
+                  onSelectionChanged: (selection, cause) {
+                    developer.log(
+                      'Text selection changed: ${selection.toString()}',
+                      name: 'ReadingPage',
+                    );
+                  },
+                  contextMenuBuilder: (context, editableTextState) {
+                    return AdaptiveTextSelectionToolbar.editableText(
+                      editableTextState: editableTextState,
+                    );
+                  },
+                  enableInteractiveSelection: true,
                 ),
               ),
             ),
@@ -391,7 +367,6 @@ class ReadingPageState extends State<ReadingPage> {
         ..onTapDown = (TapDownDetails details) {
           developer.log('Verse number tap down: ${details.globalPosition}',
               name: 'ReadingPage');
-          readingController.focusNode.unfocus();
           _onVerseNumberTapped(verseNumberText, surahId);
         };
       _tapGestureRecognizers.add(recognizer);
@@ -416,8 +391,6 @@ class ReadingPageState extends State<ReadingPage> {
   }
 
   void _onVerseNumberTapped(String verseNumberText, int surahId) {
-    developer.log('Verse number tapped: $verseNumberText, surahId: $surahId',
-        name: 'ReadingPage');
     String arabicNumber =
         verseNumberText.replaceAll(RegExp(r'[\uFD3F\uFD3E\s]'), '');
     String ayaNumber = _convertArabicNumbersToEnglish(arabicNumber);
