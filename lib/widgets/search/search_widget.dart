@@ -272,9 +272,18 @@ class SearchWidgetState extends State<SearchWidget> {
                       IconButton(
                         icon: const Icon(Icons.search),
                         color: const Color.fromRGBO(115, 78, 9, 1),
-                        onPressed: () {
+                        onPressed: () async {
                           widget.onSearch?.call(_controller.text);
                           if (_controller.text.isNotEmpty) {
+                            final searchController =
+                                Get.find<QuranSearchController>();
+                            final pattern = RegExp(r'^(\d+):(\d+)$');
+                            final match = pattern.firstMatch(_controller.text);
+                            if (match == null) {
+                              searchController
+                                  .updateSearchQuery(_controller.text);
+                              await searchController.performSearch();
+                            }
                             _showSearchResult(_controller.text);
                           }
                         },

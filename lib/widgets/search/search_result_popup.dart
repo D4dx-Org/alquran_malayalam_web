@@ -51,14 +51,10 @@ class SearchResultPopup extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Obx(() {
-                  developer.log('Current search query: $searchText',
-                      name: 'SearchResultPopup');
-                  return Text(
-                    'Results for "$searchText"',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  );
-                }),
+                child: Text(
+                  'Results for "$searchText"',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
               IconButton(
                 icon: const Icon(Icons.close),
@@ -116,8 +112,9 @@ class SearchResultPopup extends StatelessWidget {
                         developer.log(
                             'Search result tapped: ${result['MSuraName']}, Aya ${result['AyaNo']}',
                             name: 'SearchResultPopup');
+                        onClose();
                         await searchController.navigateToSearchResult(
-                            context, result);
+                            Get.context!, result);
                       },
                     );
                   },
