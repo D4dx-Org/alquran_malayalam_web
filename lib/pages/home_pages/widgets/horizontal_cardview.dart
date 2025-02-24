@@ -77,23 +77,24 @@ class HorizontalCardWidgetState extends State<HorizontalCardWidget> {
                         },
                         child: GestureDetector(
                           onTap: () {
-                            // ignore: non_constant_identifier_names
-                            int AyaNumber = surah['id'] == 2 ? 255 : 1;
+                            int ayaNumber = surah['id'] == 2 ? 255 : 1;
 
                             if (surah['name'] != null && surah['id'] != null) {
-                              widget.quranController.updateSelectedSurah(
-                                  surah['name'].toString(), AyaNumber);
+                              // Update the selected surah by ID
                               widget.quranController.updateSelectedSurahId(
-                                  surah['id'], AyaNumber);
+                                  surah['id'], ayaNumber);
+                              // Update the reading controller to refresh the surah dropdown
+                              widget.quranController.readingController
+                                  .navigateToSpecificSurah(surah['id']);
                               widget.quranController.scrollToAya(
-                                  AyaNumber, surahLineIds[surah['id']]!);
+                                  ayaNumber, surahLineIds[surah['id']]!);
 
                               Get.toNamed(
                                 Routes.SURAH_DETAILED,
                                 arguments: {
                                   'surahId': surah['id'],
                                   'surahName': surah['name'],
-                                  'AyaNumber': AyaNumber,
+                                  'AyaNumber': ayaNumber,
                                 },
                               );
                             } else {
