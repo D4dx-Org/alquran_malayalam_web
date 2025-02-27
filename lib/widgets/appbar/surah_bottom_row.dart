@@ -72,7 +72,7 @@ class SurahBottomRowState extends State<SurahBottomRow>
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: Container(
-        color: const Color.fromRGBO(115, 78, 9, 1),
+        color: const Color(0xFF734E09),
         height: 50,
         child: Stack(
           children: [
