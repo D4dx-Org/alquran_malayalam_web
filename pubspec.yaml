@@ -90,6 +90,8 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/json/
+    - assets/icons/Translation_Tabbar_Icon.svg
+    - assets/icons/Reading_Tabbar_Icon.svg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
