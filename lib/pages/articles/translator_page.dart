@@ -68,7 +68,7 @@ class _TranslatorPageState extends State<TranslatorPage> {
                             const CircleAvatar(
                               radius: 110,
                               backgroundImage:
-                                  AssetImage('images/Author_Photo.jpg'),
+                                  AssetImage('assets/images/Author_Photo.jpg'),
                             ),
                             const SizedBox(height: 16.0),
                             const Text(
@@ -104,7 +104,7 @@ class _TranslatorPageState extends State<TranslatorPage> {
                                   CircleAvatar(
                                     radius: 110,
                                     backgroundImage:
-                                        AssetImage('images/Author_Photo.jpg'),
+                                        AssetImage('assets/images/Author_Photo.jpg'),
                                   ),
                                   Padding(
                                     padding: EdgeInsets.only(top: 20, left: 15),

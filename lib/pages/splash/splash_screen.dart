@@ -32,7 +32,7 @@ class SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('images/favicon.png', width: 150, height: 150),
+            Image.asset('assets/images/favicon.png', width: 150, height: 150),
             Text(
               "അല്‍-ഖുര്‍ആന്‍",
               style: GoogleFonts.anekMalayalam(

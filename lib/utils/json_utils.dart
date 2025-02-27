@@ -23,14 +23,14 @@ class JsonParser {
   }
 
   Future<Map<String, dynamic>> loadPageToChapterJsonData() async {
-    final jsonString =
-        await rootBundle.loadString('json/page-to-chapter-mappings.json');
+    final jsonString = await rootBundle
+        .loadString('assets/json/page-to-chapter-mappings.json');
     return json.decode(jsonString);
   }
 
   Future<Map<String, dynamic>> loadJsonData() async {
     final jsonString =
-        await rootBundle.loadString('json/juz-to-chapter-verse-mappings.json');
+        await rootBundle.loadString('assets/json/juz-to-chapter-verse-mappings.json');
     return json.decode(jsonString);
   }
 }

@@ -141,8 +141,8 @@ class SurahListPageState extends State<SurahListPage> {
             children: [
               SvgPicture.asset(
                 surah['SuraType'] == 'مَكِّيَة'
-                    ? "icons/Makiyyah_Icon.svg"
-                    : "icons/Madaniyya_Icon.svg",
+                    ? "assets/icons/Makiyyah_Icon.svg"
+                    : "assets/icons/Madaniyya_Icon.svg",
                 height: 11,
                 width: 9,
               ),

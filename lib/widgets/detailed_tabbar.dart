@@ -33,8 +33,8 @@ class _FloatingTabBarState extends State<DetailedTabbar>
     const activeIndicatorColor = Colors.white;
 
     final tabs = [
-      _TabData("Translation", "icons/Translation_Tabbar_Icon.svg"),
-      _TabData("Reading", "icons/Reading_Tabbar_Icon.svg"),
+      _TabData("Translation", "assets/icons/Translation_Tabbar_Icon.svg"),
+      _TabData("Reading", "assets/icons/Reading_Tabbar_Icon.svg"),
     ];
 
     return Container(

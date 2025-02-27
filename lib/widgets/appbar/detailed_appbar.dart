@@ -75,7 +75,7 @@ class _DetailedAppbarState extends State<DetailedAppbar> {
               actions: <Widget>[
                 IconButton(
                   icon: SvgPicture.asset(
-                    "icons/Settings_Icon.svg",
+                    "assets/icons/Settings_Icon.svg",
                     height: settingsIconSize,
                     width: settingsIconSize,
                     colorFilter:
@@ -105,7 +105,7 @@ class _DetailedAppbarState extends State<DetailedAppbar> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset(
-                              'images/AppBar_Icon.png',
+                              'assets/images/AppBar_Icon.png',
                               height: logoSize,
                               width: logoSize,
                               color: Colors.white,

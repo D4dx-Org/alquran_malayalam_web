@@ -51,7 +51,7 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
         actions: <Widget>[
           IconButton(
             icon: SvgPicture.asset(
-              "icons/Settings_Icon.svg",
+              "assets/icons/Settings_Icon.svg",
               height: settingsIconSize,
               width: settingsIconSize,
             ),
@@ -79,7 +79,7 @@ class IndexAppbar extends StatelessWidget implements PreferredSizeWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
-                        'images/AppBar_Icon.png',
+                        'assets/images/AppBar_Icon.png',
                         height: logoSize,
                         width: logoSize,
                         fit: BoxFit.contain,
