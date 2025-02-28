@@ -1,6 +1,6 @@
 # alquran_web
 
-A new Flutter project.
+Al Quran Malayalam
 
 ## Getting Started
 
