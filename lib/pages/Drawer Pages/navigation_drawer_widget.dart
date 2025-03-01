@@ -140,7 +140,7 @@ class NavigationDrawerWidget extends StatelessWidget {
                             throw 'Could not launch Play Store';
                           }
                         },
-                        icon: SvgPicture.asset('icons/Google_Play.svg'),
+                        icon: SvgPicture.asset('assets/icons/Google_Play.svg'),
                       ),
                     ),
                     Flexible(
@@ -154,7 +154,7 @@ class NavigationDrawerWidget extends StatelessWidget {
                             throw 'Could not launch Apple Store';
                           }
                         },
-                        icon: SvgPicture.asset('icons/Apple_Store.svg'),
+                        icon: SvgPicture.asset('assets/icons/Apple_Store.svg'),
                       ),
                     ),
                   ],

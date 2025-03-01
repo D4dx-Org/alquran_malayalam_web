@@ -100,7 +100,7 @@ class AyaActionBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          _buildSvgIconButton('icons/PlayAyah_Icon.svg', _handlePlayPressed),
+          _buildSvgIconButton('assets/icons/PlayAyah_Icon.svg', _handlePlayPressed),
           const SizedBox(width: 16),
           _buildIconButton(
             isBookmarked ? Icons.bookmark : Icons.bookmark_border,
@@ -109,7 +109,7 @@ class AyaActionBar extends StatelessWidget {
           ),
           const SizedBox(width: 16),
           _buildSvgIconButton(
-              'icons/ShareAyah_Icon.svg', () => _handleSharePressed(context)),
+              'assets/icons/ShareAyah_Icon.svg', () => _handleSharePressed(context)),
         ],
       ),
     );
