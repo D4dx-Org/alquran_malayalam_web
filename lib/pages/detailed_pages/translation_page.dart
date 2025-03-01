@@ -1,5 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'dart:developer';
+
 import 'package:alquran_web/pages/detailed_pages/widgets/ayah_action_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -52,16 +54,50 @@ class _TranslationPageState extends State<TranslationPage> {
   }
 
   void _handleInitialNavigation() async {
-    final args = Get.arguments;
-    if (args != null && args['AyaNumber'] != null && args['lineId'] != null) {
-      final surahId = args['surahId'] as int;
-      final AyaNumber = args['AyaNumber'] as int;
-      final lineId = args['lineId'] as String;
+  log('Handling initial navigation', name: 'TranslationPage');
+  final args = Get.arguments;
+  if (args != null && args['AyaNumber'] != null) {
+    final surahId = args['surahId'] as int;
+    final ayaNumber = args['AyaNumber'] as int;
+    
+    log('Initial navigation args found: SurahId=$surahId, AyaNumber=$ayaNumber', 
+      name: 'TranslationPage');
 
-      await _quranController.ensureAyaIsLoaded(surahId, AyaNumber);
-      scrollToAya(AyaNumber, lineId);
+    // Wait for the page to be fully built
+    await Future.delayed(const Duration(milliseconds: 500));
+    
+    // Ensure data is loaded
+    final dataLoaded = await _quranController.ensureAyaIsLoaded(surahId, ayaNumber);
+    log('Data loaded status: $dataLoaded', name: 'TranslationPage');
+
+    if (dataLoaded) {
+      // Find the correct index to scroll to
+      final index = _quranController.AyaLines.indexWhere(
+        (aya) => int.parse(aya['AyaNo'].toString()) == ayaNumber
+      );
+      
+      log('Found index for initial scroll: $index', name: 'TranslationPage');
+
+      if (index != -1 && mounted) {
+        // Use a longer delay to ensure the list is properly built
+        await Future.delayed(const Duration(milliseconds: 800));
+        
+        if (_quranController.itemScrollController.isAttached) {
+          log('Performing initial scroll to index $index', name: 'TranslationPage');
+          _quranController.itemScrollController.scrollTo(
+            index: index,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOutCubic,
+            alignment: 0.1,
+          );
+        } else {
+          log('ScrollController not attached after delay', name: 'TranslationPage');
+        }
+      }
     }
   }
+}
+
 
   @override
   void dispose() {

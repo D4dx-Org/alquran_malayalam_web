@@ -1,5 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'dart:developer' as developer;
+
 import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/controllers/shared_preference_controller.dart';
 import 'package:alquran_web/routes/app_pages.dart';
@@ -49,7 +51,6 @@ class QuranController extends GetxController {
   String get selectedAyaRange => _selectedAyaRange.value;
   List<Map<String, dynamic>> get AyaLines => _AyaLines;
   List<String> get surahMalMeans => _surahMalMeans;
-
 
   @override
   void onInit() async {
@@ -312,27 +313,55 @@ class QuranController extends GetxController {
     _fetchAyaLines(_surahIds.first);
   }
 
-  Future<bool> ensureAyaIsLoaded(int surahId, int AyaNumber) async {
+  Future<bool> ensureAyaIsLoaded(int surahId, int ayaNumber) async {
+    developer.log(
+        'Starting ensureAyaIsLoaded for Surah: $surahId, Aya: $ayaNumber',
+        name: 'AyaLoader');
+
     try {
+      // First validate the input parameters
+      if (surahId < 1 || surahId > 114) {
+        developer.log('Invalid surah ID: $surahId', name: 'AyaLoader');
+        throw ArgumentError('Invalid surah ID: $surahId');
+      }
+
+      if (ayaNumber < 1) {
+        developer.log('Invalid aya number: $ayaNumber', name: 'AyaLoader');
+        throw ArgumentError('Invalid aya number: $ayaNumber');
+      }
+
       // Check if verse is already loaded
-      if (_AyaLines.any(
-          (aya) => int.parse(aya['AyaNo'].toString()) == AyaNumber)) {
+      bool isAlreadyLoaded = _AyaLines.any((aya) {
+        final ayaNo = int.tryParse(aya['AyaNo']?.toString() ?? '') ?? -1;
+        return ayaNo == ayaNumber;
+      });
+
+      developer.log('Aya already loaded: $isAlreadyLoaded', name: 'AyaLoader');
+
+      if (isAlreadyLoaded) {
+        developer.log('Aya was already loaded, returning', name: 'AyaLoader');
+        return true;
+      }
+
+      // Load the specific verse
+      developer.log('Fetching verse for Surah: $surahId, Aya: $ayaNumber',
+          name: 'AyaLoader');
+      final verses = await _quranService.fetchVerses(surahId, ayaNumber);
+
+      if (verses.isEmpty) {
+        developer.log('No verses returned from fetchVerses', name: 'AyaLoader');
         return false;
       }
 
-      // Load the specific verse and its surrounding verses for smoother scrolling
-      final startVerse = (AyaNumber - 5).clamp(1, AyaNumber);
-      final endVerse =
-          (AyaNumber + 5).clamp(AyaNumber, _selectedSurahAyaCount.value);
+      developer.log('Successfully fetched ${verses.length} verses',
+          name: 'AyaLoader');
 
-      // Load verses in range
-      for (int verse = startVerse; verse <= endVerse; verse++) {
-        if (!_AyaLines.any(
-            (aya) => int.parse(aya['AyaNo'].toString()) == verse)) {
-          final verses = await _quranService.fetchVerses(surahId, verse);
-          if (verses.isNotEmpty) {
-            _AyaLines.addAll(verses);
-          }
+      // Add new verses to _AyaLines
+      for (var verse in verses) {
+        if (!_AyaLines.any((line) =>
+            line['AyaNo'].toString() == verse['AyaNo'].toString() &&
+            line['LineId'].toString() == verse['LineId'].toString())) {
+          _AyaLines.add(verse);
         }
       }
 
@@ -345,16 +374,11 @@ class QuranController extends GetxController {
             .compareTo(int.parse(b['LineId'].toString()));
       });
 
-      // Remove duplicates
-      final seen = <String>{};
-      _AyaLines.removeWhere((line) {
-        final key = '${line['AyaNo']}-${line['LineId']}';
-        return !seen.add(key);
-      });
-
+      developer.log('Successfully loaded and sorted verses', name: 'AyaLoader');
       return true;
-    } catch (e) {
-      debugPrint('Error in ensureAyaIsLoaded: $e');
+    } catch (e, stackTrace) {
+      developer.log('Error in ensureAyaIsLoaded: $e\n$stackTrace',
+          name: 'AyaLoader');
       return false;
     }
   }
@@ -423,42 +447,62 @@ class QuranController extends GetxController {
   }
 
   Future<void> scrollToAya(int AyaNumber, String lineId) async {
-    try {
-      // Ensure the Aya is loaded
-      await ensureAyaIsLoaded(_selectedSurahId.value, AyaNumber);
-      // Add a small delay to allow for widget initialization
-      await Future.delayed(const Duration(milliseconds: 50));
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (itemScrollController.isAttached) {
-          // Find the index of the Aya
-          int index = _AyaLines.indexWhere((Aya) =>
-              int.parse(Aya['AyaNo']) == AyaNumber && Aya['LineId'] == lineId);
-          if (index == -1) {
-            // If exact match not found, find the nearest Aya
-            index = _AyaLines.indexWhere(
-                (Aya) => int.parse(Aya['AyaNo']) >= AyaNumber);
-          }
-          if (index == -1) {
-            // If still not found, scroll to the end
-            index = _AyaLines.length;
-          }
-          // Attempt to scroll
+    developer.log('Starting scrollToAya with Aya: $AyaNumber',
+        name: 'ScrollToAya');
+
+    // Add multiple retry attempts for scroll
+    int maxRetries = 3;
+    int currentRetry = 0;
+
+    while (currentRetry < maxRetries) {
+      try {
+        await ensureAyaIsLoaded(_selectedSurahId.value, AyaNumber);
+
+        // Wait for widget to be built
+        await Future.delayed(Duration(milliseconds: 100 * (currentRetry + 1)));
+
+        if (!itemScrollController.isAttached) {
+          developer.log(
+              'ScrollController not attached, attempt ${currentRetry + 1}',
+              name: 'ScrollToAya');
+          currentRetry++;
+          continue;
+        }
+
+        int index = _AyaLines.indexWhere(
+            (Aya) => int.parse(Aya['AyaNo'].toString()) == AyaNumber);
+
+        if (index != -1) {
+          developer.log('Found Aya at index: $index, scrolling',
+              name: 'ScrollToAya');
+
           itemScrollController.scrollTo(
             index: index,
-            duration: const Duration(milliseconds: 50),
+            duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOutCubic,
-            alignment: 0,
+            alignment: 0.1, // Scroll to slightly below the top
           );
-          // Update the selected Aya number and range
+
           _selectedAyaNumber.value = AyaNumber;
           _selectedAyaRange.value = '${_selectedSurahId.value} : $AyaNumber';
+          update();
 
-          // Notify the UI to update the dropdown
-          update(); // This will trigger the UI to rebuild and reflect the new Aya number in the dropdown
+          developer.log('Scroll complete', name: 'ScrollToAya');
+          break;
+        } else {
+          developer.log('Aya not found in loaded lines', name: 'ScrollToAya');
+          currentRetry++;
         }
-      });
-    } catch (e) {
-      // Handle error
+      } catch (e) {
+        developer.log('Error in scroll attempt ${currentRetry + 1}: $e',
+            name: 'ScrollToAya');
+        currentRetry++;
+      }
+    }
+
+    if (currentRetry >= maxRetries) {
+      developer.log('Failed to scroll after $maxRetries attempts',
+          name: 'ScrollToAya');
     }
   }
 

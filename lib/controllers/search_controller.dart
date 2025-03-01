@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:developer' as developer;
 
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/routes/app_pages.dart';
@@ -25,32 +25,40 @@ class QuranSearchController extends GetxController {
 
   Future<void> navigateToSearchResult(
       BuildContext context, Map<String, dynamic> result) async {
-    if (isNavigating.value) return;
+    if (isNavigating.value) {
+      developer.log('Navigation already in progress, returning',
+          name: 'SearchNavigation');
+      return;
+    }
 
     try {
       isNavigating.value = true;
-      final quranController = Get.find<QuranController>();
+      developer.log(
+          'Starting navigation to search result: ${result.toString()}',
+          name: 'SearchNavigation');
 
+      final quranController = Get.find<QuranController>();
       final int surahId = int.parse(result['SuraNo'].toString());
       final int ayaNumber = int.parse(result['AyaNo'].toString());
 
-      // Ensure data is loaded before navigation
+      // Update controllers
+      developer.log('Updating controllers', name: 'SearchNavigation');
+      quranController.updateSelectedSurahId(surahId, ayaNumber);
+      quranController.readingController.navigateToSpecificSurah(surahId);
+
+      // Load data
+      developer.log('Loading aya data', name: 'SearchNavigation');
       final bool dataLoaded =
           await quranController.ensureAyaIsLoaded(surahId, ayaNumber);
 
       if (!dataLoaded) {
+        developer.log('Failed to load required data', name: 'SearchNavigation');
         throw Exception('Failed to load required data');
       }
 
-      // Update controllers synchronously
-      quranController.updateSelectedSurahId(surahId, ayaNumber);
-      // Update reading controller to refresh the surah dropdown
-      quranController.readingController.navigateToSpecificSurah(surahId);
-
-      // Wait for state to settle
-      await Future.delayed(const Duration(milliseconds: 100));
-
       if (context.mounted) {
+        // Navigate without trying to scroll - let the page handle it
+        developer.log('Proceeding with navigation', name: 'SearchNavigation');
         await Get.toNamed(
           Routes.SURAH_DETAILED,
           arguments: {
@@ -59,17 +67,16 @@ class QuranSearchController extends GetxController {
             'AyaNumber': ayaNumber,
           },
         );
-
-        // Ensure scroll happens after navigation
-        await quranController.scrollToAya(ayaNumber, '1');
       }
     } catch (e) {
-      debugPrint('Navigation error: $e');
-      Get.snackbar(
-        'Error',
-        'Failed to navigate to the selected verse. Please try again.',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      developer.log('Navigation error: $e', name: 'SearchNavigation');
+      if (context.mounted) {
+        Get.snackbar(
+          'Error',
+          'Failed to navigate to the selected verse. Please try again.',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
     } finally {
       isNavigating.value = false;
     }
@@ -156,7 +163,7 @@ class QuranSearchController extends GetxController {
             await quranService.fetchSearchResult(searchQuery.value);
       }
     } catch (e) {
-      log('Search error: $e');
+      developer.log('Search error: $e');
       searchResults.clear();
     } finally {
       isLoading.value = false;

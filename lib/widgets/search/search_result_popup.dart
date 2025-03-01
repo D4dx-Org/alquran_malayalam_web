@@ -91,8 +91,7 @@ class SearchResultPopup extends StatelessWidget {
 
                     return ListTile(
                       title: Text(
-                        ' ${result['MSuraName']}, ആയ ${result['AyaNo']}',
-                      ),
+                          ' ${result['MSuraName']}, ആയ ${result['AyaNo']}'),
                       subtitle: Text(
                         result['MalTran'],
                         style: TextStyle(
@@ -110,11 +109,19 @@ class SearchResultPopup extends StatelessWidget {
                       ),
                       onTap: () async {
                         developer.log(
-                            'Search result tapped: ${result['MSuraName']}, Aya ${result['AyaNo']}',
+                            'Search result tapped, delaying popup close',
                             name: 'SearchResultPopup');
+
+                        // Start navigation before closing popup
+                        final navigationFuture = searchController
+                            .navigateToSearchResult(Get.context!, result);
+
+                        // Close popup after a small delay to ensure navigation starts
+                        await Future.delayed(const Duration(milliseconds: 100));
                         onClose();
-                        await searchController.navigateToSearchResult(
-                            Get.context!, result);
+
+                        // Wait for navigation to complete
+                        await navigationFuture;
                       },
                     );
                   },
