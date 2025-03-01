@@ -283,6 +283,7 @@ class QuranController extends GetxController {
     final storedSurah = _prefsController.getString('selectedSurah');
     final storedSurahId = _prefsController.getInt('selectedSurahId');
     final storedAyaRange = _prefsController.getString('selectedAyaRange');
+    final storedAyaNumber = _prefsController.getInt('selectedAyaNumber') ?? 1;
 
     if (storedSurah != null &&
         storedSurahId != null &&
@@ -293,8 +294,13 @@ class QuranController extends GetxController {
         _selectedSurah.value = _surahNames[index];
         _selectedSurahId.value = _surahIds[index];
         _selectedSurahAyaCount.value = _surahAyaCounts[index];
-        _selectedAyaNumber.value = 1;
+        _selectedAyaNumber.value = storedAyaNumber;
         _selectedAyaRange.value = storedAyaRange;
+
+        // Sync with reading controller
+        readingController.updateVisibleSurah(_surahIds[index]);
+
+        // Fetch the Aya lines
         _fetchAyaLines(_surahIds[index]);
       } else {
         _useFirstSurah();

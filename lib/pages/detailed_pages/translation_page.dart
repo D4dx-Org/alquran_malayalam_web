@@ -54,50 +54,88 @@ class _TranslationPageState extends State<TranslationPage> {
   }
 
   void _handleInitialNavigation() async {
-  log('Handling initial navigation', name: 'TranslationPage');
-  final args = Get.arguments;
-  if (args != null && args['AyaNumber'] != null) {
-    final surahId = args['surahId'] as int;
-    final ayaNumber = args['AyaNumber'] as int;
-    
-    log('Initial navigation args found: SurahId=$surahId, AyaNumber=$ayaNumber', 
-      name: 'TranslationPage');
+    log('Handling initial navigation', name: 'TranslationPage');
+    final args = Get.arguments;
 
-    // Wait for the page to be fully built
-    await Future.delayed(const Duration(milliseconds: 500));
-    
-    // Ensure data is loaded
-    final dataLoaded = await _quranController.ensureAyaIsLoaded(surahId, ayaNumber);
-    log('Data loaded status: $dataLoaded', name: 'TranslationPage');
+    // First check if we have arguments
+    if (args != null && args['surahId'] != null) {
+      final surahId = args['surahId'] as int;
+      final ayaNumber = args['AyaNumber'] as int;
 
-    if (dataLoaded) {
-      // Find the correct index to scroll to
-      final index = _quranController.AyaLines.indexWhere(
-        (aya) => int.parse(aya['AyaNo'].toString()) == ayaNumber
-      );
-      
-      log('Found index for initial scroll: $index', name: 'TranslationPage');
+      log('Initial navigation args found: SurahId=$surahId, AyaNumber=$ayaNumber',
+          name: 'TranslationPage');
 
-      if (index != -1 && mounted) {
-        // Use a longer delay to ensure the list is properly built
-        await Future.delayed(const Duration(milliseconds: 800));
-        
-        if (_quranController.itemScrollController.isAttached) {
-          log('Performing initial scroll to index $index', name: 'TranslationPage');
-          _quranController.itemScrollController.scrollTo(
-            index: index,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOutCubic,
-            alignment: 0.1,
-          );
-        } else {
-          log('ScrollController not attached after delay', name: 'TranslationPage');
+      // Update the QuranController state first
+      _quranController.updateSelectedSurahId(surahId, ayaNumber);
+
+      // Wait for the page to be fully built
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // Ensure data is loaded
+      final dataLoaded =
+          await _quranController.ensureAyaIsLoaded(surahId, ayaNumber);
+      log('Data loaded status: $dataLoaded', name: 'TranslationPage');
+
+      if (dataLoaded) {
+        // Find the correct index to scroll to
+        final index = _quranController.AyaLines.indexWhere(
+            (aya) => int.parse(aya['AyaNo'].toString()) == ayaNumber);
+
+        log('Found index for initial scroll: $index', name: 'TranslationPage');
+
+        if (index != -1 && mounted) {
+          // Use a longer delay to ensure the list is properly built
+          await Future.delayed(const Duration(milliseconds: 800));
+
+          if (_quranController.itemScrollController.isAttached) {
+            log('Performing initial scroll to index $index',
+                name: 'TranslationPage');
+            _quranController.itemScrollController.scrollTo(
+              index: index,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOutCubic,
+              alignment: 0.1,
+            );
+          } else {
+            log('ScrollController not attached after delay',
+                name: 'TranslationPage');
+          }
+        }
+      }
+    } else {
+      // If no arguments, try to restore from saved state
+      final savedSurahId = _quranController.selectedSurahId;
+      final savedAyaNumber = _quranController.selectedAyaNumber;
+
+      if (savedSurahId > 0) {
+        log('Restoring saved state: SurahId=$savedSurahId, AyaNumber=$savedAyaNumber',
+            name: 'TranslationPage');
+
+        // Update reading controller to sync the dropdown
+        _quranController.updateSelectedSurahId(savedSurahId, savedAyaNumber);
+
+        // Ensure data is loaded and scroll to position
+        final dataLoaded = await _quranController.ensureAyaIsLoaded(
+            savedSurahId, savedAyaNumber);
+        if (dataLoaded) {
+          final index = _quranController.AyaLines.indexWhere(
+              (aya) => int.parse(aya['AyaNo'].toString()) == savedAyaNumber);
+
+          if (index != -1 && mounted) {
+            await Future.delayed(const Duration(milliseconds: 800));
+            if (_quranController.itemScrollController.isAttached) {
+              _quranController.itemScrollController.scrollTo(
+                index: index,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOutCubic,
+                alignment: 0.1,
+              );
+            }
+          }
         }
       }
     }
   }
-}
-
 
   @override
   void dispose() {
