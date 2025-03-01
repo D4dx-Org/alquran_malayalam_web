@@ -166,7 +166,7 @@ class NavigationDrawerWidget extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Center(
               child: Text(
-                'v1.0.0',
+                'v1.0.1',
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ),
