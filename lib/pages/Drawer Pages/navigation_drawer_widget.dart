@@ -162,6 +162,15 @@ class NavigationDrawerWidget extends StatelessWidget {
               ],
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Text(
+                'v1.0.0',
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ),
+          ),
         ],
       ),
     );
