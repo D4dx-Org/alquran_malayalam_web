@@ -144,13 +144,14 @@ class SurahBottomRowState extends State<SurahBottomRow>
                               }
 
                               try {
-                                // First ensure the data is loaded
-                                await _quranController.ensureAyaIsLoaded(
+                                // Load the selected verse and a context window
+                                await _quranController
+                                    .ensureVerseWithContextLoaded(
                                   _quranController.selectedSurahId,
                                   AyaNumber,
                                 );
 
-                                // Update the UI state first
+                                // Update the UI state
                                 _quranController
                                     .updateSelectedAyaNumber(AyaNumber);
 
@@ -179,7 +180,7 @@ class SurahBottomRowState extends State<SurahBottomRow>
                                 } else {
                                   Get.back(); // Close loading dialog
                                   throw Exception(
-                                      'Verse $AyaNumber not found in the loaded data. Available verses: ${startingLineIds.keys.toList().join(", ")}');
+                                      'Verse $AyaNumber not found in the loaded data');
                                 }
                               } catch (e) {
                                 Get.back(); // Close loading dialog

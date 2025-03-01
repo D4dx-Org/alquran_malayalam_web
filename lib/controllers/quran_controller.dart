@@ -569,4 +569,179 @@ class QuranController extends GetxController {
     updateSelectedAyaNumber(1);
     scrollToAya(1, '1');
   }
+
+  Future<bool> ensurePreviousAyasLoaded(int surahId, int ayaNumber) async {
+    developer.log(
+        'Loading previous ayas up to Aya: $ayaNumber for Surah: $surahId',
+        name: 'AyaLoader');
+
+    try {
+      // Check which verses are already loaded
+      Set<int> loadedAyas = {};
+      for (var aya in _AyaLines) {
+        final ayaNo = int.tryParse(aya['AyaNo']?.toString() ?? '') ?? -1;
+        if (ayaNo > 0) {
+          loadedAyas.add(ayaNo);
+        }
+      }
+
+      // Find missing verses that need to be loaded
+      List<int> missingAyas = [];
+      for (int i = 1; i <= ayaNumber; i++) {
+        if (!loadedAyas.contains(i)) {
+          missingAyas.add(i);
+        }
+      }
+
+      // If no missing verses, we're done
+      if (missingAyas.isEmpty) {
+        developer.log('All previous ayas already loaded', name: 'AyaLoader');
+        return true;
+      }
+
+      developer.log('Loading ${missingAyas.length} missing ayas',
+          name: 'AyaLoader');
+
+      // Load missing verses in small batches
+      const batchSize = 5;
+      for (int i = 0; i < missingAyas.length; i += batchSize) {
+        final end = (i + batchSize < missingAyas.length)
+            ? i + batchSize
+            : missingAyas.length;
+        final batch = missingAyas.sublist(i, end);
+
+        // Load each verse in the batch
+        final batchFutures = batch
+            .map((aya) => _quranService.fetchVerses(surahId, aya))
+            .toList();
+        final batchResults = await Future.wait(batchFutures);
+
+        // Add verses to AyaLines
+        for (final verses in batchResults) {
+          if (verses.isNotEmpty) {
+            _AyaLines.addAll(verses);
+          }
+        }
+
+        // Small delay between batches
+        await Future.delayed(const Duration(milliseconds: 50));
+      }
+
+      // Sort and remove duplicates
+      _AyaLines.sort((a, b) {
+        int ayaComp = int.parse(a['AyaNo'].toString())
+            .compareTo(int.parse(b['AyaNo'].toString()));
+        if (ayaComp != 0) return ayaComp;
+        return int.parse(a['LineId'].toString())
+            .compareTo(int.parse(b['LineId'].toString()));
+      });
+
+      // Remove duplicates
+      final seen = <String>{};
+      _AyaLines.removeWhere((line) {
+        final key = '${line['AyaNo']}-${line['LineId']}';
+        return !seen.add(key);
+      });
+
+      developer.log('Successfully loaded all previous ayas', name: 'AyaLoader');
+      return true;
+    } catch (e, stackTrace) {
+      developer.log('Error loading previous ayas: $e\n$stackTrace',
+          name: 'AyaLoader');
+      return false;
+    }
+  }
+
+  Future<bool> ensureVerseWithContextLoaded(int surahId, int ayaNumber) async {
+    developer.log('Loading verse with context: Surah $surahId, Aya $ayaNumber',
+        name: 'AyaLoader');
+
+    try {
+      // First, ensure the selected verse is loaded
+      await ensureAyaIsLoaded(surahId, ayaNumber);
+
+      // Define a context window (e.g., 10 verses before and 5 after)
+      final windowBefore = 10;
+      final windowAfter = 5;
+
+      // Calculate the range to load, ensuring we don't go below 1
+      final startAya = (ayaNumber - windowBefore).clamp(1, ayaNumber - 1);
+      final endAya = (ayaNumber + windowAfter)
+          .clamp(ayaNumber + 1, _selectedSurahAyaCount.value);
+
+      developer.log('Loading context window: verses $startAya to $endAya',
+          name: 'AyaLoader');
+
+      // Keep track of which verses are already loaded
+      Set<int> loadedAyas = {};
+      for (var aya in _AyaLines) {
+        final ayaNo = int.tryParse(aya['AyaNo']?.toString() ?? '') ?? -1;
+        if (ayaNo > 0) {
+          loadedAyas.add(ayaNo);
+        }
+      }
+
+      // Load verses in the context window that aren't already loaded
+      List<int> missingAyas = [];
+      for (int i = startAya; i <= endAya; i++) {
+        if (!loadedAyas.contains(i)) {
+          missingAyas.add(i);
+        }
+      }
+
+      if (missingAyas.isEmpty) {
+        developer.log('All verses in context window already loaded',
+            name: 'AyaLoader');
+        return true;
+      }
+
+      // Load missing verses in small batches
+      const batchSize = 5;
+      for (int i = 0; i < missingAyas.length; i += batchSize) {
+        final end = (i + batchSize < missingAyas.length)
+            ? i + batchSize
+            : missingAyas.length;
+        final batch = missingAyas.sublist(i, end);
+
+        // Load each verse in the batch
+        final batchFutures = batch
+            .map((aya) => _quranService.fetchVerses(surahId, aya))
+            .toList();
+        final batchResults = await Future.wait(batchFutures);
+
+        // Add verses to AyaLines
+        for (final verses in batchResults) {
+          if (verses.isNotEmpty) {
+            _AyaLines.addAll(verses);
+          }
+        }
+
+        // Small delay between batches
+        await Future.delayed(const Duration(milliseconds: 50));
+      }
+
+      // Sort and remove duplicates
+      _AyaLines.sort((a, b) {
+        int ayaComp = int.parse(a['AyaNo'].toString())
+            .compareTo(int.parse(b['AyaNo'].toString()));
+        if (ayaComp != 0) return ayaComp;
+        return int.parse(a['LineId'].toString())
+            .compareTo(int.parse(b['LineId'].toString()));
+      });
+
+      // Remove duplicates
+      final seen = <String>{};
+      _AyaLines.removeWhere((line) {
+        final key = '${line['AyaNo']}-${line['LineId']}';
+        return !seen.add(key);
+      });
+
+      developer.log('Context window loaded successfully', name: 'AyaLoader');
+      return true;
+    } catch (e, stackTrace) {
+      developer.log('Error loading verse context: $e\n$stackTrace',
+          name: 'AyaLoader');
+      return false;
+    }
+  }
 }

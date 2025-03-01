@@ -172,8 +172,8 @@ class _TranslationPageState extends State<TranslationPage> {
         final firstAyaNo =
             int.parse(_quranController.AyaLines.first['AyaNo'].toString());
         if (firstAyaNo > 1) {
-          // Load previous 10 verses
-          final startAya = (firstAyaNo - 10).clamp(1, firstAyaNo - 1);
+          // Load previous 5 verses
+          final startAya = (firstAyaNo - 5).clamp(1, firstAyaNo - 1);
           for (int ayaNo = startAya; ayaNo < firstAyaNo; ayaNo++) {
             await _quranController.ensureAyaIsLoaded(
                 _quranController.selectedSurahId, ayaNo);
