@@ -43,8 +43,7 @@ class ReadingController extends GetxController {
   final focusNode = FocusNode();
 
   // Add this near other reactive variables
-  final _visibleSurahId = 1.obs;
-  int get visibleSurahId => _visibleSurahId.value;
+  final visibleSurahId = 1.obs;
 
   @override
   Future<void> onInit() async {
@@ -353,8 +352,8 @@ class ReadingController extends GetxController {
 
   // Add this method to update visible surah
   void updateVisibleSurah(int surahId) {
-    if (_visibleSurahId.value != surahId) {
-      _visibleSurahId.value = surahId;
+    if (visibleSurahId.value != surahId) {
+      visibleSurahId.value = surahId;
       // Update QuranController's selected surah
       Get.find<QuranController>().updateSelectedSurahId(surahId, 1);
     }

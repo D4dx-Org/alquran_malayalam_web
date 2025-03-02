@@ -10,6 +10,7 @@ import 'package:alquran_web/controllers/audio_controller.dart';
 import 'package:alquran_web/controllers/bookmarks_controller.dart';
 import 'package:alquran_web/controllers/quran_controller.dart';
 import 'package:alquran_web/controllers/settings_controller.dart';
+import 'package:alquran_web/controllers/reading_controller.dart';
 import 'package:alquran_web/widgets/audio_player/audio_player_widget.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -35,6 +36,16 @@ class _TranslationPageState extends State<TranslationPage> {
     super.initState();
     itemPositionsListener.itemPositions.addListener(_onScroll);
     // itemPositionsListener.itemPositions.addListener(_updateCurrentAya);
+
+    // Add listener for reading controller's visible surah changes
+    final readingController = Get.find<ReadingController>();
+    ever(readingController.visibleSurahId, (int surahId) {
+      if (mounted && surahId != _quranController.selectedSurahId) {
+        _quranController.updateSelectedSurahId(surahId, 1);
+        _quranController.ensureVerseWithContextLoaded(surahId, 1);
+      }
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _handleInitialNavigation();
     });
@@ -113,7 +124,13 @@ class _TranslationPageState extends State<TranslationPage> {
         }
       }
     } else {
-      // Handle case with no arguments...
+      // If no arguments, sync with reading controller's state
+      final readingController = Get.find<ReadingController>();
+      final visibleSurahId = readingController.visibleSurahId.value;
+      if (visibleSurahId != _quranController.selectedSurahId) {
+        _quranController.updateSelectedSurahId(visibleSurahId, 1);
+        await _quranController.ensureVerseWithContextLoaded(visibleSurahId, 1);
+      }
     }
 
     // Set loading state to false
