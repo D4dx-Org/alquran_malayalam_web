@@ -76,20 +76,54 @@ class HorizontalCardWidgetState extends State<HorizontalCardWidget> {
                           });
                         },
                         child: GestureDetector(
-                          onTap: () {
+                          onTap: () async {
                             int ayaNumber = surah['id'] == 2 ? 255 : 1;
 
                             if (surah['name'] != null && surah['id'] != null) {
+                              // Show loading indicator
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return Dialog(
+                                    backgroundColor: Colors.transparent,
+                                    elevation: 0,
+                                    child: Center(
+                                      child: Container(
+                                        padding: const EdgeInsets.all(20),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const CircularProgressIndicator(),
+                                            const SizedBox(height: 16),
+                                            Text(
+                                              "Loading ${surah['name']}...",
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+
                               // Update the selected surah by ID
                               widget.quranController.updateSelectedSurahId(
                                   surah['id'], ayaNumber);
+
                               // Update the reading controller to refresh the surah dropdown
                               widget.quranController.readingController
                                   .navigateToSpecificSurah(surah['id']);
 
-                              // Remove this line as it doesn't have any effect before navigation
-                              // widget.quranController.scrollToAya(ayaNumber, surahLineIds[surah['id']]!);
-
+                              // Navigator.pop will be handled in the page we navigate to
                               Get.toNamed(
                                 Routes.SURAH_DETAILED,
                                 arguments: {

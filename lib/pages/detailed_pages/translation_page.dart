@@ -57,6 +57,11 @@ class _TranslationPageState extends State<TranslationPage> {
     log('Handling initial navigation', name: 'TranslationPage');
     final args = Get.arguments;
 
+    // Set a loading state
+    setState(() {
+      _isLoading = true;
+    });
+
     // First check if we have arguments
     if (args != null && args['surahId'] != null) {
       final surahId = args['surahId'] as int;
@@ -71,11 +76,15 @@ class _TranslationPageState extends State<TranslationPage> {
       // Wait for the page to be fully built
       await Future.delayed(const Duration(milliseconds: 500));
 
-      // Ensure data is loaded
+      // Ensure data is loaded WITH CONTEXT (verses before and after)
       final dataLoaded = await _quranController.ensureVerseWithContextLoaded(
           surahId, ayaNumber);
-
       log('Data loaded status: $dataLoaded', name: 'TranslationPage');
+
+      // Close any existing loading dialog
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
 
       if (dataLoaded) {
         // Find the correct index to scroll to
@@ -104,37 +113,14 @@ class _TranslationPageState extends State<TranslationPage> {
         }
       }
     } else {
-      // If no arguments, try to restore from saved state
-      final savedSurahId = _quranController.selectedSurahId;
-      final savedAyaNumber = _quranController.selectedAyaNumber;
+      // Handle case with no arguments...
+    }
 
-      if (savedSurahId > 0) {
-        log('Restoring saved state: SurahId=$savedSurahId, AyaNumber=$savedAyaNumber',
-            name: 'TranslationPage');
-
-        // Update reading controller to sync the dropdown
-        _quranController.updateSelectedSurahId(savedSurahId, savedAyaNumber);
-
-        // Ensure data is loaded and scroll to position
-        final dataLoaded = await _quranController.ensureAyaIsLoaded(
-            savedSurahId, savedAyaNumber);
-        if (dataLoaded) {
-          final index = _quranController.AyaLines.indexWhere(
-              (aya) => int.parse(aya['AyaNo'].toString()) == savedAyaNumber);
-
-          if (index != -1 && mounted) {
-            await Future.delayed(const Duration(milliseconds: 800));
-            if (_quranController.itemScrollController.isAttached) {
-              _quranController.itemScrollController.scrollTo(
-                index: index,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOutCubic,
-                alignment: 0.1,
-              );
-            }
-          }
-        }
-      }
+    // Set loading state to false
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -238,33 +224,59 @@ class _TranslationPageState extends State<TranslationPage> {
 
     return SelectionArea(
       child: Scaffold(
-        body: Column(
+        body: Stack(
           children: [
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                child: Obx(
-                  () => ScrollablePositionedList.builder(
-                    itemScrollController: _quranController.itemScrollController,
-                    itemPositionsListener: itemPositionsListener,
-                    itemCount: _quranController.AyaLines.length + 2,
-                    itemBuilder: (context, index) {
-                      if (index == 0) {
-                        return _buildHeader();
-                      } else if (index ==
-                          _quranController.AyaLines.length + 1) {
-                        return _isLoading
-                            ? const Center(child: CircularProgressIndicator())
-                            : const SizedBox.shrink();
-                      } else {
-                        return _buildAya(_quranController.AyaLines[index - 1]);
-                      }
-                    },
+            Column(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: horizontalPadding),
+                    child: Obx(
+                      () => ScrollablePositionedList.builder(
+                        itemScrollController:
+                            _quranController.itemScrollController,
+                        itemPositionsListener: itemPositionsListener,
+                        itemCount: _quranController.AyaLines.length + 2,
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return _buildHeader();
+                          } else if (index ==
+                              _quranController.AyaLines.length + 1) {
+                            return _isLoading
+                                ? const Center(
+                                    child: CircularProgressIndicator())
+                                : const SizedBox.shrink();
+                          } else {
+                            return _buildAya(
+                                _quranController.AyaLines[index - 1]);
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                AudioPlayerWidget(),
+              ],
+            ),
+            // Full-screen loading overlay
+            if (_isLoading)
+              Container(
+                color: Colors.white.withOpacity(0.7),
+                child: const Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 16),
+                      Text(
+                        "Loading verses...",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ),
-            AudioPlayerWidget(),
           ],
         ),
       ),
