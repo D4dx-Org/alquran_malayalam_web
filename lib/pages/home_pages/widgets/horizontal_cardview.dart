@@ -86,8 +86,9 @@ class HorizontalCardWidgetState extends State<HorizontalCardWidget> {
                               // Update the reading controller to refresh the surah dropdown
                               widget.quranController.readingController
                                   .navigateToSpecificSurah(surah['id']);
-                              widget.quranController.scrollToAya(
-                                  ayaNumber, surahLineIds[surah['id']]!);
+
+                              // Remove this line as it doesn't have any effect before navigation
+                              // widget.quranController.scrollToAya(ayaNumber, surahLineIds[surah['id']]!);
 
                               Get.toNamed(
                                 Routes.SURAH_DETAILED,

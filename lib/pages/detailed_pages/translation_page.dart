@@ -72,8 +72,9 @@ class _TranslationPageState extends State<TranslationPage> {
       await Future.delayed(const Duration(milliseconds: 500));
 
       // Ensure data is loaded
-      final dataLoaded =
-          await _quranController.ensureAyaIsLoaded(surahId, ayaNumber);
+      final dataLoaded = await _quranController.ensureVerseWithContextLoaded(
+          surahId, ayaNumber);
+
       log('Data loaded status: $dataLoaded', name: 'TranslationPage');
 
       if (dataLoaded) {
